@@ -11,7 +11,6 @@ public class SourceManagerImpl implements SourceManager{
     private int lineIndexNumber;
     private boolean mustReadNextLine;
 
-
     public SourceManagerImpl() {
         currentLine = "";
         lineNumber = 0;

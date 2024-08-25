@@ -1,5 +1,6 @@
 package main;
 
+import Exceptions.LexicalException;
 import entities.Token;
 import lexical.LexicalAnalyzer;
 import sourcemanager.SourceManagerImpl;
@@ -20,12 +21,16 @@ public class MainModule {
                 sourceManager.open(filePath);
                 LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(sourceManager);
                 Token nextToken = lexicalAnalyzer.nextToken();
-                while(!nextToken.getTokenClass().equals("END_OF_FILE")) {
+                while(!nextToken.getTokenClass().equals("EOF")) {
                     System.out.println(nextToken.getLexeme());
                     nextToken = lexicalAnalyzer.nextToken();
                 }
             } catch (FileNotFoundException e) {
                 System.out.println("File not found.");
+            } catch(LexicalException le) {
+                System.out.println(le.getMessage());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }
