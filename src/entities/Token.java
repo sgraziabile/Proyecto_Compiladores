@@ -13,8 +13,8 @@ public class Token {
     public String getLexeme() {
         return lexeme;
     }
-
     public String getTokenClass() {
         return tokenClass;
     }
+    public int getLineNumber() {return lineNumber;}
 }

@@ -1,1 +1,6 @@
-112 552 24 2l
+class extends public static void
+boolean char int
+if else while return var
+switch case break
+this new null true false
+var_1 va2_2 34
