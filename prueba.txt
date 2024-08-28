@@ -2,8 +2,12 @@
 this is a
 multiline
 */
->= < > <=
-! !=
-Class var1 34
+//comment
+public Static void Main(String args) {
+    int var1 = 23;
+    String s1 = "this is a string";
+    && || % ''
+
+}
 
 
