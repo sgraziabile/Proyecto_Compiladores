@@ -2,12 +2,14 @@
 this is a
 multiline
 */
-//comment
-public Static void Main(String args) {
-    int var1 = 23;
-    String s1 = "this is a string";
-    && || % ''
-
+//comment this is
+public
+    float
+    0.1f
+    .0f
+    0.f
+    0f
+    0e1f;
+    -.1f
+    -1.ef
 }
-
-

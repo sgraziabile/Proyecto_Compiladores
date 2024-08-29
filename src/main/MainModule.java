@@ -1,6 +1,6 @@
 package main;
 
-import Exceptions.LexicalException;
+import Exceptions.InvalidSymbolException;
 import entities.KeywordHandler;
 import entities.Token;
 import lexical.LexicalAnalyzer;
@@ -25,24 +25,23 @@ public class MainModule {
             try {
                 sourceManager.open(filePath);
                 LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(sourceManager, keywordHandler);
-                Token nextToken = lexicalAnalyzer.nextToken();
-                while(!nextToken.getTokenClass().equals("EOF")) {
-                    tokenList.add(nextToken);
+                Token nextToken = null;
+                do{
                     nextToken = lexicalAnalyzer.nextToken();
-                }
+                    tokenList.add(nextToken);
+                } while(!nextToken.getTokenClass().equals("EOF"));
             } catch (FileNotFoundException e) {
                 System.out.println("File not found.");
-            } catch(LexicalException le) {
-                System.out.println(le.getMessage());
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
                 success = false;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
             if(success) {
                 for (Token token : tokenList) {
                     String tokenResult = "(" + token.getTokenClass() + "," + token.getLexeme() + "," + token.getLineNumber() + ")";
                     System.out.println(tokenResult);
                 }
+                System.out.println("[SinErrores]");
             }
         }
     }

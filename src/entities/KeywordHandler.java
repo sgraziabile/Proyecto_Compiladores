@@ -28,6 +28,7 @@ public class KeywordHandler {
         keywords.put("null", true);
         keywords.put("true", true);
         keywords.put("false", true);
+        keywords.put("float",true);
     }
     public boolean isKeyword(String lexeme) {
         return keywords.containsKey(lexeme);
