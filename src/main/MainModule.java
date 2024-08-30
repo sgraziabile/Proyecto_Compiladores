@@ -24,7 +24,7 @@ public class MainModule {
             try {
                 sourceManager.open(filePath);
                 LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(sourceManager, keywordHandler);
-                Token nextToken = null;
+                Token nextToken;
                 do{
                     nextToken = lexicalAnalyzer.nextToken();
                     tokenList.add(nextToken);

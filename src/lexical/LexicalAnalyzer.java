@@ -191,7 +191,11 @@ public class LexicalAnalyzer {
         }
     }
     private Token eFloatAccept() {
-        return new Token("floatLiteral", lexeme, sourceManager.getLineNumber());
+        if(Character.isDigit(currentChar)) {
+            updateLexeme();
+            updateCurrentChar();
+            return eFloatAccept();
+        } else return new Token("floatLiteral", lexeme, sourceManager.getLineNumber());
     }
     private Token eIntPart() throws Exception {
         if(Character.isDigit(currentChar)) {
@@ -221,7 +225,6 @@ public class LexicalAnalyzer {
             return eDecimalPart2();
         }
         else if(currentChar == 'e' || currentChar == 'f') {
-            updateLexeme();
             throw new InvalidFloatException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         }
         else {
@@ -247,23 +250,24 @@ public class LexicalAnalyzer {
         if(Character.isDigit(currentChar)) {
             updateLexeme();
             updateCurrentChar();
-            return eExponent2();
+            return eFloatAccept();
+        }
+        else if(currentChar == '-' || currentChar == '+') {
+            updateLexeme();
+            updateCurrentChar();
+            return eExponent3();
         }
         else {
-            updateLexeme();
             throw new InvalidFloatException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         }
     }
-    private Token eExponent2() throws Exception {
+    private Token eExponent3 () throws Exception {
         if(Character.isDigit(currentChar)) {
             updateLexeme();
             updateCurrentChar();
-            return eExponent2();
-        }
-        else {
-            //updateLexeme();
-            updateCurrentChar();
             return eFloatAccept();
+        } else {
+            throw new InvalidFloatException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         }
     }
     private Token e10() {
@@ -430,11 +434,20 @@ public class LexicalAnalyzer {
     private Token eDistinto() {
         return new Token("opDistinto", lexeme, sourceManager.getLineNumber());
     }
-    private Token eSuma() {
+    private Token eSuma() throws Exception{
         if(currentChar == '=') {
             updateLexeme();
             updateCurrentChar();
             return eSumaAsignacion();
+        }
+        else if(currentChar == '.') {
+            updateLexeme();
+            updateCurrentChar();
+            return eDecimalPart1();
+        } else if(Character.isDigit(currentChar)) {
+            updateLexeme();
+            updateCurrentChar();
+            return eIntPart();
         } else {
             return new Token("opSuma", lexeme, sourceManager.getLineNumber());
         }
