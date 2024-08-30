@@ -1,15 +1,18 @@
 package Exceptions;
 
-public class InvalidFloatException extends Exception{
-    String lexeme;
-    int lineNumber;
+public class InvalidFloatException extends LexicalException{
+
     public InvalidFloatException(String lexeme, int lineNumber) {
-        this.lexeme = lexeme;
-        this.lineNumber = lineNumber;
+        super(lexeme, lineNumber);
     }
     public String getMessage() {
-        String message = "Error lexico en linea: " + lineNumber +": " + lexeme + " no es un float valido \n";
-        message += "[Error:" +lexeme+ "|"+lineNumber+"]";
+        String message = "Error lexico en linea: " + getLineNumber() +": " + getLexeme() + " no es un float valido \n";
+        int arrowPosition = "Error lexico en la linea:".length() + String.valueOf(getLineNumber()).length();
+        for(int i = 0; i < arrowPosition; i++) {
+            message += " ";
+        }
+        message += "^\n";
+        message += "[Error:" +getLexeme()+ "|"+getLineNumber()+"]";
         return message;
     }
 }

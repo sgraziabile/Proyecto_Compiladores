@@ -1,11 +1,11 @@
 package lexical;
 
-import Exceptions.InvalidFloatException;
-import Exceptions.InvalidSymbolException;
-import Exceptions.NumberTooLongException;
+import Exceptions.*;
 import entities.KeywordHandler;
 import entities.Token;
 import sourcemanager.SourceManagerImpl;
+
+import java.io.EOFException;
 import java.io.IOException;
 
 import static sourcemanager.SourceManager.END_OF_FILE;
@@ -156,11 +156,6 @@ public class LexicalAnalyzer {
             updateCurrentChar();
             return eComma();
         }
-        else if(currentChar == '.') {
-            updateLexeme();
-            updateCurrentChar();
-            return ePeriod();
-        }
         else if(currentChar == ':') {
             updateLexeme();
             updateCurrentChar();
@@ -241,9 +236,12 @@ public class LexicalAnalyzer {
             updateCurrentChar();
             return eDecimalPart2();
         }
-        else {
+        else if(currentChar == 'e' || currentChar == 'f') {
             updateLexeme();
             throw new InvalidFloatException(lexeme, sourceManager.getLineNumber());
+        }
+        else {
+            return ePeriod();
         }
     }
     private Token eDecimalPart2() throws Exception {
@@ -259,7 +257,6 @@ public class LexicalAnalyzer {
         } else if(currentChar == 'f') {
             updateLexeme();
             updateCurrentChar();
-            float f = -1.e1f;
             return eFloatAccept();
         } else {
             updateLexeme();
@@ -326,7 +323,7 @@ public class LexicalAnalyzer {
             return eString2();
         }
         else if(currentChar == '\n')
-            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidStringException(lexeme, sourceManager.getLineNumber());
         else {
             updateLexeme();
             updateCurrentChar();
@@ -344,7 +341,7 @@ public class LexicalAnalyzer {
         }
         else {
             updateLexeme();
-            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidStringException(lexeme, sourceManager.getLineNumber());
         }
     }
     private Token e23() {
@@ -572,14 +569,22 @@ public class LexicalAnalyzer {
     private Token e32() throws Exception{
         if(currentChar == '*') {
             updateCurrentChar();
-                return e33();
-        } else {
+            return e33();
+        }
+        else if(currentChar == END_OF_FILE) {
+            throw new IllegalCommentException(sourceManager.getLineNumber());
+        }
+        else {
             updateCurrentChar();
             return e32();
         }
     }
     private Token e33() throws Exception {
-        if(currentChar == '/') {
+        if(currentChar == '*') {
+            updateCurrentChar();
+            return e33();
+        }
+        else if(currentChar == '/') {
             updateCurrentChar();
             return e0();
         } else {
