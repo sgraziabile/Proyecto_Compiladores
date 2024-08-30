@@ -34,14 +34,12 @@ public class SourceManagerImpl implements SourceManager{
     @Override
     public char getNextChar() throws IOException {
         char currentChar = ' ';
-
         if(mustReadNextLine) {
             currentLine = reader.readLine();
             lineNumber++;
             lineIndexNumber = 0;
             mustReadNextLine = false;
         }
-
         if(lineIndexNumber < currentLine.length()) {
             currentChar = currentLine.charAt(lineIndexNumber);
             lineIndexNumber++;
@@ -54,10 +52,9 @@ public class SourceManagerImpl implements SourceManager{
 
         return currentChar;
     }
-
     @Override
     public int getLineNumber() {
         return lineNumber;
     }
-
+    public String getCurrentLine() {return currentLine;}
 }

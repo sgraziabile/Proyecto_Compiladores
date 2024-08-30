@@ -1,6 +1,5 @@
 package main;
 
-import Exceptions.InvalidSymbolException;
 import entities.KeywordHandler;
 import entities.Token;
 import lexical.LexicalAnalyzer;

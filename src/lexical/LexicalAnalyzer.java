@@ -1,11 +1,9 @@
 package lexical;
 
-import Exceptions.*;
+import exceptions.*;
 import entities.KeywordHandler;
 import entities.Token;
 import sourcemanager.SourceManagerImpl;
-
-import java.io.EOFException;
 import java.io.IOException;
 
 import static sourcemanager.SourceManager.END_OF_FILE;
@@ -24,11 +22,7 @@ public class LexicalAnalyzer {
     }
     public Token nextToken() throws Exception{
         lexeme = "";
-        try {
-            return e0();
-        } catch (Exception e) {
-            throw e;
-        }
+        return e0();
     }
     private void updateLexeme() {
         lexeme += currentChar;
@@ -44,7 +38,7 @@ public class LexicalAnalyzer {
         if(Character.isDigit(currentChar)) {
             updateLexeme();
             updateCurrentChar();
-            return eInt(1);
+            return eInt();
         }
         else if(Character.isUpperCase(currentChar)) {
             updateLexeme();
@@ -171,18 +165,17 @@ public class LexicalAnalyzer {
         }
         else {
             updateLexeme();
-            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         }
     }
-    private Token eInt(int currentLength) throws Exception{
+    private Token eInt() throws Exception{
         if (Character.isDigit(currentChar)) {
-            currentLength++;
             updateLexeme();
             updateCurrentChar();
-            if (currentLength == INT_MAX_LENGTH)
-                throw new NumberTooLongException(lexeme, sourceManager.getLineNumber());
+            if (lexeme.length() == INT_MAX_LENGTH)
+                throw new NumberTooLongException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
             else
-                return eInt(currentLength);
+                return eInt();
         }
         else if(currentChar == '.') {
             updateLexeme();
@@ -193,11 +186,6 @@ public class LexicalAnalyzer {
             updateLexeme();
             updateCurrentChar();
             return eExponent1();
-        }
-        else if(currentChar == 'f') {
-            updateLexeme();
-            updateCurrentChar();
-            return eFloatAccept();
         } else {
             return new Token("intLiteral", lexeme, sourceManager.getLineNumber());
         }
@@ -221,13 +209,9 @@ public class LexicalAnalyzer {
             updateCurrentChar();
             return eExponent1();
         }
-        else if(currentChar == 'f') {
-            updateLexeme();
+        else {
             updateCurrentChar();
             return eFloatAccept();
-        } else {
-            updateLexeme();
-            throw new InvalidFloatException(lexeme, sourceManager.getLineNumber());
         }
     }
     private Token eDecimalPart1() throws Exception {
@@ -238,7 +222,7 @@ public class LexicalAnalyzer {
         }
         else if(currentChar == 'e' || currentChar == 'f') {
             updateLexeme();
-            throw new InvalidFloatException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidFloatException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         }
         else {
             return ePeriod();
@@ -254,13 +238,9 @@ public class LexicalAnalyzer {
             updateLexeme();
             updateCurrentChar();
             return eExponent1();
-        } else if(currentChar == 'f') {
-            updateLexeme();
+        } else {
             updateCurrentChar();
             return eFloatAccept();
-        } else {
-            updateLexeme();
-            throw new InvalidFloatException(lexeme, sourceManager.getLineNumber());
         }
     }
     private Token eExponent1() throws Exception {
@@ -271,7 +251,7 @@ public class LexicalAnalyzer {
         }
         else {
             updateLexeme();
-            throw new InvalidFloatException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidFloatException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         }
     }
     private Token eExponent2() throws Exception {
@@ -280,13 +260,10 @@ public class LexicalAnalyzer {
             updateCurrentChar();
             return eExponent2();
         }
-        else if(currentChar == 'f') {
-            updateLexeme();
+        else {
+            //updateLexeme();
             updateCurrentChar();
             return eFloatAccept();
-        } else {
-            updateLexeme();
-            throw  new InvalidFloatException(lexeme, sourceManager.getLineNumber());
         }
     }
     private Token e10() {
@@ -323,7 +300,7 @@ public class LexicalAnalyzer {
             return eString2();
         }
         else if(currentChar == '\n')
-            throw new InvalidStringException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidStringException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         else {
             updateLexeme();
             updateCurrentChar();
@@ -341,7 +318,7 @@ public class LexicalAnalyzer {
         }
         else {
             updateLexeme();
-            throw new InvalidStringException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidStringException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         }
     }
     private Token e23() {
@@ -354,10 +331,10 @@ public class LexicalAnalyzer {
             return eChar2();
         }
         else if(Character.isWhitespace(currentChar) || currentChar == '\n' || currentChar == '\t')
-            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidCharException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         else if(currentChar == '\'') {
             updateLexeme();
-            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidCharException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         }
         else {
             updateLexeme();
@@ -366,16 +343,12 @@ public class LexicalAnalyzer {
         }
     }
     private Token eChar2() throws Exception {
-        if(currentChar == '\'' || currentChar == '\\') {
+        if(Character.isWhitespace(currentChar) || currentChar == '\n' || currentChar == '\t')
+            throw new InvalidCharException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
+        else {
             updateLexeme();
             updateCurrentChar();
             return eChar4();
-        }
-        else if(Character.isWhitespace(currentChar) || currentChar == '\n' || currentChar == '\t')
-            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber());
-        else {
-            updateLexeme();
-            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber());
         }
     }
     private Token eChar3() throws Exception {
@@ -385,10 +358,10 @@ public class LexicalAnalyzer {
             return eCharFin();
         }
         else if(currentChar == '\n')
-            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidCharException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         else {
             updateLexeme();
-            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidCharException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         }
     }
     private Token eChar4() throws Exception {
@@ -398,10 +371,10 @@ public class LexicalAnalyzer {
             return eCharFin();
         }
         else if(Character.isWhitespace(currentChar) || currentChar == '\n' || currentChar == '\t')
-            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidCharException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         else {
             updateLexeme();
-            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidCharException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         }
     }
     private Token eCharFin() {
@@ -508,7 +481,7 @@ public class LexicalAnalyzer {
             updateCurrentChar();
             return eDoubleAnd();
         } else {
-            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         }
     }
     private Token eDoubleAnd() {
@@ -520,7 +493,7 @@ public class LexicalAnalyzer {
             updateCurrentChar();
             return eDoubleOr();
         } else {
-            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber());
+            throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine());
         }
     }
     private Token eDoubleOr() {
@@ -580,7 +553,7 @@ public class LexicalAnalyzer {
         }
     }
     private Token e33() throws Exception {
-        if(currentChar == '*') {
+        if(currentChar == '*' || currentChar == '\n' || Character.isWhitespace(currentChar)) {
             updateCurrentChar();
             return e33();
         }

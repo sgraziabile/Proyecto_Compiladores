@@ -77,7 +77,6 @@ public class TesterDeCasosSinErrores {
             }
 
             assertThat("Mensaje Incorrecto en: " + path,  outContent.toString(), CoreMatchers.containsString(msgExito));
-           
     }
     
      
