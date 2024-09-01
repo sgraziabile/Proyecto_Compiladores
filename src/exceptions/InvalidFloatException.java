@@ -2,11 +2,12 @@ package exceptions;
 
 public class InvalidFloatException extends LexicalException{
 
-    public InvalidFloatException(String lexeme, int lineNumber, String currentLine) {
-        super(lexeme, lineNumber,currentLine);
+    public InvalidFloatException(String lexeme, int lineNumber, String currentLine, int columnNumber) {
+        super(lexeme, lineNumber,currentLine,columnNumber);
     }
     public String getMessage() {
-        String message = "Error lexico en linea: " + getLineNumber() +": " + getLexeme() + " no es un float valido \n";
+        columnNumber++;
+        String message = "Error lexico en linea: " + getLineNumber() +" columna: "+columnNumber+" "+ getLexeme() + " no es un float valido \n";
         message +="Detalle: "+ getCurrentLine() + "\n";
         message += printArrow();
         message += "[Error:" +getLexeme()+ "|"+getLineNumber()+"]";
@@ -14,7 +15,7 @@ public class InvalidFloatException extends LexicalException{
     }
     protected String printArrow() {
         String arrow = "";
-        for(int i = 0; i < lexeme.length()-1 + "Detalle: ".length(); i++) {
+        for(int i = 0; i < columnNumber-1+ "Detalle: ".length(); i++) {
             arrow += " ";
         }
         arrow += "^\n";

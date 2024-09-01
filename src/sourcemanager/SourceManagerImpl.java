@@ -8,6 +8,7 @@ public class SourceManagerImpl implements SourceManager{
     private BufferedReader reader;
     private String currentLine;
     private int lineNumber;
+    private int columnNumber;
     private int lineIndexNumber;
     private boolean mustReadNextLine;
 
@@ -37,12 +38,14 @@ public class SourceManagerImpl implements SourceManager{
         if(mustReadNextLine) {
             currentLine = reader.readLine();
             lineNumber++;
+            columnNumber = 0;
             lineIndexNumber = 0;
             mustReadNextLine = false;
         }
         if(lineIndexNumber < currentLine.length()) {
             currentChar = currentLine.charAt(lineIndexNumber);
             lineIndexNumber++;
+            columnNumber++;
         } else if (reader.ready()) {
             currentChar = '\n';
             mustReadNextLine = true;
@@ -57,4 +60,5 @@ public class SourceManagerImpl implements SourceManager{
         return lineNumber;
     }
     public String getCurrentLine() {return currentLine;}
+    public int getColumnNumber() {return columnNumber;}
 }

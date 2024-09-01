@@ -4,10 +4,12 @@ abstract class LexicalException extends Exception {
     String lexeme;
     int lineNumber;
     String currentLine;
-    public LexicalException(String lexeme, int lineNumber, String currentLine) {
+    int columnNumber;
+    public LexicalException(String lexeme, int lineNumber, String currentLine,int columnNumber) {
         this.lexeme = lexeme;
         this.lineNumber = lineNumber;
         this.currentLine = currentLine;
+        this.columnNumber = columnNumber;
     }
     public String getLexeme() {
         return lexeme;
@@ -23,7 +25,7 @@ abstract class LexicalException extends Exception {
     }
     protected String printArrow() {
         String arrow = "";
-        for(int i = 0; i < getErrorPosition()+ +"Detalle: ".length(); i++) {
+        for(int i = 0; i < columnNumber+"Detalle: ".length()-1; i++) {
             arrow += " ";
         }
         arrow += "^\n";
