@@ -9,9 +9,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class MainModule {
-    private SourceManagerImpl sourceManager;
-    private LexicalAnalyzer lexicalAnalyzer;
-
     public static void main(String[] args) {
         if(args.length == 0) {
             System.out.println("No file path provided.");
@@ -41,6 +38,11 @@ public class MainModule {
                     System.out.println(tokenResult);
                 }
                 System.out.println("[SinErrores]");
+            }
+            try {
+                sourceManager.close();
+            } catch (Exception e) {
+                System.out.println("Error closing file.");
             }
         }
     }

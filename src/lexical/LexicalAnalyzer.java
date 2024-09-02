@@ -63,7 +63,7 @@ public class LexicalAnalyzer {
         else if(currentChar == '/') {
             updateLexeme();
             updateCurrentChar();
-            return eSingleLine();
+            return eDiv();
         }
         else if(currentChar == '>') {
             updateLexeme();
@@ -409,11 +409,11 @@ public class LexicalAnalyzer {
     private Token eCharFin() {
         return new Token("charLiteral", lexeme, sourceManager.getLineNumber());
     }
-    private Token eSingleLine() throws Exception{
+    private Token eDiv() throws Exception{
         if(currentChar == '/') {
             lexeme = "";
             updateCurrentChar();
-            return eMultiLine();
+            return eSingleLine();
         }
         else if(currentChar == '*') {
             lexeme = "";
@@ -539,17 +539,14 @@ public class LexicalAnalyzer {
     private Token eDoubleOr() {
         return new Token("opOr", lexeme, sourceManager.getLineNumber());
     }
-    private Token eMultiLine() throws Exception {
-        if(currentChar == '\n') {
+    private Token eSingleLine() throws Exception {
+        if(currentChar == '\n' || currentChar == END_OF_FILE) {
             updateCurrentChar();
                 return e0();
         }
-        else if(currentChar == '*') {
+        else {
             updateCurrentChar();
-            return e32();
-        } else {
-            updateCurrentChar();
-            return eMultiLine();
+            return eSingleLine();
         }
     }
     private Token openParenthesis() {

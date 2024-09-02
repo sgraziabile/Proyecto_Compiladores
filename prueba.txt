@@ -1,6 +1,9 @@
- /*
- *multi line
- *comment
- *
- /
-//single line
+
+//oaaa
+/*
+*ssdsd
+sdsdsd
+*
+*
+*/
+x = '\a'
