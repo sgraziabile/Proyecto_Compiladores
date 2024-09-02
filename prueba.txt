@@ -1,9 +1,3 @@
-
-//oaaa
-/*
-*ssdsd
-sdsdsd
-*
-*
-*/
-x = '\a'
+a1 = true
+a2 = false
+if(a1 | a2)

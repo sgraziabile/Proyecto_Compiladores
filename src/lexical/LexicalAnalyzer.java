@@ -225,6 +225,7 @@ public class LexicalAnalyzer {
             return eDecimalPart2();
         }
         else if(currentChar == 'e' || currentChar == 'f') {
+            updateLexeme();
             throw new InvalidFloatException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine(), sourceManager.getColumnNumber());
         }
         else {
@@ -520,7 +521,7 @@ public class LexicalAnalyzer {
             return eDoubleAnd();
         } else {
             throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine(),
-                    sourceManager.getColumnNumber());
+                    sourceManager.getColumnNumber()-1);
         }
     }
     private Token eDoubleAnd() {
@@ -533,7 +534,7 @@ public class LexicalAnalyzer {
             return eDoubleOr();
         } else {
             throw new InvalidSymbolException(lexeme, sourceManager.getLineNumber(), sourceManager.getCurrentLine(),
-                    sourceManager.getColumnNumber());
+                    sourceManager.getColumnNumber()-1);
         }
     }
     private Token eDoubleOr() {

@@ -15,7 +15,7 @@ public class InvalidFloatException extends LexicalException{
     }
     protected String printArrow() {
         String arrow = "";
-        for(int i = 0; i < columnNumber-1+ "Detalle: ".length(); i++) {
+        for(int i = 0; i < columnNumber-2+ "Detalle: ".length(); i++) {
             arrow += " ";
         }
         arrow += "^\n";
