@@ -98,7 +98,7 @@ public class LexicalAnalyzer {
         else if(currentChar == '.') {
             updateLexeme();
             updateCurrentChar();
-            return eDecimalPart1();
+            return ePeriod();
         }
         else if(currentChar == '&') {
             updateLexeme();
