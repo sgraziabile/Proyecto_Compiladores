@@ -1,9 +1,11 @@
 package main;
 
 import entities.KeywordHandler;
+import entities.PrimerosHandler;
 import entities.Token;
 import lexical.LexicalAnalyzer;
 import sourcemanager.SourceManagerImpl;
+import syntactical.SyntaxAnalyzer;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -16,33 +18,25 @@ public class MainModule {
             String filePath = args[0];
             SourceManagerImpl sourceManager = new SourceManagerImpl();
             KeywordHandler keywordHandler = new KeywordHandler();
-            ArrayList<Token> tokenList = new ArrayList<>();
+            PrimerosHandler primerosHandler = new PrimerosHandler();
             boolean success = true;
             try {
                 sourceManager.open(filePath);
                 LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(sourceManager, keywordHandler);
-                Token nextToken;
-                do{
-                    nextToken = lexicalAnalyzer.nextToken();
-                    tokenList.add(nextToken);
-                } while(!nextToken.getTokenClass().equals("EOF"));
+                SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(lexicalAnalyzer, primerosHandler);
             } catch (FileNotFoundException e) {
-                System.out.println("File not found.");
+                System.out.println("File not found");
             } catch(Exception e) {
-                System.out.println(e.getMessage());
                 success = false;
+                System.out.println(e.getMessage());
             }
             if(success) {
-                for (Token token : tokenList) {
-                    String tokenResult = "(" + token.getTokenClass() + "," + token.getLexeme() + "," + token.getLineNumber() + ")";
-                    System.out.println(tokenResult);
-                }
-                System.out.println("[SinErrores]");
+                System.out.println("Compiled with no errors");
             }
             try {
                 sourceManager.close();
             } catch (Exception e) {
-                System.out.println("Error closing file.");
+                System.out.println("Error closing file");
             }
         }
     }

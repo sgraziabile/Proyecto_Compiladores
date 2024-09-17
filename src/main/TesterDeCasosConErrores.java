@@ -1,8 +1,9 @@
-package main;
+package minijavaCompiler;
 
 import java.io.*;
 import java.util.ArrayList;
 
+import main.MainModule;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Test;

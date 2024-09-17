@@ -1,10 +1,11 @@
-package main;
+package minijavaCompiler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+import main.MainModule;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Test;
@@ -77,6 +78,7 @@ public class TesterDeCasosSinErrores {
             }
 
             assertThat("Mensaje Incorrecto en: " + path,  outContent.toString(), CoreMatchers.containsString(msgExito));
+           
     }
     
      

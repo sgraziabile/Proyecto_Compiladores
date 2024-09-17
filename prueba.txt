@@ -1,2 +1,5 @@
-.E1
+class Persona extends Object {
+    boolean mayor;
+    int edad
+    void dni;
 }

@@ -267,7 +267,8 @@ public class LexicalAnalyzer {
             return e11();
         } else {
             if(keywordHandler.isKeyword(lexeme)) {
-                return new Token("keyword", lexeme, sourceManager.getLineNumber());
+                String tokenCLass = "keyword_"+lexeme;
+                return new Token(tokenCLass, lexeme, sourceManager.getLineNumber());
             } else {
                 return new Token("idMetVar", lexeme, sourceManager.getLineNumber());
             }
@@ -567,6 +568,6 @@ public class LexicalAnalyzer {
         }
     }
     private Token eFin() {
-        return new Token("EOF",lexeme, sourceManager.getLineNumber());
+        return new Token("$",lexeme, sourceManager.getLineNumber());
     }
 }
