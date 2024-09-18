@@ -1,5 +1,13 @@
 class Persona extends Object {
     boolean mayor;
-    int edad
-    void dni;
+    int edad;
+    float dni;
+    String nombre;
+
+    public Persona(boolean mayor, int edad, float dni, String nombre){
+
+    }
+    static int setMayor(boolean mayor){
+
+    }
 }

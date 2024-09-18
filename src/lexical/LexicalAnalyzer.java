@@ -435,7 +435,7 @@ public class LexicalAnalyzer {
             updateCurrentChar();
             return eDistinto();
         } else {
-            return new Token("opNegacion", lexeme, sourceManager.getLineNumber());
+            return new Token("opNot", lexeme, sourceManager.getLineNumber());
         }
     }
     private Token eDistinto() {
@@ -472,7 +472,7 @@ public class LexicalAnalyzer {
             updateCurrentChar();
             return eIgualdad();
         } else {
-            return new Token("opAsignacion", lexeme, sourceManager.getLineNumber());
+            return new Token("opAsign", lexeme, sourceManager.getLineNumber());
         }
     }
     private Token eIgualdad() {

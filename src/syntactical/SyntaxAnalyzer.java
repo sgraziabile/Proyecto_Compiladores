@@ -5,7 +5,6 @@ import entities.Token;
 import exceptions.SyntaxException;
 import lexical.LexicalAnalyzer;
 
-import java.lang.reflect.Array;
 import java.util.List;
 
 public class SyntaxAnalyzer {
@@ -17,7 +16,7 @@ public class SyntaxAnalyzer {
         this.primerosHandler = primerosHandler;
         this.lexicalAnalyzer = lexicalAnalyzer;
         currentToken = lexicalAnalyzer.nextToken();
-        Inicial();
+        Init();
     }
 
     private void match(String tokenName) throws Exception {
@@ -28,29 +27,29 @@ public class SyntaxAnalyzer {
             throw new SyntaxException(List.of(tokenName), tokenClass, Integer.toString(currentToken.getLineNumber()));
         }
     }
-    public void Inicial() throws Exception {
-        ListaClases();
+    public void Init() throws Exception {
+        ClassList();
         match("$");
     }
-    private void ListaClases() throws Exception {
+    private void ClassList() throws Exception {
         //primeros de Clase = {class}
         if (currentToken.getTokenClass().equals("keyword_class")) {
-            Clase();
-            ListaClases();
+            Class();
+            ClassList();
         }
         else {
             //no hago nada porque es vacio
         }
     }
-    private void Clase() throws Exception {
+    private void Class() throws Exception {
         match("keyword_class");
         match("idClase");
-        HerenciaOpcional();
+        OptionalInheritance();
         match("llaveAbre");
-        ListaMiembros();
+        MemberList();
         match("llaveCierra");
     }
-    private void HerenciaOpcional() throws Exception {
+    private void OptionalInheritance() throws Exception {
         if(currentToken.getTokenClass().equals("keyword_extends")) {
             match("keyword_extends");
             match("idClase");
@@ -59,27 +58,27 @@ public class SyntaxAnalyzer {
             //vacio
         }
     }
-    private void ListaMiembros() throws Exception {
+    private void MemberList() throws Exception {
         //primeros de ListaMiembros = {static,boolean,char,int,void}
-        if(currentToken.getTokenClass().equals("static")) {
-            EstaticoOpcional();
-            TipoMiembro();
+        if(currentToken.getTokenClass().equals("keyword_static")) {
+            StaticOptional();
+            MemberType();
             match("idMetVar");
             MetAtr();
-            ListaMiembros();
+            MemberList();
         }
-        else if(currentToken.getTokenClass().equals("keyword_boolean") || currentToken.getTokenClass().equals("keyword_char") || currentToken.getTokenClass().equals("keyword_int") || currentToken.getTokenClass().equals("keyword_void")) {
-            TipoMiembro();
+        else if(primerosHandler.MemberType.contains(currentToken.getTokenClass())) {
+            MemberType();
             match("idMetVar");
             MetAtr();
-            ListaMiembros();
+            MemberList();
         }
-        else if(currentToken.getTokenClass().equals("keyword_public")) {
+        else if(currentToken.getTokenClass().equals("keyword_public")) {    //constructor
             match("keyword_public");
             match("idClase");
-            ArgsFormales();
-            Bloque();
-            ListaMiembros();
+            FormalArguments();
+            Block();
+            MemberList();
         }
         else {
             //vacio
@@ -90,27 +89,27 @@ public class SyntaxAnalyzer {
             match("puntoYComa");
         }
         else if(currentToken.getTokenClass().equals("parentesisAbre")) {
-            ArgsFormales();
-            Bloque();
+            FormalArguments();
+            Block();
         }
         else {
             throw new SyntaxException(List.of(";", "("), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
         }
     }
-    private void TipoMiembro() throws Exception {
+    private void MemberType() throws Exception {
         if(currentToken.getTokenClass().equals("keyword_void")) {
             match("keyword_void");
         }
-        else if(currentToken.getTokenClass().equals("keyword_boolean") || currentToken.getTokenClass().equals("keyword_char") || currentToken.getTokenClass().equals("keyword_int") || currentToken.getTokenClass().equals("idClase")) {
-            Tipo();
+        else if(primerosHandler.Type.contains(currentToken.getTokenClass())) {
+            Type();
         }
         else {
             //vacio
         }
     }
-    private void Tipo() throws Exception {
-        if(currentToken.getTokenClass().equals("keyword_boolean") || currentToken.getTokenClass().equals("keyword_char") || currentToken.getTokenClass().equals("keyword_int")) {
-            TipoPrimitivo();
+    private void Type() throws Exception {
+        if(primerosHandler.PrimitiveType.contains(currentToken.getTokenClass())) {
+            PrimitiveType();
         }
         else if(currentToken.getTokenClass().equals("idClase")) {
             match("idClase");
@@ -119,7 +118,7 @@ public class SyntaxAnalyzer {
             throw new SyntaxException(List.of("tipo primitivo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
         }
     }
-    private void TipoPrimitivo() throws Exception {
+    private void PrimitiveType() throws Exception {
         if(currentToken.getTokenClass().equals("keyword_boolean")) {
             match("keyword_boolean");
         }
@@ -129,58 +128,160 @@ public class SyntaxAnalyzer {
         else if(currentToken.getTokenClass().equals("keyword_int")) {
             match("keyword_int");
         }
+        else if(currentToken.getTokenClass().equals("keyword_float")) {
+            match("keyword_float");
+        }
         else {
             throw new SyntaxException(List.of("tipo primitivo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
         }
     }
-    private void EstaticoOpcional() throws Exception {
+    private void StaticOptional() throws Exception {
         if(currentToken.getTokenClass().equals("keyword_static")) {
             match("keyword_static");
-            TipoMiembro();
-            match("idMetVar");
-            MetAtr();
-            ListaMiembros();
         }
         else {
             //vacio
         }
     }
-    private void ArgsFormales() throws Exception {
+    private void FormalArguments() throws Exception {
         match("parentesisAbre");
-        ListaArgsFormalesOpcional();
+        FormalArgsListOptional();
         match("parentesisCierra");
     }
-    private void ListaArgsFormalesOpcional() throws Exception {
-        if(currentToken.getTokenClass().equals("keyword_boolean") || currentToken.getTokenClass().equals("keyword_char") || currentToken.getTokenClass().equals("keyword_int") || currentToken.getTokenClass().equals("idClase")) {
-            ListaArgsFormales();
+    private void FormalArgsListOptional() throws Exception {
+        if(primerosHandler.Type.contains(currentToken.getTokenClass())) {
+            FormalArgsList();
         }
         else {
             //vacio
         }
     }
-    private void ListaArgsFormales() throws Exception {
-        ArgFormal();
-        ListaArgsFormales2();
+    private void FormalArgsList() throws Exception {
+        FormalArg();
+        FormalArgsList2();
     }
-    private void ListaArgsFormales2() throws Exception {
+    private void FormalArgsList2() throws Exception {
         if(currentToken.getTokenClass().equals("coma")) {
             match("coma");
-            ListaArgsFormales();
+            FormalArgsList();
         }
         else {
             //vacio
         }
     }
-    private void ArgFormal() throws Exception {
-        Tipo();
+    private void FormalArg() throws Exception {
+        Type();
         match("idMetVar");
     }
-    private void Bloque() throws Exception {
+    private void Block() throws Exception {
         match("llaveAbre");
-        ListaSentencias();
+        SentenceList();
         match("llaveCierra");
     }
-    private void ListaSentencias() throws Exception {
-        
+    private void SentenceList() throws Exception {
+        if(primerosHandler.Sentence.contains(currentToken.getTokenClass())) {
+            Sentence();
+            SentenceList();
+        }
+        else {
+            //vacio
+        }
+    }
+    private void Sentence() throws Exception {
+        if(currentToken.getTokenClass().equals("puntoYComa")) {
+            match("puntoYComa");
+        }
+        else if(primerosHandler.Expression.contains(currentToken.getTokenClass())) {
+            Asign_Call();
+            match("puntoYComa");
+        }
+        else if(currentToken.getTokenClass().equals("keyword_var")) {
+            LocalVar();
+            match("puntoYComa");
+        }
+        else if(currentToken.getTokenClass().equals("keyword_return")) {
+            Return();
+            match("puntoYComa");
+        }
+        else if(currentToken.getTokenClass().equals("keyword_switch")) {
+            Switch();
+        }
+        else if(currentToken.getTokenClass().equals("keyword_break")) {
+            Break();
+            match("puntoYComa");
+        }
+        else if(currentToken.getTokenClass().equals("keyword_while")) {
+            While();
+        }
+        else if(currentToken.getTokenClass().equals("parentesisAbre")) {
+            Block();
+        }
+        else if(currentToken.getTokenClass().equals("keyword_if")) {
+            If();
+        }
+        else {
+            throw new SyntaxException(List.of("inicio sentencia"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+        }
+    }
+    private void LocalVar() throws Exception {
+        match("keyword_var");
+        match("idMetVar");
+        match("opAsign");
+        CompoundExpression();
+    }
+    private void CompoundExpression() throws Exception {
+        //TODO
+    }
+    private void Return() throws Exception {
+        match("keyword_return");
+        OptionalExpression();
+    }
+    private void OptionalExpression() throws Exception {
+       //TODO
+    }
+    private void Switch() throws Exception {
+        match("keyword_switch");
+        match("parentesisAbre");
+        Expression();
+        match("parentesisCierra");
+        match("llaveAbre");
+        CaseList();
+        match("llaveCierra");
+    }
+    private void CaseList() throws Exception {
+        //TODO
+    }
+    private void Break() throws Exception {
+        match("keyword_break");
+    }
+    private void While() throws Exception {
+        match("keyword_while");
+        match("parentesisAbre");
+        Expression();
+        match("parentesisCierra");
+        Sentence();
+    }
+    private void If() throws Exception {
+        match("keyword_if");
+        match("parentesisAbre");
+        Expression();
+        match("parentesisCierra");
+        Sentence();
+        ElseOptional();
+    }
+    private void ElseOptional() throws Exception {
+        if(currentToken.getTokenClass().equals("keyword_else")) {
+            match("keyword_else");
+            Sentence();
+        }
+        else {
+            //vacio
+        }
+    }
+    private void Asign_Call() throws Exception {
+        Expression();
+    }
+    private void Expression() throws Exception {
+
     }
 }
