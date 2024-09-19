@@ -31,7 +31,8 @@ public class MainModule {
                 System.out.println(e.getMessage());
             }
             if(success) {
-                System.out.println("Compiled with no errors");
+                System.out.println("Compilation successful");
+                System.out.println("[SinErrores]");
             }
             try {
                 sourceManager.close();

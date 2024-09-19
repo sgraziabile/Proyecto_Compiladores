@@ -1,4 +1,4 @@
-package minijavaCompiler;
+package main;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

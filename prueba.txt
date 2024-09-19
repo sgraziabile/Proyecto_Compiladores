@@ -1,13 +1,23 @@
-class Persona extends Object {
-    boolean mayor;
-    int edad;
-    float dni;
-    String nombre;
+///[SinErrores]
+// Prueba un bloque con una asignacion, un atributo y un constructor
 
-    public Persona(boolean mayor, int edad, float dni, String nombre){
+class Prueba1{
+
+    int x;
+
+    static  void prueba1(int a)
+    {
+        this.b().a = 5;
+        var x = 5;
+        var t = 0;
+        while(x>0) {
+            t -= 1;
+            x += 1;
+        }
+    }
+
+    public Prueba1(int y){
 
     }
-    static int setMayor(boolean mayor){
 
-    }
 }
