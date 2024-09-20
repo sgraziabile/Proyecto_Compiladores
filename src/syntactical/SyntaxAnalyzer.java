@@ -37,8 +37,12 @@ public class SyntaxAnalyzer {
             Class();
             ClassList();
         }
+        else if(currentToken.getTokenClass().equals("keyword_abstract")) {
+            AbstractClass();
+            ClassList();
+        }
         else {
-            //no hago nada porque es vacio
+            //vacio
         }
     }
     private void Class() throws Exception {
@@ -47,6 +51,15 @@ public class SyntaxAnalyzer {
         OptionalInheritance();
         match("llaveAbre");
         MemberList();
+        match("llaveCierra");
+    }
+    private void AbstractClass() throws Exception {
+        match("keyword_abstract");
+        match("keyword_class");
+        match("idClase");
+        OptionalInheritance();
+        match("llaveAbre");
+        AbstractMemberList();
         match("llaveCierra");
     }
     private void OptionalInheritance() throws Exception {
@@ -79,6 +92,39 @@ public class SyntaxAnalyzer {
             FormalArguments();
             Block();
             MemberList();
+        }
+        else {
+            //vacio
+        }
+    }
+    private void AbstractMemberList() throws Exception {
+        if(currentToken.getTokenClass().equals("keyword_static")) {
+            StaticOptional();
+            MemberType();
+            match("idMetVar");
+            MetAtr();
+            AbstractMemberList();
+        }
+        else if(primerosHandler.MemberType.contains(currentToken.getTokenClass())) {
+            MemberType();
+            match("idMetVar");
+            MetAtr();
+            AbstractMemberList();
+        }
+        else if(currentToken.getTokenClass().equals("keyword_abstract")) {
+            match("keyword_abstract");
+            MemberType();
+            match("idMetVar");
+            FormalArguments();
+            match("puntoYComa");
+            AbstractMemberList();
+        }
+        else if(currentToken.getTokenClass().equals("keyword_public")) {
+            match("keyword_public");
+            match("idClase");
+            FormalArguments();
+            Block();
+            AbstractMemberList();
         }
         else {
             //vacio

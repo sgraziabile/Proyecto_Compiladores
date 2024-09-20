@@ -1,29 +1,13 @@
 class PruebaSwitch extends Prueba {
 
     int a;
-
     public PruebaSwitch() {
-        super(a);
-    }
-    void probar() {
-        var i = 100;
-        while(i >= 0) {
-            switch(a) {
-                case 1:
-                    opcion = "Caso 1";
-                case 2:
-                    opcion = "Caso 2";
-                case 3:
-                    opcion = "Caso 3";
-                default:
-                    opcion = "Caso default";
 
-            }
-            var objeto = new Object().a(b.getA());
-            a = objeto.getA();
-            a -= 1;
-        }
     }
+    void met1() {
+
+    }
+    abstract int met2();
 
 }
 
