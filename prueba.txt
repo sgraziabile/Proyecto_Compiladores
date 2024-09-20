@@ -1,23 +1,37 @@
-///[SinErrores]
-// Prueba un bloque con una asignacion, un atributo y un constructor
+class PruebaSwitch extends Prueba {
 
-class Prueba1{
+    int a;
 
-    int x;
+    public PruebaSwitch() {
+        super(a);
+    }
+    void probar() {
+        var i = 100;
+        while(i >= 0) {
+            switch(a) {
+                case 1:
+                    opcion = "Caso 1";
+                case 2:
+                    opcion = "Caso 2";
+                case 3:
+                    opcion = "Caso 3";
+                default:
+                    opcion = "Caso default";
 
-    static  void prueba1(int a)
-    {
-        this.b().a = 5;
-        var x = 5;
-        var t = 0;
-        while(x>0) {
-            t -= 1;
-            x += 1;
+            }
+            var objeto = new Object().a(b.getA());
+            a = objeto.getA();
+            a -= 1;
         }
     }
 
-    public Prueba1(int y){
-
-    }
-
 }
+
+
+
+
+
+
+
+
+

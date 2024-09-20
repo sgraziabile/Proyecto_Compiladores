@@ -223,7 +223,6 @@ public class LexicalAnalyzer {
             updateCurrentChar();
             return eExponent1();
         } else {
-            updateCurrentChar();
             return eFloatAccept();
         }
     }

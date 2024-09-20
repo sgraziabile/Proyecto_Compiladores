@@ -24,7 +24,8 @@ public class SyntaxAnalyzer {
         if (tokenName.equals(tokenClass)) {
             currentToken = lexicalAnalyzer.nextToken();
         } else {
-            throw new SyntaxException(List.of(tokenName), tokenClass, Integer.toString(currentToken.getLineNumber()));
+            String lexeme = currentToken.getLexeme();
+            throw new SyntaxException(List.of(tokenName), tokenClass, Integer.toString(currentToken.getLineNumber()),lexeme);
         }
     }
     public void Init() throws Exception {
@@ -32,7 +33,6 @@ public class SyntaxAnalyzer {
         match("$");
     }
     private void ClassList() throws Exception {
-        //primeros de Clase = {class}
         if (currentToken.getTokenClass().equals("keyword_class")) {
             Class();
             ClassList();
@@ -93,7 +93,8 @@ public class SyntaxAnalyzer {
             Block();
         }
         else {
-            throw new SyntaxException(List.of(";", "("), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            String lexeme = currentToken.getLexeme();
+            throw new SyntaxException(List.of(";", "("), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),lexeme);
         }
     }
     private void MemberType() throws Exception {
@@ -115,7 +116,8 @@ public class SyntaxAnalyzer {
             match("idClase");
         }
         else {
-            throw new SyntaxException(List.of("tipo primitivo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            String lexeme = currentToken.getLexeme();
+            throw new SyntaxException(List.of("tipo primitivo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),lexeme);
         }
     }
     private void PrimitiveType() throws Exception {
@@ -132,7 +134,8 @@ public class SyntaxAnalyzer {
             match("keyword_float");
         }
         else {
-            throw new SyntaxException(List.of("tipo primitivo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            String lexeme = currentToken.getLexeme();
+            throw new SyntaxException(List.of("tipo primitivo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),lexeme);
         }
     }
     private void StaticOptional() throws Exception {
@@ -220,7 +223,8 @@ public class SyntaxAnalyzer {
             If();
         }
         else {
-            throw new SyntaxException(List.of("inicio sentencia"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            String lexeme = currentToken.getLexeme();
+            throw new SyntaxException(List.of("inicio sentencia"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),lexeme);
         }
     }
     private void LocalVar() throws Exception {
@@ -247,17 +251,26 @@ public class SyntaxAnalyzer {
         Expression();
         match("parentesisCierra");
         match("llaveAbre");
-        CaseList();
+        SwitchSentenceList();
         match("llaveCierra");
     }
+    private void SwitchSentenceList() throws Exception {
+        if(currentToken.getTokenClass().equals("keyword_case") || currentToken.getTokenClass().equals("keyword_default")) {
+            CaseList();
+            SwitchSentenceList();
+        }
+        else {
+            //vacio
+        }
+    }
     private void CaseList() throws Exception {
-        if(currentToken.equals("keyword_case")) {
+        if(currentToken.getTokenClass().equals("keyword_case")) {
             match("keyword_case");
             PrimitiveLiteral();
             match("dosPuntos");
             OptionalSentence();
         }
-        else if(currentToken.equals("keyword_default")) {
+        else if(currentToken.getTokenClass().equals("keyword_default")) {
             match("keyword_default");
             match("dosPuntos");
             Sentence();
@@ -328,7 +341,7 @@ public class SyntaxAnalyzer {
             match("opMenosAsign");
         }
         else {
-            throw new SyntaxException(List.of("operador de asignacion"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            throw new SyntaxException(List.of("operador de asignacion"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
     private void CompoundExpression() throws Exception {
@@ -354,7 +367,7 @@ public class SyntaxAnalyzer {
             Operand();
         }
         else {
-            throw new SyntaxException(List.of("operador unario", "operando"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            throw new SyntaxException(List.of("operador unario", "operando"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
     private void BinaryOperator() throws Exception {
@@ -398,7 +411,7 @@ public class SyntaxAnalyzer {
             match("opOr");
         }
         else {
-            throw new SyntaxException(List.of("operador binario"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            throw new SyntaxException(List.of("operador binario"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
     private void UnaryOperator() throws Exception {
@@ -412,7 +425,7 @@ public class SyntaxAnalyzer {
             match("opSuma");
         }
         else {
-            throw new SyntaxException(List.of("operador unario"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            throw new SyntaxException(List.of("operador unario"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
     private void Operand() throws Exception {
@@ -423,7 +436,7 @@ public class SyntaxAnalyzer {
             Access();
         }
         else {
-            throw new SyntaxException(List.of("literal", "acceso"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            throw new SyntaxException(List.of("literal", "acceso"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
     private void Literal() throws Exception {
@@ -434,7 +447,7 @@ public class SyntaxAnalyzer {
             ObjectLiteral();
         }
         else {
-            throw new SyntaxException(List.of("literal"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            throw new SyntaxException(List.of("literal"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
     private void PrimitiveLiteral() throws Exception {
@@ -454,7 +467,7 @@ public class SyntaxAnalyzer {
             match("floatLiteral");
         }
         else {
-            throw new SyntaxException(List.of("literal primitivo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            throw new SyntaxException(List.of("literal primitivo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
     private void ObjectLiteral() throws Exception {
@@ -465,7 +478,7 @@ public class SyntaxAnalyzer {
             match("stringLiteral");
         }
         else {
-            throw new SyntaxException(List.of("literal objeto"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            throw new SyntaxException(List.of("literal objeto"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
     private void Access() throws Exception {
@@ -474,7 +487,7 @@ public class SyntaxAnalyzer {
             OptionalChain();
         }
         else {
-            throw new SyntaxException(List.of("acceso"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            throw new SyntaxException(List.of("acceso"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
     private void Primary() throws Exception{
@@ -495,15 +508,14 @@ public class SyntaxAnalyzer {
             ParenthesizedExpression();
         }
         else {
-            throw new SyntaxException(List.of("idMetVar", "this", "new", "idClase", "("), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()));
+            throw new SyntaxException(List.of("idMetVar", "this", "new", "idClase", "("), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
     private void ThisAccess() throws Exception {
         match("keyword_this");
     }
     private void VarMetAccess() throws Exception {
-        if(currentToken.getTokenClass().equals("idMetVar")) {
-            match("idMetaVar");
+        if(currentToken.getTokenClass().equals("parentesisAbre")) {
             ActualArgs();
         }
         else {
