@@ -268,6 +268,9 @@ public class SyntaxAnalyzer {
         else if(currentToken.getTokenClass().equals("keyword_if")) {
             If();
         }
+        else if(currentToken.getTokenClass().equals("keyword_for")) {
+            For();
+        }
         else {
             String lexeme = currentToken.getLexeme();
             throw new SyntaxException(List.of("inicio sentencia"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),lexeme);
@@ -342,6 +345,53 @@ public class SyntaxAnalyzer {
         Expression();
         match("parentesisCierra");
         Sentence();
+    }
+    private void For() throws Exception {
+        match("keyword_for");
+        match("parentesisAbre");
+        ForCases();
+        match("parentesisCierra");
+        Sentence();
+    }
+    private void ForCases() throws Exception {
+        if(primerosHandler.Type.contains(currentToken.getTokenClass())) {
+            Type();
+            match("idMetVar");
+            For1();
+        }
+        else if(currentToken.getTokenClass().equals("keyword_var")) {
+            For2();
+        }
+        else {
+            throw new SyntaxException(List.of("tipo primitivo", "keyword_var"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
+        }
+    }
+    private void For1() throws Exception {
+        if(currentToken.getTokenClass().equals("opAsign") || currentToken.getTokenClass().equals("opSumaAsign") || currentToken.getTokenClass().equals("opMenosAsign")) {
+            AssignmentOperator();
+            Operand();
+            match("puntoYComa");
+            CompoundExpression();
+            match("puntoYComa");
+            Expression();
+        }
+        else if(currentToken.getTokenClass().equals("dosPuntos")) {
+            match("dosPuntos");
+            match("idMetVar");
+        }
+        else {
+            throw new SyntaxException(List.of("asignacion" ,":"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
+        }
+    }
+    private void For2() throws Exception {
+        match("keyword_var");
+        match("idMetVar");
+        AssignmentOperator();
+        Operand();
+        match("puntoYComa");
+        CompoundExpression();
+        match("puntoYComa");
+        Expression();
     }
     private void If() throws Exception {
         match("keyword_if");
@@ -420,8 +470,8 @@ public class SyntaxAnalyzer {
         if(currentToken.getTokenClass().equals("opSuma")) {
             match("opSuma");
         }
-        else if(currentToken.getTokenClass().equals("opResta")) {
-            match("opResta");
+        else if(currentToken.getTokenClass().equals("opMenos")) {
+            match("opMenos");
         }
         else if(currentToken.getTokenClass().equals("opMult")) {
             match("opMult");
@@ -464,8 +514,8 @@ public class SyntaxAnalyzer {
         if(currentToken.getTokenClass().equals("opNot")) {
             match("opNot");
         }
-        else if(currentToken.getTokenClass().equals("opMenor")) {
-            match("opMenor");
+        else if(currentToken.getTokenClass().equals("opMenos")) {
+            match("opMenos");
         }
         else if(currentToken.getTokenClass().equals("opSuma")) {
             match("opSuma");

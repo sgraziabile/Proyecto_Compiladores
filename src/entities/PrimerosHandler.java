@@ -26,7 +26,7 @@ public class PrimerosHandler {
             Literal.stream(),
             Access.stream()
     ).collect(Collectors.toSet());
-    public static final Set<String> UnaryOperator = Set.of("opNot","opMenor","opSuma");
+    public static final Set<String> UnaryOperator = Set.of("opNot","opMenos","opSuma");
     public static final Set<String> Expression = Stream.concat(
             Operand.stream(),
             UnaryOperator.stream()
@@ -34,13 +34,12 @@ public class PrimerosHandler {
 
     public static final Set<String> Sentence = Stream.concat(
             Expression.stream(),
-            Set.of("puntoYComa","keyword_if","keyword_return","keyword_switch","keyword_break","keyword_var","keyword_while","llaveAbre").stream()
+            Set.of("puntoYComa","keyword_if","keyword_return","keyword_switch","keyword_break","keyword_var","keyword_while","llaveAbre","keyword_for").stream()
     ).collect(Collectors.toSet());
 
-    public static final Set<String> BinaryOperator = Set.of("opSuma","opResta","opMult","opDiv","opMod","opMenor","opMenorIgual","opMayor","opMayorIgual","opIgualdad","opDistinto","opAnd","opOr");
+    public static final Set<String> BinaryOperator = Set.of("opSuma","opMenos","opMult","opDiv","opMod","opMenor","opMenorIgual","opMayor","opMayorIgual","opIgualdad","opDistinto","opAnd","opOr");
 
     public static final Set<String> Primary = Set.of("idMetVar","keyword_this","keyword_new","idClase","parentesisAbre");
-
 
 
 

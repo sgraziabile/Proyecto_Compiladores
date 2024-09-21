@@ -31,6 +31,7 @@ public class KeywordHandler {
         keywords.put("float",true);
         keywords.put("default",true);
         keywords.put("abstract",true);
+        keywords.put("for",true);
     }
     public boolean isKeyword(String lexeme) {
         return keywords.containsKey(lexeme);

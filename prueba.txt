@@ -1,15 +1,18 @@
-class PruebaSwitch extends Prueba {
+class GestorNumeros {
+    int resultado;
+    int valorA;
+    int valorB;
+    GestorNumeros gestor;
 
-    int a;
-    public PruebaSwitch() {
-
+    void test() {
+        valorA = 5;
+        valorB = 3;
+        resultado = valorA + valorB;
+        gestor = new GestorNumeros();
     }
-    void met1() {
-
-    }
-    abstract int met2();
-
 }
+
+
 
 
 
