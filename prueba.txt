@@ -1,14 +1,14 @@
 class GestorNumeros {
-    int resultado;
-    int valorA;
-    int valorB;
-    GestorNumeros gestor;
+    int resultado = 1;
+    int valorA = a.b;
+    int valorB = a % clase.a(new B() = 2);
+    GestorNumeros gestor = new GestorNumeros();
 
     void test() {
         valorA = 5;
         valorB = 3;
         resultado = valorA + valorB;
-        gestor = new GestorNumeros();
+        var valor = 1;
     }
 }
 

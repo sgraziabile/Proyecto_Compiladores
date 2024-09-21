@@ -138,10 +138,17 @@ public class SyntaxAnalyzer {
             FormalArguments();
             Block();
         }
-        else {
-            String lexeme = currentToken.getLexeme();
-            throw new SyntaxException(List.of(";", "("), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),lexeme);
+        else if(currentToken.getTokenClass().equals("opAsign")) {
+            AtributeInit();
         }
+        else {
+            throw new SyntaxException(List.of(";", "("), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
+        }
+    }
+    private void AtributeInit() throws Exception {
+        match("opAsign");
+        CompoundExpression();
+        match("puntoYComa");
     }
     private void MemberType() throws Exception {
         if(currentToken.getTokenClass().equals("keyword_void")) {
