@@ -531,8 +531,14 @@ public class LexicalAnalyzer {
     private Token eComma() {
         return new Token("coma", lexeme, sourceManager.getLineNumber());
     }
-    private Token ePeriod() {
-        return new Token("punto", lexeme, sourceManager.getLineNumber());
+    private Token ePeriod() throws Exception{
+        if (Character.isDigit(currentChar)) {
+            updateLexeme();
+            updateCurrentChar();
+            return eDecimalPart2();
+        } else {
+            return new Token("punto", lexeme, sourceManager.getLineNumber());
+        }
     }
     private Token eColon() {
         return new Token("dosPuntos", lexeme, sourceManager.getLineNumber());

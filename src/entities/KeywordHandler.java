@@ -10,6 +10,7 @@ public class KeywordHandler {
         keywords.put("class", true);
         keywords.put("extends", true);
         keywords.put("public", true);
+        keywords.put("private", true);
         keywords.put("static", true);
         keywords.put("void", true);
         keywords.put("boolean", true);

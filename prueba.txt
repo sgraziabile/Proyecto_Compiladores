@@ -1,16 +1,12 @@
-class GestorNumeros {
-    int resultado = 1;
-    int valorA = a.b;
-    int valorB = a % clase.a(new B() = 2);
-    GestorNumeros gestor = new GestorNumeros();
-
-    void test() {
-        valorA = 5;
-        valorB = 3;
-        resultado = valorA + valorB;
-        var valor = 1;
-    }
+abstract class Banco {
+      Constructor cons = new Constructor();
+       public Constructor() {
+            return cons.getSaldo(m, a, a1);
+       }
+       private Object a;
 }
+
+
 
 
 

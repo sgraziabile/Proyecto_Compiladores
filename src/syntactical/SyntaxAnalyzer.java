@@ -74,61 +74,141 @@ public class SyntaxAnalyzer {
     private void MemberList() throws Exception {
         //primeros de ListaMiembros = {static,boolean,char,int,void}
         if(currentToken.getTokenClass().equals("keyword_static")) {
+            match("keyword_static");
+            MetAtrInit();
+        }
+        else if(currentToken.getTokenClass().equals("keyword_private")) {
+            match("keyword_private");
             StaticOptional();
-            MemberType();
-            match("idMetVar");
-            MetAtr();
-            MemberList();
+            MetAtrInit();
+        }
+        else if(currentToken.getTokenClass().equals("keyword_public")) {
+            match("keyword_public");
+            MetAtrCons();
         }
         else if(primerosHandler.MemberType.contains(currentToken.getTokenClass())) {
-            MemberType();
-            match("idMetVar");
-            MetAtr();
-            MemberList();
-        }
-        else if(currentToken.getTokenClass().equals("keyword_public")) {    //constructor
-            match("keyword_public");
-            match("idClase");
-            FormalArguments();
-            Block();
-            MemberList();
+            MetAtrInit();
         }
         else {
             //vacio
         }
     }
-    private void AbstractMemberList() throws Exception {
+    private void MetAtrInit() throws Exception {
+        MemberType();
+        match("idMetVar");
+        MetAtr();
+        MemberList();
+    }
+    private void MetAtrCons() throws Exception {
         if(currentToken.getTokenClass().equals("keyword_static")) {
             StaticOptional();
-            MemberType();
-            match("idMetVar");
-            MetAtr();
-            AbstractMemberList();
+            MetAtrInit();
         }
-        else if(primerosHandler.MemberType.contains(currentToken.getTokenClass())) {
-            MemberType();
-            match("idMetVar");
-            MetAtr();
-            AbstractMemberList();
+        else if(primerosHandler.PrimitiveType.contains(currentToken.getTokenClass()) || currentToken.getTokenClass().equals("keyword_void")) {
+            MetAtrInit();
         }
-        else if(currentToken.getTokenClass().equals("keyword_abstract")) {
-            match("keyword_abstract");
-            MemberType();
-            match("idMetVar");
+        else if(currentToken.getTokenClass().equals("idClase")) {
+            match("idClase");
+            MetAtrCons2();
+        }
+    }
+    private void MetAtrCons2() throws Exception {
+        if(currentToken.getTokenClass().equals("parentesisAbre")) {
             FormalArguments();
-            match("puntoYComa");
-            AbstractMemberList();
+            Block();
+            MemberList();
+        }
+        else if(currentToken.getTokenClass().equals("idMetVar")) {
+            match("idMetVar");
+            MetAtr();
+            MemberList();
+        }
+        else {
+            throw new SyntaxException(List.of("(", "idMetVar"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
+        }
+    }
+    private void AbstractMemberList() throws Exception {
+        if(currentToken.getTokenClass().equals("keyword_static")) {
+            match("keyword_static");
+            MetAtrInitAbstract();
+        }
+        else if(currentToken.getTokenClass().equals("keyword_private")) {
+            match("keyword_private");
+            StaticOrAbstract();
         }
         else if(currentToken.getTokenClass().equals("keyword_public")) {
             match("keyword_public");
-            match("idClase");
-            FormalArguments();
-            Block();
-            AbstractMemberList();
+            MetAtrConsAbstract();
+        }
+        else if(primerosHandler.MemberType.contains(currentToken.getTokenClass())) {
+            MetAtrInitAbstract();
+        }
+        else if(currentToken.getTokenClass().equals("keyword_abstract")) {
+            AbstractMethod();
         }
         else {
             //vacio
         }
+    }
+    private void StaticOrAbstract() throws Exception {
+        if(currentToken.getTokenClass().equals("keyword_static")) {
+            StaticOptional();
+            MetAtrInitAbstract();
+        }
+        else if(currentToken.getTokenClass().equals("keyword_abstract")) {
+            AbstractMethod();
+        }
+        else if(primerosHandler.Type.contains(currentToken.getTokenClass())) {
+            MetAtrInitAbstract();
+        }
+        else {
+            throw new SyntaxException(List.of("static", "abstract", "tipo primitivo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
+        }
+    }
+    private void MetAtrInitAbstract() throws Exception {
+        MemberType();
+        match("idMetVar");
+        MetAtr();
+        AbstractMemberList();
+    }
+    private void MetAtrConsAbstract() throws Exception {
+        if(currentToken.getTokenClass().equals("keyword_static")) {
+            StaticOptional();
+            MetAtrInitAbstract();
+        }
+        else if(currentToken.getTokenClass().equals("keyword_abstract")) {
+            AbstractMethod();
+        }
+        else if(primerosHandler.PrimitiveType.contains(currentToken.getTokenClass()) || currentToken.getTokenClass().equals("keyword_void")) {
+            MetAtrInitAbstract();
+        }
+        else if(currentToken.getTokenClass().equals("idClase")) {
+            match("idClase");
+            MetAtrConsAbstract2();
+        }
+    }
+    private void MetAtrConsAbstract2() throws Exception {
+        if(currentToken.getTokenClass().equals("parentesisAbre")) {
+            FormalArguments();
+            Block();
+            AbstractMemberList();
+        }
+        else if(currentToken.getTokenClass().equals("idMetVar")) {
+            match("idMetVar");
+            MetAtr();
+            AbstractMemberList();
+        }
+        else {
+            throw new SyntaxException(List.of("(", "idMetVar"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
+        }
+    }
+    private void AbstractMethod() throws Exception {
+        match("keyword_abstract");
+        MemberType();
+        match("idMetVar");
+        FormalArguments();
+        match("puntoYComa");
+        AbstractMemberList();
     }
     private void MetAtr() throws Exception {
         if(currentToken.getTokenClass().equals("puntoYComa")) {
@@ -139,13 +219,13 @@ public class SyntaxAnalyzer {
             Block();
         }
         else if(currentToken.getTokenClass().equals("opAsign")) {
-            AtributeInit();
+            AttributeInit();
         }
         else {
             throw new SyntaxException(List.of(";", "("), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
-    private void AtributeInit() throws Exception {
+    private void AttributeInit() throws Exception {
         match("opAsign");
         CompoundExpression();
         match("puntoYComa");
