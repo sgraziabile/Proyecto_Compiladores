@@ -158,11 +158,11 @@ public class SyntaxAnalyzer {
         else if(currentToken.getTokenClass().equals("keyword_abstract")) {
             AbstractMethod();
         }
-        else if(primerosHandler.Type.contains(currentToken.getTokenClass())) {
+        else if(primerosHandler.MemberType.contains(currentToken.getTokenClass())) {
             MetAtrInitAbstract();
         }
         else {
-            throw new SyntaxException(List.of("static", "abstract", "tipo primitivo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
+            throw new SyntaxException(List.of("static", "abstract", "tipo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
     private void MetAtrInitAbstract() throws Exception {

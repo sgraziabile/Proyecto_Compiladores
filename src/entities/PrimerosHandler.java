@@ -42,7 +42,6 @@ public class PrimerosHandler {
     public static final Set<String> Primary = Set.of("idMetVar","keyword_this","keyword_new","idClase","parentesisAbre");
 
 
-
     public PrimerosHandler() {
 
     }

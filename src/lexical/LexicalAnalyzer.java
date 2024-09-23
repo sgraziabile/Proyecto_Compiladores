@@ -156,7 +156,7 @@ public class LexicalAnalyzer {
             return eColon();
         }
         else if(currentChar == END_OF_FILE) {
-            lexeme = "EOF";
+            lexeme = "";
             return eFin();
         }
         else if(Character.isWhitespace(currentChar) || currentChar == '\n' || currentChar == '\t') {
@@ -573,6 +573,6 @@ public class LexicalAnalyzer {
         }
     }
     private Token eFin() {
-        return new Token("$",lexeme, sourceManager.getLineNumber());
+        return new Token("$","", sourceManager.getLineNumber());
     }
 }

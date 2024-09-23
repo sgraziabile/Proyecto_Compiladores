@@ -1,20 +1,19 @@
-abstract class Banco {
-      Constructor cons = new Constructor();
-       public Constructor() {
-            return cons.getSaldo(m, a, a1);
-       }
-       private Object a;
+///[Error:else|16]
+//If-else anidados. Falta cerrar el último if.
+class TestClass {
+
+void testSwitch() {
+   for(int i = 0; null; true) {
+        switch(i) {
+            default:
+               {
+                    if(i == 0) {
+
+                    } else {
+
+                    }
+               }
+        }
+   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
