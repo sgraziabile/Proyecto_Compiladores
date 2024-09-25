@@ -1,0 +1,30 @@
+///[SinErrores]
+//Case con sentencia vacia
+class TestClass {
+
+void testSwitch() {
+    var opcion = 2;
+    var resultado = 0;
+    var multiplicador = 2;
+    var x = 5;
+
+    switch (opcion) {
+    case 1:
+
+    case 2:
+        resultado += (x * 3) / (multiplicador + 1);
+    case true:
+        if (x > 2) {
+            resultado += y % 2;
+        }
+    case 'c':
+        resultado = x * multiplicador;
+    default:
+        if (x != 0) {
+            x = x / multiplicador;
+        } else {
+            x += multiplicador;
+        }
+    }
+}
+}

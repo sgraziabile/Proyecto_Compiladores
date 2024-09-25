@@ -1,0 +1,56 @@
+///[SinErrores]
+//Test de clase abstracta con metodos abstractos y no abstractos
+abstract class Animal {
+    private String nombre;
+    private int edad;
+
+    // Constructor
+    public Animal(String nombre, int edad) {
+        this.nombre = nombre;
+        this.edad = edad;
+    }
+
+    // Método abstracto
+    public abstract void hacerSonido();
+
+    // Método abstracto
+    abstract void moverse();
+
+    // Método no abstracto
+    public void describir() {
+        // Descripción del animal
+        var descripcion = "Nombre: " + nombre + ", Edad: " + edad;
+    }
+
+    // Método privado no abstracto
+    private void envejecer(int anios) {
+        edad += anios;
+    }
+}
+
+class Perro extends Animal {
+    public Perro(String nombre, int edad) {
+        super(nombre, edad);
+    }
+
+    // Implementación del método abstracto
+    void hacerSonido() {
+        // El perro ladra
+        var sonido = "Guau!";
+    }
+
+    // Implementación del método abstracto
+    void moverse() {
+        // El perro corre
+        var accion = "Corriendo";
+    }
+}
+
+class ProgramaPrincipal {
+    public static void main(String args) {
+        var perro = new Perro("Max", 4);
+        perro.hacerSonido();
+        perro.moverse();
+        perro.describir();
+    }
+}

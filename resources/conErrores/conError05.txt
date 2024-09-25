@@ -1,0 +1,11 @@
+///[Error:int|3]
+//Se declara un atributo fuera de una clase.
+int numero = 5;
+class ProgramaPrincipal {
+    public static void main(String args) {
+        var perro = new Perro("Max", 4);
+        perro.hacerSonido();
+        perro.moverse();
+        perro.describir();
+    }
+}

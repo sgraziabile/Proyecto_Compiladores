@@ -1,0 +1,10 @@
+///[Error:>|6]
+//La primer sentencia del for no es una asignacion
+class TestClass {
+
+void testSwitch() {
+   for(int i > 0; i < 100; i+=1) {
+
+   }
+}
+}

@@ -1,0 +1,5 @@
+///[SinErrores]
+class Class2 extends Class2 {
+
+
+}

@@ -1,0 +1,17 @@
+///[SinErrores]
+//Test de metodos encadenados
+class TestClass {
+
+    static void met1() {
+
+    }
+    int met2() {
+
+    }
+    void met3() {
+        A.met3();
+        var x = this.met2();
+        y = x.met2().met3();
+        z = x.a.getA().getB(true,1,'a');
+    }
+}

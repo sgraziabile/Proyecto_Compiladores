@@ -1,0 +1,11 @@
+///[Error:{|8]
+//Metodo abstracto con cuerpo
+abstract class TestClass {
+    public TestClass(int a,int b) {
+        this.a = a;
+        this.b = b;
+    }
+    public abstract void testMethod() {
+         var a = 1;
+    }
+}

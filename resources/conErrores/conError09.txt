@@ -1,0 +1,9 @@
+///[Error:abstract|8]
+//Metodo abstracto y estático
+abstract class TestClass {
+    public TestClass(int a,int b) {
+        this.a = a;
+        this.b = b;
+    }
+    public static abstract void testMethod();
+}

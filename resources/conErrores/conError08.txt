@@ -1,0 +1,9 @@
+///[Error:abstract|8]
+//Clase no abstracta con metodo abstracto
+class TestClass {
+    public TestClass(int a,int b) {
+        this.a = a;
+        this.b = b;
+    }
+    public abstract void testMethod();
+}

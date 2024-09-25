@@ -1,0 +1,9 @@
+///[Error:;|8]
+//Metodo sin cuerpo
+abstract class TestClass {
+    public TestClass(int a,int b) {
+        this.a = a;
+        this.b = b;
+    }
+    public void testMethod();
+}

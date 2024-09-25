@@ -1,0 +1,16 @@
+///[Error:var|4]
+//Variable local como argumento
+class TestClass {
+    public TestClass(int a,var b) {
+        this.a = a;
+        this.b = b;
+    }
+    public Method1() {
+        if(a>b) {
+            return a;
+        } else {
+            return b;
+        }
+        return a+b;
+    }
+}

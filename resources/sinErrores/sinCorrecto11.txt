@@ -1,0 +1,27 @@
+///[SinErrores]
+//Test de operadores binarios
+class TestClass {
+    int resultado = 0;
+    public void testMethod() {
+    var a = 10;
+    var b = 5;
+
+    resultado = a + b;   // Suma
+    resultado = a - b;   // Resta
+    resultado = a * b;   // Multiplicación
+    resultado = a / b;   // División
+    resultado = a % b;   // Módulo
+
+    resultado = a > b;   // Mayor que
+    resultado = a < b;   // Menor que
+    resultado = a >= b;  // Mayor o igual que
+    resultado = a <= b;  // Menor o igual que
+
+    resultado = a == b;  // Igualdad
+    resultado = a != b;  // Desigualdad
+
+    resultado = (a > b) && (b > 0);  // AND lógico
+    resultado = (a > b) || (b == 0); // OR lógico
+    resultado = !(a > b);            // NOT lógico
+    }
+}
