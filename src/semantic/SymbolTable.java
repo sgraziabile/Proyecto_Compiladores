@@ -16,4 +16,19 @@ public class SymbolTable {
         this.currentMethod = null;
         this.classes = new Hashtable<>();
     }
+
+    public void setCurrentClass(Class c) {
+        currentClass = c;
+    }
+    public void setCurrentMethod(Method method) {
+        currentMethod = method;
+    }
+    public void insertClass(Class c) {
+        classes.put(c.getName(), c);
+    }
+    public void printClasses() {
+        for (Class c : classes.values()) {
+            System.out.println(c.getName() + " extends " + c.getSuperclass().getLexeme());
+        }
+    }
 }

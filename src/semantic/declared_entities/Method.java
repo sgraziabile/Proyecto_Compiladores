@@ -15,5 +15,20 @@ public class Method {
         this.modifier = modifier;
         this.parameters = new Hashtable<>();
     }
+    public void addParameter(String name, Type type) {
+        parameters.put(name, type);
+    }
+    public String getName() {
+        return name;
+    }
+    public Type getReturnType() {
+        return returnType;
+    }
+    public String getModifier() {
+        return modifier;
+    }
+    public boolean isConsolidated() {
+        return isConsolidated;
+    }
 
 }

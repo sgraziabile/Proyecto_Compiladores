@@ -10,4 +10,13 @@ public class Attribute {
         this.type = type;
         this.modifier = modifier;
     }
+    public String getName() {
+        return name;
+    }
+    public Type getType() {
+        return type;
+    }
+    public String getModifier() {
+        return modifier;
+    }
 }

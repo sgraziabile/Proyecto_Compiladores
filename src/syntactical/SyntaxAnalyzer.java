@@ -5,6 +5,7 @@ import entities.Token;
 import exceptions.SyntaxException;
 import lexical.LexicalAnalyzer;
 import semantic.SymbolTable;
+import semantic.declared_entities.Class;
 
 import java.util.List;
 
@@ -50,28 +51,41 @@ public class SyntaxAnalyzer {
     }
     private void Class() throws Exception {
         match("keyword_class");
+        Token className = currentToken;
         match("idClase");
-        OptionalInheritance();
+        Class c = new Class(className);
+        symbolTable.setCurrentClass(c);
+        Token superclass = OptionalInheritance();
+        c.setSuperclass(superclass);
         match("llaveAbre");
         MemberList();
         match("llaveCierra");
+        symbolTable.insertClass(c);
     }
     private void AbstractClass() throws Exception {
         match("keyword_abstract");
         match("keyword_class");
+        Token className = currentToken;
         match("idClase");
-        OptionalInheritance();
+        Class c = new Class(className);
+        symbolTable.setCurrentClass(c);
+        Token superclass = OptionalInheritance();
+        c.setSuperclass(superclass);
         match("llaveAbre");
         AbstractMemberList();
         match("llaveCierra");
+        symbolTable.insertClass(c);
     }
-    private void OptionalInheritance() throws Exception {
+    private Token OptionalInheritance() throws Exception {
         if(currentToken.getTokenClass().equals("keyword_extends")) {
+            Token superclass = null;
             match("keyword_extends");
+            superclass = currentToken;
             match("idClase");
+            return superclass;
         }
         else {
-            //vacio
+            return new Token("idClase", "Object", currentToken.getLineNumber());
         }
     }
     private void MemberList() throws Exception {

@@ -1,9 +1,20 @@
 ///[Error:else|16]
 //If-else anidados. Falta cerrar el último if.
-class TestClass {
+class A{
 
-int edad; String nombre;
-void testSwitch() {
-   System.println("hola");
 }
+class B {
+
+}
+
+class C extends A {
+    public void m1() {
+
+    }
+}
+
+abstract class D extends B {
+    public void m2() {
+
+    }
 }
