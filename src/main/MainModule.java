@@ -4,6 +4,7 @@ import entities.KeywordHandler;
 import entities.PrimerosHandler;
 import entities.Token;
 import lexical.LexicalAnalyzer;
+import semantic.SymbolTable;
 import sourcemanager.SourceManagerImpl;
 import syntactical.SyntaxAnalyzer;
 
@@ -19,11 +20,12 @@ public class MainModule {
             SourceManagerImpl sourceManager = new SourceManagerImpl();
             KeywordHandler keywordHandler = new KeywordHandler();
             PrimerosHandler primerosHandler = new PrimerosHandler();
+            SymbolTable symbolTable = new SymbolTable();
             boolean success = true;
             try {
                 sourceManager.open(filePath);
                 LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(sourceManager, keywordHandler);
-                SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(lexicalAnalyzer, primerosHandler);
+                SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(lexicalAnalyzer, primerosHandler,symbolTable);
             } catch (FileNotFoundException e) {
                 System.out.println("File not found");
             } catch(Exception e) {

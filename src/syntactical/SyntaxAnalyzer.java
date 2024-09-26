@@ -4,17 +4,20 @@ import entities.PrimerosHandler;
 import entities.Token;
 import exceptions.SyntaxException;
 import lexical.LexicalAnalyzer;
+import semantic.SymbolTable;
 
 import java.util.List;
 
 public class SyntaxAnalyzer {
-    LexicalAnalyzer lexicalAnalyzer;
-    Token currentToken;
-    PrimerosHandler primerosHandler;
+    private LexicalAnalyzer lexicalAnalyzer;
+    private Token currentToken;
+    private PrimerosHandler primerosHandler;
+    public SymbolTable symbolTable;
 
-    public SyntaxAnalyzer(LexicalAnalyzer lexicalAnalyzer, PrimerosHandler primerosHandler) throws Exception {
+    public SyntaxAnalyzer(LexicalAnalyzer lexicalAnalyzer, PrimerosHandler primerosHandler,SymbolTable symbolTable) throws Exception {
         this.primerosHandler = primerosHandler;
         this.lexicalAnalyzer = lexicalAnalyzer;
+        this.symbolTable = symbolTable;
         currentToken = lexicalAnalyzer.nextToken();
         Init();
     }
