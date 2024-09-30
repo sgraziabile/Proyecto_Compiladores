@@ -8,8 +8,12 @@ public class Method extends ClassMember {
     private ArrayList<Parameter> parameterList;
     private boolean isConsolidated = false;
 
-    public Method(String name, Type returnType, String modifier) {
-        super(name, returnType, modifier);
+    public Method(String name, Type returnType, String modifier,String visibility) {
+        super(name, returnType, modifier,visibility);
+        this.parameterHash = new Hashtable<>();
+        this.parameterList = new ArrayList<>();
+    }
+    public Method() {
         this.parameterHash = new Hashtable<>();
         this.parameterList = new ArrayList<>();
     }
@@ -28,6 +32,9 @@ public class Method extends ClassMember {
     }
     public Hashtable<String, Parameter> getParameterHash() {
         return parameterHash;
+    }
+    public void print() {
+        System.out.println("Method: " + id + " " + type.getName() + " " + modifier + " " + visibility);
     }
 
 }

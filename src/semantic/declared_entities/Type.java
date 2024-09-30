@@ -6,4 +6,7 @@ public abstract class Type {
     public Type(String name) {
         this.name = name;
     }
+    public String getName() {
+        return name;
+    }
 }

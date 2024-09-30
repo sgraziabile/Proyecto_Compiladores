@@ -1,20 +1,30 @@
 ///[Error:else|16]
 //If-else anidados. Falta cerrar el último if.
 class A{
+    private static int atr1;
+    public int atr2;
+    public String atr3;
+    Object atr4;
+    private static int atr5;
 
-}
-class B {
-
-}
-
-class C extends A {
-    public void m1() {
-
-    }
-}
-
-abstract class D extends B {
-    public void m2() {
+    public A() {
 
     }
+    public int met1() {
+
+    }
+    public void met2() {
+
+    }
+    private String met3() {
+
+    }
+    static int met4() {
+
+    }
+    String met5() {
+
+    }
+
 }
+

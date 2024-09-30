@@ -5,6 +5,7 @@ import entities.Token;
 import exceptions.SyntaxException;
 import lexical.LexicalAnalyzer;
 import semantic.SymbolTable;
+import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
 
 import java.util.List;
@@ -14,6 +15,11 @@ public class SyntaxAnalyzer {
     private Token currentToken;
     private PrimerosHandler primerosHandler;
     public SymbolTable symbolTable;
+    private static final String public_visibility = "public";
+    private static final String private_visibility = "private";
+    private static final String static_modifier = "static";
+    private static final String dynamic_modifier = "dynamic";
+
 
     public SyntaxAnalyzer(LexicalAnalyzer lexicalAnalyzer, PrimerosHandler primerosHandler,SymbolTable symbolTable) throws Exception {
         this.primerosHandler = primerosHandler;
@@ -21,6 +27,12 @@ public class SyntaxAnalyzer {
         this.symbolTable = symbolTable;
         currentToken = lexicalAnalyzer.nextToken();
         Init();
+        for(Attribute a: symbolTable.getCurrentClass().getAttributes().values()) {
+            a.print();
+        }
+        for(Method m: symbolTable.getCurrentClass().getMethods().values()) {
+            m.print();
+        }
     }
 
     private void match(String tokenName) throws Exception {
@@ -89,74 +101,116 @@ public class SyntaxAnalyzer {
         }
     }
     private void MemberList() throws Exception {
+        ClassMember classMember = null;
         if(currentToken.getTokenClass().equals("keyword_static")) {
             match("keyword_static");
-            MetAtrInit();
+            classMember = MetAtrInit();
+            classMember.setModifier(static_modifier);
+            classMember.setVisibility(public_visibility);
         }
         else if(currentToken.getTokenClass().equals("keyword_private")) {
             match("keyword_private");
-            StaticOptional();
-            MetAtrInit();
+            String modifier = StaticOptional();
+            classMember = MetAtrInit();
+            classMember.setModifier(modifier);
+            classMember.setVisibility(private_visibility);
         }
         else if(currentToken.getTokenClass().equals("keyword_public")) {
             match("keyword_public");
-            MetAtrCons();
+            classMember = MetAtrCons();
+            classMember.setVisibility(public_visibility);
         }
         else if(primerosHandler.MemberType.contains(currentToken.getTokenClass())) {
-            MetAtrInit();
+            classMember = MetAtrInit();
+            classMember.setModifier(dynamic_modifier);
+            classMember.setVisibility(public_visibility);
         }
         else {
             //vacio
         }
     }
-    private void MetAtrInit() throws Exception {
-        MemberType();
+    private ClassMember MetAtrInit() throws Exception {
+        Type type = MemberType();
+        String id = currentToken.getLexeme();
         match("idMetVar");
-        MetAtr();
+        ClassMember classMember = MetAtr(id);
+        classMember.setName(id);
+        classMember.setType(type);
         MemberList();
+        return classMember;
     }
-    private void MetAtrCons() throws Exception {
+    private ClassMember MetAtrCons() throws Exception {
+        ClassMember classMember = null;
         if(currentToken.getTokenClass().equals("keyword_static")) {
-            StaticOptional();
-            MetAtrInit();
+            String modifier = StaticOptional();
+            classMember = MetAtrInit();
+            classMember.setModifier(modifier);
         }
         else if(primerosHandler.PrimitiveType.contains(currentToken.getTokenClass()) || currentToken.getTokenClass().equals("keyword_void")) {
-            MetAtrInit();
+            classMember = MetAtrInit();
+            classMember.setModifier(dynamic_modifier);
         }
         else if(currentToken.getTokenClass().equals("idClase")) {
+            Type type = new ReferenceType(currentToken.getLexeme());
             match("idClase");
-            MetAtrCons2();
+            classMember = MetAtrCons2();
+            classMember.setType(type);
+            classMember.setModifier(dynamic_modifier);
         }
+        else {
+            throw new SyntaxException(List.of("keyword_static", "tipo primitivo", "idClase"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
+        }
+        return classMember;
     }
-    private void MetAtrCons2() throws Exception {
+    private ClassMember MetAtrCons2() throws Exception {
+        ClassMember classMember;
         if(currentToken.getTokenClass().equals("parentesisAbre")) {
+            classMember = new Method();
+            classMember.setName("Constructor");
+            symbolTable.setCurrentMethod((Method) classMember);
+            symbolTable.getCurrentClass().addMethod((Method) classMember);
             FormalArguments();
             Block();
             MemberList();
         }
         else if(currentToken.getTokenClass().equals("idMetVar")) {
+            String id = currentToken.getLexeme();
             match("idMetVar");
-            MetAtr();
+            classMember = MetAtr(id);
+            classMember.setName(id);
             MemberList();
         }
         else {
             throw new SyntaxException(List.of("(", "idMetVar"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
+        return classMember;
     }
-    private void MetAtr() throws Exception {
+    private ClassMember MetAtr(String id) throws Exception {
+        ClassMember member = null;
         if(currentToken.getTokenClass().equals("puntoYComa")) {
+            member = new Attribute();
+            member.setName(id);
+            symbolTable.getCurrentClass().addAttribute((Attribute) member);
             match("puntoYComa");
         }
         else if(currentToken.getTokenClass().equals("parentesisAbre")) {
+            member = new Method();
+            member.setName(id);
+            symbolTable.setCurrentMethod((Method) member);
+            symbolTable.getCurrentClass().addMethod((Method) member);
             FormalArguments();
             Block();
         }
         else if(currentToken.getTokenClass().equals("opAsign")) {
+            member = new Attribute();
+            member.setName(id);
+            symbolTable.getCurrentClass().addAttribute((Attribute) member);
             AttributeInit();
         }
         else {
             throw new SyntaxException(List.of(";", "("), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
+        return member;
     }
     private void AbstractMemberList() throws Exception {
         if(currentToken.getTokenClass().equals("keyword_static")) {
@@ -198,8 +252,9 @@ public class SyntaxAnalyzer {
     }
     private void MetAtrInitAbstract() throws Exception {
         MemberType();
+        String id = currentToken.getLexeme();
         match("idMetVar");
-        MetAtr();
+        MetAtr(id);
         AbstractMemberList();
     }
     private void MetAtrConsAbstract() throws Exception {
@@ -225,8 +280,9 @@ public class SyntaxAnalyzer {
             AbstractMemberList();
         }
         else if(currentToken.getTokenClass().equals("idMetVar")) {
+            String id = currentToken.getLexeme();
             match("idMetVar");
-            MetAtr();
+            MetAtr(id);
             AbstractMemberList();
         }
         else {
@@ -247,54 +303,69 @@ public class SyntaxAnalyzer {
         CompoundExpression();
         match("puntoYComa");
     }
-    private void MemberType() throws Exception {
+    private Type MemberType() throws Exception {
+        Type type = null;
         if(currentToken.getTokenClass().equals("keyword_void")) {
+            type = new PrimitiveType("void");       //tipo void?
             match("keyword_void");
         }
         else if(primerosHandler.Type.contains(currentToken.getTokenClass())) {
-            Type();
+            type = Type();
         }
         else {
-            //vacio
+            throw new SyntaxException(List.of("tipo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
+        return type;
     }
-    private void Type() throws Exception {
+    private Type Type() throws Exception {
+        Type type = null;
         if(primerosHandler.PrimitiveType.contains(currentToken.getTokenClass())) {
-            PrimitiveType();
+            type = PrimitiveType();
         }
         else if(currentToken.getTokenClass().equals("idClase")) {
+            type = new ReferenceType(currentToken.getLexeme());
             match("idClase");
         }
         else {
             String lexeme = currentToken.getLexeme();
             throw new SyntaxException(List.of("tipo primitivo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),lexeme);
         }
+        return type;
     }
-    private void PrimitiveType() throws Exception {
+    private Type PrimitiveType() throws Exception {
+        Type type = null;
         if(currentToken.getTokenClass().equals("keyword_boolean")) {
+            type = new PrimitiveType("boolean");
             match("keyword_boolean");
         }
         else if(currentToken.getTokenClass().equals("keyword_char")) {
+            type = new PrimitiveType("char");
             match("keyword_char");
         }
         else if(currentToken.getTokenClass().equals("keyword_int")) {
+            type = new PrimitiveType("int");
             match("keyword_int");
         }
         else if(currentToken.getTokenClass().equals("keyword_float")) {
+            type = new PrimitiveType("float");
             match("keyword_float");
         }
         else {
             String lexeme = currentToken.getLexeme();
             throw new SyntaxException(List.of("tipo primitivo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),lexeme);
         }
+        return type;
     }
-    private void StaticOptional() throws Exception {
+    private String StaticOptional() throws Exception {
+        String modifier = null;
         if(currentToken.getTokenClass().equals("keyword_static")) {
+            modifier = static_modifier;
             match("keyword_static");
         }
         else {
-            //vacio
+            modifier = dynamic_modifier;
         }
+        return modifier;
     }
     private void FormalArguments() throws Exception {
         match("parentesisAbre");

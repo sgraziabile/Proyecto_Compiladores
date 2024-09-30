@@ -36,4 +36,16 @@ public class Class {
     public boolean isConsolidated() {
         return isConsolidated;
     }
+    public Attribute getAttribute(String id) {
+        return attributes.get(id);
+    }
+    public Hashtable<String,Attribute> getAttributes() {
+        return attributes;
+    }
+    public Method getMethod(String id) {
+        return methods.get(id);
+    }
+    public Hashtable<String,Method> getMethods() {
+        return methods;
+    }
 }

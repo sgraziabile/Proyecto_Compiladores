@@ -16,7 +16,6 @@ public class SymbolTable {
         this.currentMethod = null;
         this.classHash = new Hashtable<>();
     }
-
     public void setCurrentClass(Class c) {
         currentClass = c;
     }
@@ -30,5 +29,11 @@ public class SymbolTable {
         for (Class c : classHash.values()) {
             System.out.println(c.getName() + " extends " + c.getSuperclass().getLexeme());
         }
+    }
+    public Class getCurrentClass() {
+        return currentClass;
+    }
+    public Method getCurrentMethod() {
+        return currentMethod;
     }
 }
