@@ -1,6 +1,6 @@
 package semantic.declared_entities;
 
-public class Type {
+public abstract class Type {
     private String name;
 
     public Type(String name) {

@@ -9,12 +9,12 @@ public class SymbolTable {
     boolean isConsolidated = false;
     private Class currentClass;
     private Method currentMethod;
-    private Hashtable<String,Class> classes;
+    private Hashtable<String,Class> classHash;
 
     public SymbolTable() {
         this.currentClass = null;
         this.currentMethod = null;
-        this.classes = new Hashtable<>();
+        this.classHash = new Hashtable<>();
     }
 
     public void setCurrentClass(Class c) {
@@ -24,10 +24,10 @@ public class SymbolTable {
         currentMethod = method;
     }
     public void insertClass(Class c) {
-        classes.put(c.getName(), c);
+        classHash.put(c.getName(), c);
     }
     public void printClasses() {
-        for (Class c : classes.values()) {
+        for (Class c : classHash.values()) {
             System.out.println(c.getName() + " extends " + c.getSuperclass().getLexeme());
         }
     }

@@ -1,22 +1,11 @@
 package semantic.declared_entities;
 
-public class Attribute {
-    private String name;
-    private Type type;
-    private String modifier;
+public class Attribute extends ClassMember {
 
     public Attribute(String name, Type type, String modifier) {
-        this.name = name;
-        this.type = type;
-        this.modifier = modifier;
+        super(name,type,modifier);
     }
-    public String getName() {
-        return name;
-    }
-    public Type getType() {
-        return type;
-    }
-    public String getModifier() {
-        return modifier;
+    public Attribute() {
+
     }
 }

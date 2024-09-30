@@ -22,10 +22,10 @@ public class Class {
         this.superclass = superclass;
     }
     public void addAttribute(Attribute attribute) {
-        attributes.put(attribute.getName(), attribute);
+        attributes.put(attribute.getId(), attribute);
     }
     public void addMethod(Method method) {
-        methods.put(method.getName(), method);
+        methods.put(method.getId(), method);
     }
     public String getName() {
         return name;

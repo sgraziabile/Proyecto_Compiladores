@@ -89,7 +89,6 @@ public class SyntaxAnalyzer {
         }
     }
     private void MemberList() throws Exception {
-        //primeros de ListaMiembros = {static,boolean,char,int,void}
         if(currentToken.getTokenClass().equals("keyword_static")) {
             match("keyword_static");
             MetAtrInit();
@@ -142,6 +141,21 @@ public class SyntaxAnalyzer {
         }
         else {
             throw new SyntaxException(List.of("(", "idMetVar"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
+        }
+    }
+    private void MetAtr() throws Exception {
+        if(currentToken.getTokenClass().equals("puntoYComa")) {
+            match("puntoYComa");
+        }
+        else if(currentToken.getTokenClass().equals("parentesisAbre")) {
+            FormalArguments();
+            Block();
+        }
+        else if(currentToken.getTokenClass().equals("opAsign")) {
+            AttributeInit();
+        }
+        else {
+            throw new SyntaxException(List.of(";", "("), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
     private void AbstractMemberList() throws Exception {
@@ -227,21 +241,7 @@ public class SyntaxAnalyzer {
         match("puntoYComa");
         AbstractMemberList();
     }
-    private void MetAtr() throws Exception {
-        if(currentToken.getTokenClass().equals("puntoYComa")) {
-            match("puntoYComa");
-        }
-        else if(currentToken.getTokenClass().equals("parentesisAbre")) {
-            FormalArguments();
-            Block();
-        }
-        else if(currentToken.getTokenClass().equals("opAsign")) {
-            AttributeInit();
-        }
-        else {
-            throw new SyntaxException(List.of(";", "("), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
-        }
-    }
+
     private void AttributeInit() throws Exception {
         match("opAsign");
         CompoundExpression();
