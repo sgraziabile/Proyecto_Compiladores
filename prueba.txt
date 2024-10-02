@@ -2,6 +2,7 @@ class A{
     private static int atr1;
     public int atr2;
     public String atr3;
+    private static String atr6;
     Object atr4;
     private static int atr5;
 
@@ -11,10 +12,15 @@ class A{
     public int met1(int a, String b) {
         
     }
+    private void met2(int a) {
+        return a + 1;
+        return a;
+    }
 }
 class B extends A {
     public int met1(int a) {
 
     }
 }
+
 

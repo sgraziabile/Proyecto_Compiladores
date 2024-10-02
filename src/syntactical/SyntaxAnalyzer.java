@@ -2,14 +2,13 @@ package syntactical;
 
 import entities.PrimerosHandler;
 import entities.Token;
-import exceptions.ClassAlreadyDeclaredException;
+import exceptions.AlreadyDeclaredException;
 import exceptions.SyntaxException;
 import lexical.LexicalAnalyzer;
 import semantic.SymbolTable;
 import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SyntaxAnalyzer {
@@ -30,7 +29,9 @@ public class SyntaxAnalyzer {
         currentToken = lexicalAnalyzer.nextToken();
         Init();
         for(Class c: symbolTable.getClasses().values()) {
-            System.out.println(c.getName() + " extends " + c.getSuperclass().getLexeme());
+            if(c.getSuperclass() != null) {
+                System.out.println(c.getName() + " extends " + c.getSuperclass().getLexeme());
+            }
             for(Attribute a: c.getAttributes().values()) {
                 a.print();
             }
@@ -86,9 +87,8 @@ public class SyntaxAnalyzer {
             symbolTable.insertClass(c);
         }
         else {
-            throw new ClassAlreadyDeclaredException(c.getId().getLineNumber(),c.getName());
+            throw new AlreadyDeclaredException("class",c.getId().getLineNumber(),c.getName());
         }
-
     }
     private void AbstractClass() throws Exception {
         match("keyword_abstract");
@@ -145,10 +145,10 @@ public class SyntaxAnalyzer {
     }
     private ClassMember MetAtrInit() throws Exception {
         Type type = MemberType();
-        String id = currentToken.getLexeme();
+        Token id = currentToken;
         match("idMetVar");
         ClassMember classMember = MetAtr(id);
-        classMember.setName(id);
+        classMember.setId(id);
         classMember.setType(type);
         MemberList();
         return classMember;
@@ -166,8 +166,9 @@ public class SyntaxAnalyzer {
         }
         else if(currentToken.getTokenClass().equals("idClase")) {
             Type type = new ReferenceType(currentToken.getLexeme());
+            Token id = currentToken;
             match("idClase");
-            classMember = MetAtrCons2();
+            classMember = MetAtrCons2(id);
             classMember.setType(type);
             classMember.setModifier(dynamic_modifier);
         }
@@ -176,22 +177,26 @@ public class SyntaxAnalyzer {
         }
         return classMember;
     }
-    private ClassMember MetAtrCons2() throws Exception {
+    private ClassMember MetAtrCons2(Token id) throws Exception {
         ClassMember classMember;
         if(currentToken.getTokenClass().equals("parentesisAbre")) {
             classMember = new Method();
-            classMember.setName("Constructor");
+            classMember.setId(id);
             symbolTable.setCurrentMethod((Method) classMember);
             FormalArguments();
             Block();
-            symbolTable.getCurrentClass().addMethod((Method) classMember);
+            if(symbolTable.getCurrentClass().getMethod(id.getLexeme()) == null) {
+                symbolTable.getCurrentClass().addMethod((Method) classMember);
+            }
+            else {
+                throw new AlreadyDeclaredException("constructor",id.getLineNumber(),id.getLexeme());
+            }
             MemberList();
         }
         else if(currentToken.getTokenClass().equals("idMetVar")) {
-            String id = currentToken.getLexeme();
+            Token idMethod = currentToken;
             match("idMetVar");
-            classMember = MetAtr(id);
-            classMember.setName(id);
+            classMember = MetAtr(idMethod);
             MemberList();
         }
         else {
@@ -199,26 +204,41 @@ public class SyntaxAnalyzer {
         }
         return classMember;
     }
-    private ClassMember MetAtr(String id) throws Exception {
-        ClassMember member = null;
+    private ClassMember MetAtr(Token id) throws Exception {
+        ClassMember member;
         if(currentToken.getTokenClass().equals("puntoYComa")) {
             member = new Attribute();
-            member.setName(id);
-            symbolTable.getCurrentClass().addAttribute((Attribute) member);
+            member.setId(id);
+            if(symbolTable.getCurrentClass().getAttribute(id.getLexeme()) == null) {
+                symbolTable.getCurrentClass().addAttribute((Attribute) member);
+            }
+            else {
+                throw new AlreadyDeclaredException("attribute",id.getLineNumber(),id.getLexeme());
+            }
             match("puntoYComa");
         }
         else if(currentToken.getTokenClass().equals("parentesisAbre")) {
             member = new Method();
-            member.setName(id);
+            member.setId(id);
             symbolTable.setCurrentMethod((Method) member);
             FormalArguments();
             Block();
-            symbolTable.getCurrentClass().addMethod((Method) member);
+            if(symbolTable.getCurrentClass().getMethod(id.getLexeme()) == null) {
+                symbolTable.getCurrentClass().addMethod((Method) member);
+            }
+            else {
+                throw new AlreadyDeclaredException("method",id.getLineNumber(),id.getLexeme());
+            }
         }
         else if(currentToken.getTokenClass().equals("opAsign")) {
             member = new Attribute();
-            member.setName(id);
-            symbolTable.getCurrentClass().addAttribute((Attribute) member);
+            member.setId(id);
+            if (symbolTable.getCurrentClass().getAttribute(id.getLexeme()) == null) {
+                symbolTable.getCurrentClass().addAttribute((Attribute) member);
+            }
+            else {
+                throw new AlreadyDeclaredException("attribute",id.getLineNumber(),id.getLexeme());
+            }
             AttributeInit();
         }
         else {
@@ -266,7 +286,7 @@ public class SyntaxAnalyzer {
     }
     private void MetAtrInitAbstract() throws Exception {
         MemberType();
-        String id = currentToken.getLexeme();
+        Token id = currentToken;
         match("idMetVar");
         MetAtr(id);
         AbstractMemberList();
@@ -294,7 +314,7 @@ public class SyntaxAnalyzer {
             AbstractMemberList();
         }
         else if(currentToken.getTokenClass().equals("idMetVar")) {
-            String id = currentToken.getLexeme();
+            Token id = currentToken;
             match("idMetVar");
             MetAtr(id);
             AbstractMemberList();

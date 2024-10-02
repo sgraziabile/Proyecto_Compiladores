@@ -1,5 +1,7 @@
 package semantic.declared_entities;
 
+import entities.Token;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -8,7 +10,7 @@ public class Method extends ClassMember {
     private ArrayList<Parameter> parameterList;
     private boolean isConsolidated = false;
 
-    public Method(String name, Type returnType, String modifier,String visibility) {
+    public Method(Token name, Type returnType, String modifier, String visibility) {
         super(name, returnType, modifier,visibility);
         this.parameterHash = new Hashtable<>();
         this.parameterList = new ArrayList<>();
@@ -40,7 +42,7 @@ public class Method extends ClassMember {
         return parameterHash;
     }
     public void print() {
-        System.out.println("Method: " + id + " " + type.getName() + " " + modifier + " " + visibility);
+        System.out.println("Method: " + id.getLexeme() + " " + type.getName() + " " + modifier + " " + visibility);
     }
 
 }

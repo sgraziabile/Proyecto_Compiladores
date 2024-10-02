@@ -1,13 +1,15 @@
 package semantic.declared_entities;
 
+import entities.Token;
+
 public class ClassMember {
-    protected String id;
+    protected Token id;
     protected Type type;
     protected String modifier;
     protected String visibility;
 
-    public ClassMember(String name, Type type, String modifier, String visibility) {
-        this.id = name;
+    public ClassMember(Token id, Type type, String modifier, String visibility) {
+        this.id = id;
         this.type = type;
         this.modifier = modifier;
         this.visibility = visibility;
@@ -15,8 +17,11 @@ public class ClassMember {
     public ClassMember() {
 
     }
-    public String getId() {
+    public Token getId() {
         return id;
+    }
+    public String getName() {
+        return id.getLexeme();
     }
     public Type getType() {
         return type;
@@ -27,8 +32,8 @@ public class ClassMember {
     public String getVisibility() {
         return visibility;
     }
-    public void setName(String name) {
-        this.id = name;
+    public void setId(Token id) {
+        this.id = id;
     }
     public void setType(Type type) {
         this.type = type;

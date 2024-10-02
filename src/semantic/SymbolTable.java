@@ -1,5 +1,6 @@
 package semantic;
 
+import entities.Token;
 import semantic.declared_entities.Method;
 import semantic.declared_entities.Class;
 
@@ -15,6 +16,7 @@ public class SymbolTable {
         this.currentClass = null;
         this.currentMethod = null;
         this.classHash = new Hashtable<>();
+        initBaseClasses();
     }
     public void setCurrentClass(Class c) {
         currentClass = c;
@@ -41,5 +43,15 @@ public class SymbolTable {
     }
     public Hashtable<String,Class> getClasses() {
         return classHash;
+    }
+    private void initBaseClasses() {
+        Class objectClass = new Class(new Token("idClase", "Object", 0));
+        insertClass(objectClass);
+        Class stringClass = new Class(new Token("idClase", "String", 0));
+        stringClass.setSuperclass(objectClass.getId());
+        insertClass(stringClass);
+        Class systemClass = new Class(new Token("idClase", "System", 0));
+        systemClass.setSuperclass(objectClass.getId());
+        insertClass(systemClass);
     }
 }
