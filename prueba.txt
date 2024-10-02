@@ -1,5 +1,3 @@
-///[Error:else|16]
-//If-else anidados. Falta cerrar el último if.
 class A{
     private static int atr1;
     public int atr2;
@@ -7,24 +5,16 @@ class A{
     Object atr4;
     private static int atr5;
 
-    public A() {
+    public A(Object a) {
 
     }
-    public int met1() {
+    public int met1(int a, String b) {
+        
+    }
+}
+class B extends A {
+    public int met1(int a) {
 
     }
-    public void met2() {
-
-    }
-    private String met3() {
-
-    }
-    static int met4() {
-
-    }
-    String met5() {
-
-    }
-
 }
 

@@ -6,14 +6,14 @@ import java.util.Hashtable;
 
 
 public class Class {
-    private String name;
+    private Token id;
     private Token superclass;
     private boolean isConsolidated = false;
     private Hashtable<String, Attribute> attributes;
     private Hashtable<String, Method> methods;
 
     public Class(Token idClass) {
-        name = idClass.getLexeme();
+        id = idClass;
         superclass = null;
         attributes = new Hashtable<>();
         methods = new Hashtable<>();
@@ -27,8 +27,11 @@ public class Class {
     public void addMethod(Method method) {
         methods.put(method.getId(), method);
     }
+    public Token getId() {
+        return id;
+    }
     public String getName() {
-        return name;
+        return id.getLexeme();
     }
     public Token getSuperclass() {
         return superclass;

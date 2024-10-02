@@ -36,4 +36,10 @@ public class SymbolTable {
     public Method getCurrentMethod() {
         return currentMethod;
     }
+    public Class getClass(String id) {
+        return classHash.get(id);
+    }
+    public Hashtable<String,Class> getClasses() {
+        return classHash;
+    }
 }

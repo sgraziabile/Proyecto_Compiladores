@@ -21,6 +21,12 @@ public class Method extends ClassMember {
         parameterHash.put(name,parameter);
         parameterList.add(parameter);
     }
+    public void addParameters(ArrayList<Parameter> paramsList) {
+        for (Parameter p : paramsList) {
+            parameterHash.put(p.getId().getLexeme(),p);
+            parameterList.add(p);
+        }
+    }
     public Type getReturnType() {
         return type;
     }

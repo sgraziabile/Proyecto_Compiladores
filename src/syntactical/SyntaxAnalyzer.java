@@ -2,12 +2,14 @@ package syntactical;
 
 import entities.PrimerosHandler;
 import entities.Token;
+import exceptions.ClassAlreadyDeclaredException;
 import exceptions.SyntaxException;
 import lexical.LexicalAnalyzer;
 import semantic.SymbolTable;
 import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SyntaxAnalyzer {
@@ -27,12 +29,20 @@ public class SyntaxAnalyzer {
         this.symbolTable = symbolTable;
         currentToken = lexicalAnalyzer.nextToken();
         Init();
-        for(Attribute a: symbolTable.getCurrentClass().getAttributes().values()) {
-            a.print();
+        for(Class c: symbolTable.getClasses().values()) {
+            System.out.println(c.getName() + " extends " + c.getSuperclass().getLexeme());
+            for(Attribute a: c.getAttributes().values()) {
+                a.print();
+            }
+            for(Method m: c.getMethods().values()) {
+                m.print();
+                for(Parameter p: m.getParameterList()) {
+                    p.print();
+                }
+            }
+            System.out.println();
         }
-        for(Method m: symbolTable.getCurrentClass().getMethods().values()) {
-            m.print();
-        }
+
     }
 
     private void match(String tokenName) throws Exception {
@@ -72,7 +82,13 @@ public class SyntaxAnalyzer {
         match("llaveAbre");
         MemberList();
         match("llaveCierra");
-        symbolTable.insertClass(c);
+        if(symbolTable.getClass(c.getName()) == null) {
+            symbolTable.insertClass(c);
+        }
+        else {
+            throw new ClassAlreadyDeclaredException(c.getId().getLineNumber(),c.getName());
+        }
+
     }
     private void AbstractClass() throws Exception {
         match("keyword_abstract");
@@ -110,9 +126,7 @@ public class SyntaxAnalyzer {
         }
         else if(currentToken.getTokenClass().equals("keyword_private")) {
             match("keyword_private");
-            String modifier = StaticOptional();
-            classMember = MetAtrInit();
-            classMember.setModifier(modifier);
+            classMember = MetAtrCons();
             classMember.setVisibility(private_visibility);
         }
         else if(currentToken.getTokenClass().equals("keyword_public")) {
@@ -168,9 +182,9 @@ public class SyntaxAnalyzer {
             classMember = new Method();
             classMember.setName("Constructor");
             symbolTable.setCurrentMethod((Method) classMember);
-            symbolTable.getCurrentClass().addMethod((Method) classMember);
             FormalArguments();
             Block();
+            symbolTable.getCurrentClass().addMethod((Method) classMember);
             MemberList();
         }
         else if(currentToken.getTokenClass().equals("idMetVar")) {
@@ -197,9 +211,9 @@ public class SyntaxAnalyzer {
             member = new Method();
             member.setName(id);
             symbolTable.setCurrentMethod((Method) member);
-            symbolTable.getCurrentClass().addMethod((Method) member);
             FormalArguments();
             Block();
+            symbolTable.getCurrentClass().addMethod((Method) member);
         }
         else if(currentToken.getTokenClass().equals("opAsign")) {
             member = new Attribute();
@@ -381,7 +395,8 @@ public class SyntaxAnalyzer {
         }
     }
     private void FormalArgsList() throws Exception {
-        FormalArg();
+        Parameter param = FormalArg();
+        symbolTable.getCurrentMethod().addParameter(param.getId().getLexeme(),param);
         FormalArgsList2();
     }
     private void FormalArgsList2() throws Exception {
@@ -393,9 +408,13 @@ public class SyntaxAnalyzer {
             //vacio
         }
     }
-    private void FormalArg() throws Exception {
-        Type();
+    private Parameter FormalArg() throws Exception {
+        Parameter parameter;
+        Type paramType= Type();
+        Token paramName = currentToken;
         match("idMetVar");
+        parameter = new Parameter(paramName,paramType);
+        return parameter;
     }
     private void Block() throws Exception {
         match("llaveAbre");
@@ -552,7 +571,7 @@ public class SyntaxAnalyzer {
         }
         else if(currentToken.getTokenClass().equals("dosPuntos")) {
             match("dosPuntos");
-            match("idMetVar");
+            Access();
         }
         else {
             throw new SyntaxException(List.of("asignacion" ,":"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
