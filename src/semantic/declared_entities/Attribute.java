@@ -13,4 +13,7 @@ public class Attribute extends ClassMember {
     public void print() {
         System.out.println("Attribute: " + id.getLexeme() + " " + type.getName() + " " + modifier + " " + visibility);
     }
+    public void checkDeclaration() throws Exception {
+
+    }
 }

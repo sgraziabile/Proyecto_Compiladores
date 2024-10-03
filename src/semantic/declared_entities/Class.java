@@ -1,9 +1,13 @@
 package semantic.declared_entities;
 
 import entities.Token;
+import exceptions.ClassNotDeclaredException;
+import exceptions.CyclicInheritanceException;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+
+import static main.MainModule.symbolTable;
 
 
 public class Class {
@@ -63,5 +67,42 @@ public class Class {
     }
     public ArrayList<Method> getMethodList() {
         return methodList;
+    }
+    public void consolidate() {
+        isConsolidated = true;
+    }
+    public void checkDeclaration() throws Exception {
+        checkSuperclass();
+        checkCircularInheritance();
+        checkAttributes();
+        checkMethods();
+    }
+    private void checkSuperclass() throws Exception {
+        if(superclass != null) {
+            if(symbolTable.getClass(superclass.getLexeme()) == null) {
+                throw new ClassNotDeclaredException(superclass.getLineNumber(), superclass.getLexeme());
+            }
+        }
+    }
+    private void checkAttributes() throws Exception {
+        for(Attribute a : attributeList) {
+            a.checkDeclaration();
+        }
+    }
+    private void checkMethods() throws Exception {
+        for(Method m : methodList) {
+            m.checkDeclaration();
+        }
+    }
+    private void checkCircularInheritance() throws Exception {
+        if(superclass != null) {
+            Class currentClass = this;
+            while(currentClass.getSuperclass() != null) {
+                currentClass = symbolTable.getClass(currentClass.getSuperclass().getLexeme());
+                if(currentClass.getName().equals(this.getName())) {
+                    throw new CyclicInheritanceException(this.getId().getLineNumber(), this.getName());
+                }
+            }
+        }
     }
 }

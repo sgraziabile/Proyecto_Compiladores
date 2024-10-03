@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class MainModule {
+    public static SymbolTable symbolTable = new SymbolTable();
     public static void main(String[] args) {
         if(args.length == 0) {
             System.out.println("No file path provided.");
@@ -20,7 +21,7 @@ public class MainModule {
             SourceManagerImpl sourceManager = new SourceManagerImpl();
             KeywordHandler keywordHandler = new KeywordHandler();
             PrimerosHandler primerosHandler = new PrimerosHandler();
-            SymbolTable symbolTable = new SymbolTable();
+            symbolTable = new SymbolTable();
             boolean success = true;
             try {
                 sourceManager.open(filePath);

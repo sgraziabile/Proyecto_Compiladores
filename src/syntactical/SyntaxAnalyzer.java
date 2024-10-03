@@ -43,7 +43,7 @@ public class SyntaxAnalyzer {
             }
             System.out.println();
         }
-
+        symbolTable.checkDeclarations();
     }
 
     private void match(String tokenName) throws Exception {
@@ -168,6 +168,8 @@ public class SyntaxAnalyzer {
             Type type = new ReferenceType(currentToken.getLexeme());
             Token id = currentToken;
             match("idClase");
+            if(currentToken.getTokenClass().equals("parentesisAbre"))
+                type = new PrimitiveType("void");
             classMember = MetAtrCons2(id);
             classMember.setType(type);
             classMember.setModifier(dynamic_modifier);
@@ -416,7 +418,12 @@ public class SyntaxAnalyzer {
     }
     private void FormalArgsList() throws Exception {
         Parameter param = FormalArg();
-        symbolTable.getCurrentMethod().addParameter(param.getId().getLexeme(),param);
+        if(symbolTable.getCurrentMethod().getParameter(param.getId().getLexeme()) == null) {
+            symbolTable.getCurrentMethod().addParameter(param.getId().getLexeme(),param);
+        }
+        else {
+            throw new AlreadyDeclaredException("parameter",param.getId().getLineNumber(),param.getId().getLexeme());
+        }
         FormalArgsList2();
     }
     private void FormalArgsList2() throws Exception {

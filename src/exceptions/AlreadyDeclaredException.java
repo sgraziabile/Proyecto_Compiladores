@@ -10,19 +10,26 @@ public class AlreadyDeclaredException extends Exception{
         this.type = type;
     }
     public String getMessage() {
-        if(type == "class") {
-            return getClassMessage();
+        switch (type) {
+            case "class" -> {
+                return getClassMessage();
+            }
+            case "method" -> {
+                return getMethodMessage();
+            }
+            case "attribute" -> {
+                return getAttributeMessage();
+            }
+            case "constructor" -> {
+                return getConstructorMessage();
+            }
+            case "parameter" -> {
+                return getParameterMessage();
+            }
+            default -> {
+                return "";
+            }
         }
-        else if(type == "method") {
-            return getMethodMessage();
-        }
-        else if(type == "attribute") {
-            return getAttributeMessage();
-        }
-        else if(type == "constructor") {
-            return getConstructorMessage();
-        }
-        return "";
     }
     private String getClassMessage() {
         String message = "Error Semantico en linea " +errorLine+ ":";
@@ -45,6 +52,12 @@ public class AlreadyDeclaredException extends Exception{
     private String getConstructorMessage() {
         String message = "Error Semantico en linea " +errorLine+ ":";
         message += " El constructor " + lexeme + " ya ha sido declarado \n";
+        message += "[Error:"+ lexeme +"|"+ errorLine +"]";
+        return message;
+    }
+    private String getParameterMessage() {
+        String message = "Error Semantico en linea " +errorLine+ ":";
+        message += " El parametro " + lexeme + " ya fue definido en este alcance \n";
         message += "[Error:"+ lexeme +"|"+ errorLine +"]";
         return message;
     }

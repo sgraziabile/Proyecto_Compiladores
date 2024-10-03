@@ -44,6 +44,16 @@ public class SymbolTable {
     public Hashtable<String,Class> getClasses() {
         return classHash;
     }
+    public void checkDeclarations() throws Exception {
+        for(Class c : classHash.values()) {
+            if (!c.getName().equals("Object") && !c.getName().equals("System") && !c.getName().equals("String")) {
+                c.checkDeclaration();
+            }
+        }
+    }
+    public void consolidate() {
+        isConsolidated = true;
+    }
     private void initBaseClasses() {
         Class objectClass = new Class(new Token("idClase", "Object", 0));
         insertClass(objectClass);

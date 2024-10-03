@@ -41,8 +41,14 @@ public class Method extends ClassMember {
     public Hashtable<String, Parameter> getParameterHash() {
         return parameterHash;
     }
+    public Parameter getParameter(String id) {
+        return parameterHash.get(id);
+    }
     public void print() {
         System.out.println("Method: " + id.getLexeme() + " " + type.getName() + " " + modifier + " " + visibility);
+    }
+    public void checkDeclaration() throws Exception {
+
     }
 
 }
