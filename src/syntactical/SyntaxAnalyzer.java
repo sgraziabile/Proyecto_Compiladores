@@ -3,6 +3,7 @@ package syntactical;
 import entities.PrimerosHandler;
 import entities.Token;
 import exceptions.AlreadyDeclaredException;
+import exceptions.InvalidConstructorNameException;
 import exceptions.SyntaxException;
 import lexical.LexicalAnalyzer;
 import semantic.SymbolTable;
@@ -168,8 +169,12 @@ public class SyntaxAnalyzer {
             Type type = new ReferenceType(currentToken.getLexeme());
             Token id = currentToken;
             match("idClase");
-            if(currentToken.getTokenClass().equals("parentesisAbre"))
-                type = new PrimitiveType("void");
+            if(currentToken.getTokenClass().equals("parentesisAbre")) {
+                type = new PrimitiveType("constructor");
+                if(!id.getLexeme().equals(symbolTable.getCurrentClass().getName())) {
+                    throw new InvalidConstructorNameException(id.getLineNumber(),id.getLexeme());
+                }
+            }
             classMember = MetAtrCons2(id);
             classMember.setType(type);
             classMember.setModifier(dynamic_modifier);

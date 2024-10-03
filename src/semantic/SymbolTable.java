@@ -1,6 +1,7 @@
 package semantic;
 
 import entities.Token;
+import exceptions.MainNotDeclaredException;
 import semantic.declared_entities.Method;
 import semantic.declared_entities.Class;
 
@@ -11,6 +12,8 @@ public class SymbolTable {
     private Class currentClass;
     private Method currentMethod;
     private Hashtable<String,Class> classHash;
+    private boolean mainDeclared = false;
+
 
     public SymbolTable() {
         this.currentClass = null;
@@ -50,9 +53,24 @@ public class SymbolTable {
                 c.checkDeclaration();
             }
         }
+        checkMain();
     }
     public void consolidate() {
         isConsolidated = true;
+    }
+    public boolean isConsolidated() {
+        return isConsolidated;
+    }
+    public boolean isMainDeclared() {
+        return mainDeclared;
+    }
+    public void checkMain() throws MainNotDeclaredException {
+        if (!mainDeclared) {
+            throw new MainNotDeclaredException();
+        }
+    }
+    public void setMainDeclared() {
+        mainDeclared = true;
     }
     private void initBaseClasses() {
         Class objectClass = new Class(new Token("idClase", "Object", 0));

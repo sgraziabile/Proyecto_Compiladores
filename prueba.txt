@@ -20,6 +20,12 @@ class A{
     }
 }
 class B extends A {
+    public B() {
+
+    }
+    public static void main() {
+
+    }
     public int met1(int a) {
 
     }

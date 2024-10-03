@@ -51,7 +51,9 @@ public class Method extends ClassMember {
         System.out.println("Method: " + id.getLexeme() + " " + type.getName() + " " + modifier + " " + visibility);
     }
     public void checkDeclaration() throws Exception {
-        if(!type.getName().equals("void") && !type.getName().equals("int") && !type.getName().equals("boolean") && !type.getName().equals("float")){
+        if(!symbolTable.isMainDeclared())
+            checkMain();
+        if(!type.getName().equals("void") && !type.getName().equals("int") && !type.getName().equals("boolean") && !type.getName().equals("float") && !type.getName().equals("constructor")){
                 if(symbolTable.getClass(type.getName()) == null) {
                     throw new CantResolveSymbolException(id.getLineNumber(), type.getName());
                 }
@@ -60,5 +62,12 @@ public class Method extends ClassMember {
             p.checkDeclaration();
         }
     }
-
+    public void consolidate() {
+        isConsolidated = true;
+    }
+    public void checkMain() throws Exception {
+        if (id.getLexeme().equals("main") && type.getName().equals("void") && modifier.equals("static") && visibility.equals("public")) {
+            symbolTable.setMainDeclared();
+        }
+    }
 }
