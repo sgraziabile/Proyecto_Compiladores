@@ -17,7 +17,10 @@ public class Attribute extends ClassMember {
         System.out.println("Attribute: " + id.getLexeme() + " " + type.getName() + " " + modifier + " " + visibility);
     }
     public void checkDeclaration() throws Exception {
-        if(!type.getName().equals("void") && !type.getName().equals("int") && !type.getName().equals("boolean") && !type.getName().equals("float")){
+        if(type.getName().equals("void")) {
+            throw new CantResolveSymbolException(id.getLineNumber(), type.getName());
+        }
+        else if(!type.getName().equals("int") && !type.getName().equals("boolean") && !type.getName().equals("float")){
             if(symbolTable.getClass(type.getName()) == null) {
                 throw new CantResolveSymbolException(id.getLineNumber(), type.getName());
             }

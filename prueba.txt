@@ -3,13 +3,13 @@ class A{
     public int atr2;
     public String atr3;
     private static String atr6;
-    Object atr4;
+    Persona atr4;
     private static int atr5;
 
     public A(Object a) {
 
     }
-    public int met1(Persona a, String b) {
+    public void met1(Persona a, String b) {
         
     }
     private void met2(int a, String b) {
@@ -41,5 +41,6 @@ class D extends A {
 class Persona {
 
 }
+
 
 

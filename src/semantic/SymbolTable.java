@@ -1,10 +1,12 @@
 package semantic;
 
+import com.sun.jdi.ClassType;
 import entities.Token;
 import exceptions.MainNotDeclaredException;
-import semantic.declared_entities.Method;
+import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
 
+import java.lang.ref.Reference;
 import java.util.Hashtable;
 
 public class SymbolTable {
@@ -73,13 +75,78 @@ public class SymbolTable {
         mainDeclared = true;
     }
     private void initBaseClasses() {
+        Token objectClass = initObjectClass();
+        initSystemClass(objectClass);
+        initStringClass(objectClass);
+    }
+    private Token initObjectClass() {
         Class objectClass = new Class(new Token("idClase", "Object", 0));
         insertClass(objectClass);
-        Class stringClass = new Class(new Token("idClase", "String", 0));
-        stringClass.setSuperclass(objectClass.getId());
-        insertClass(stringClass);
+        return objectClass.getId();
+    }
+    private void initSystemClass(Token objectClass) {
         Class systemClass = new Class(new Token("idClase", "System", 0));
-        systemClass.setSuperclass(objectClass.getId());
+        addSystemMethods(systemClass);
+        systemClass.setSuperclass(objectClass);
         insertClass(systemClass);
+    }
+
+    private void addSystemMethods(Class systemClass) {
+        String modifier = "static";
+        String visibility = "public";
+        // 1. static int read()
+        Method readMethod = new Method(new Token("idMetVar", "read", 0), new PrimitiveType("int"), modifier, visibility);
+        systemClass.addMethod(readMethod);
+        // 2. static void printB(boolean b)
+        Method printBMethod = new Method(new Token("idMetVar", "printB", 0), new PrimitiveType("void"), modifier, visibility);
+        Parameter param1 = new Parameter(new Token("idMetVar","b",0),new PrimitiveType("boolean"));
+        printBMethod.addParameter("b",param1);
+        systemClass.addMethod(printBMethod);
+        // 3. static void printC(char c)
+        Method printCMethod = new Method(new Token("idMetVar", "printC", 0), new PrimitiveType("void"), modifier, visibility);
+        param1 = new Parameter(new Token("idMetVar","c",0),new PrimitiveType("char"));
+        printCMethod.addParameter("c",param1);
+        systemClass.addMethod(printCMethod);
+        // 4. static void printI(int i)
+        Method printIMethod = new Method(new Token("idMetVar", "printI", 0), new PrimitiveType("void"), modifier, visibility);
+        param1 = new Parameter(new Token("idMetVar","i",0),new PrimitiveType("int"));
+        printIMethod.addParameter("i",param1);
+        systemClass.addMethod(printIMethod);
+        // 5. static void printS(String s)
+        Method printSMethod = new Method(new Token("idMetVar", "printS", 0), new PrimitiveType("void"), modifier, visibility);
+        param1 = new Parameter(new Token("idMetVar","s",0),new ReferenceType("String"));
+        printSMethod.addParameter("s",param1);
+        systemClass.addMethod(printSMethod);
+        // 6. static void println()
+        Method printlnMethod = new Method(new Token("idMetVar", "println", 0), new PrimitiveType("void"), modifier, visibility);
+        systemClass.addMethod(printlnMethod);
+        // 7. static void printBln(boolean b)
+        Method printBlnMethod = new Method(new Token("idMetVar", "printBln", 0), new PrimitiveType("void"), modifier, visibility);
+        systemClass.addMethod(printBlnMethod);
+        param1 = new Parameter(new Token("idMetVar","b",0),new PrimitiveType("boolean"));
+        printBlnMethod.addParameter("b",param1);
+        // 8. static void printCln(char c)
+        Method printClnMethod = new Method(new Token("idMetVar", "printCln", 0), new PrimitiveType("void"), modifier, visibility);
+        systemClass.addMethod(printClnMethod);
+        param1 = new Parameter(new Token("idMetVar","c",0),new PrimitiveType("char"));
+        printClnMethod.addParameter("c",param1);
+        // 9. static void printIln(int i)
+        Method printIlnMethod = new Method(new Token("idMetVar", "printIln", 0), new PrimitiveType("void"), modifier, visibility);
+        param1 = new Parameter(new Token("idMetVar","i",0),new PrimitiveType("int"));
+        printIlnMethod.addParameter("i",param1);
+        systemClass.addMethod(printIlnMethod);
+        // 10. static void printSln(String s)
+        Method printSlnMethod = new Method(new Token("idMetVar", "printSln", 0), new PrimitiveType("void"), modifier, visibility);
+        param1 = new Parameter(new Token("idMetVar","s",0),new ReferenceType("String"));
+        printSlnMethod.addParameter("s",param1);
+        systemClass.addMethod(printSlnMethod);
+    }
+
+    private void initStringClass(Token objectClass) {
+        Class stringClass = new Class(new Token("idClase", "String", 0));
+        stringClass.setSuperclass(objectClass);
+        Method debugPrint = new Method(new Token("idMetVar","debugPrint",0),new PrimitiveType("void"),"public","static");
+        stringClass.addMethod(debugPrint);
+        insertClass(stringClass);
     }
 }

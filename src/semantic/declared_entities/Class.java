@@ -30,7 +30,7 @@ public class Class {
     public void setSuperclass(Token superclass) {
         this.superclass = superclass;
     }
-    public void addAttribute(Attribute attribute) {
+    public void addAttribute(Attribute attribute) throws Exception {
         attributes.put(attribute.getId().getLexeme(), attribute);
         attributeList.add(attribute);
     }
