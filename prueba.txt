@@ -23,7 +23,7 @@ class B extends A {
     public B() {
 
     }
-    public static void main() {
+    public static int main() {
 
     }
     public int met1(int a) {

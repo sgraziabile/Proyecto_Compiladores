@@ -29,6 +29,7 @@ public class SyntaxAnalyzer {
         this.symbolTable = symbolTable;
         currentToken = lexicalAnalyzer.nextToken();
         Init();
+        symbolTable.checkDeclarations();
         for(Class c: symbolTable.getClasses().values()) {
             if(c.getSuperclass() != null) {
                 System.out.println(c.getName() + " extends " + c.getSuperclass().getLexeme());
@@ -44,7 +45,6 @@ public class SyntaxAnalyzer {
             }
             System.out.println();
         }
-        symbolTable.checkDeclarations();
     }
 
     private void match(String tokenName) throws Exception {

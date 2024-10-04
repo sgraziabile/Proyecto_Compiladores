@@ -18,6 +18,7 @@ public class Class {
     private ArrayList<Attribute> attributeList;
     private Hashtable<String, Method> methods;
     private ArrayList<Method> methodList;
+    private boolean constructorDeclared = false;
 
     public Class(Token idClass) {
         id = idClass;
@@ -76,6 +77,7 @@ public class Class {
         checkCircularInheritance();
         checkAttributes();
         checkMethods();
+        checkConstructor();
     }
     private void checkSuperclass() throws Exception {
         if(superclass != null) {
@@ -91,7 +93,7 @@ public class Class {
     }
     private void checkMethods() throws Exception {
         for(Method m : methodList) {
-            m.checkDeclaration();
+            m.checkDeclaration(this);
         }
     }
     private void checkCircularInheritance() throws Exception {
@@ -104,5 +106,22 @@ public class Class {
                 }
             }
         }
+    }
+    public boolean isConstructorDeclared() {
+        return constructorDeclared;
+    }
+    public void checkConstructor() {
+        System.out.println("clase: " +id.getLexeme()+ constructorDeclared);
+        if(!isConstructorDeclared()) {
+            Method constructor = new Method();
+            constructor.setId(new Token("idMetVar",id.getLexeme() ,0));
+            constructor.setType(new PrimitiveType("constructor"));
+            constructor.setModifier("dymamic");
+            constructor.setVisibility("public");
+            addMethod(constructor);
+        }
+    }
+    public void setConstructorDeclared() {
+        constructorDeclared = true;
     }
 }
