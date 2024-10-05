@@ -8,6 +8,7 @@ class A{
     }
     public int met1() {}
     public void met2(int a) {}
+    public String met3() {}
 
 }
 class B extends A{
@@ -18,14 +19,14 @@ class B extends A{
     public B(Object a) {
         super(a);
     }
-    public int met3() {}
-    public void met4(int a) {}
-    public static void main() {}
+    public int met4() {}
+    public void met2(int b) {}
 
 }
 class C extends B {
-    private int atr2;
     public int met5() {}
+    public void met6(int a) {}
+    public static void main() {}
 }
 
 

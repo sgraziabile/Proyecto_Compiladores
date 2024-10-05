@@ -92,6 +92,20 @@ public class Class {
             if(!superclass.isConsolidated()) {
                 superclass.consolidate();
             }
+            for(Attribute a: superclass.getAttributeList()) {
+                Attribute currentAttribute = attributes.get(a.getId().getLexeme());
+                if(currentAttribute == null) {
+                    attributeAuxList.addFirst(a);
+                }
+                else {
+                    if(checkRedefinedAttribute(a)) {
+                        throw new InvalidRedefinitionException(currentAttribute.getId().getLexeme(), currentAttribute.getId().getLineNumber());
+                    }
+                }
+            }
+            for(Attribute attribute: attributeAuxList) {
+                addInheritedAttribute(attribute);
+            }
             for(Method m: superclass.getMethodList()) {
                 Method currentMethod = methods.get(m.getId().getLexeme());
                 if(currentMethod == null) {
@@ -109,20 +123,6 @@ public class Class {
             }
             for(Method method: methodAuxList) {
                 addInheritedMethod(method);
-            }
-            for(Attribute a: superclass.getAttributeList()) {
-                Attribute currentAttribute = attributes.get(a.getId().getLexeme());
-                if(currentAttribute == null) {
-                    attributeAuxList.addFirst(a);
-                }
-                else {
-                    if(checkRedefinedAttribute(a)) {
-                        throw new InvalidRedefinitionException(currentAttribute.getId().getLexeme(), currentAttribute.getId().getLineNumber());
-                    }
-                }
-            }
-            for(Attribute attribute: attributeAuxList) {
-                addInheritedAttribute(attribute);
             }
         }
         setConsolidated();
@@ -194,12 +194,7 @@ public class Class {
         else if(currentMethod.getParameterList().size() != m.getParameterList().size())
             validRedefinition = false;
         else {
-            for(int i = 0; i < currentMethod.getParameterList().size(); i++) {
-                if(!currentMethod.getParameterList().get(i).getType().equals(m.getParameterList().get(i).getType())) {
-                    validRedefinition = false;
-                    break;
-                }
-            }
+            validRedefinition = checkEqualParameters(currentMethod, m);
         }
         return validRedefinition;
     }
@@ -216,7 +211,7 @@ public class Class {
             validParameters = false;
         else {
             for (int i = 0; i < currentMethod.getParameterList().size(); i++) {
-                if (!currentMethod.getParameterList().get(i).getType().equals(inheritedMethod.getParameterList().get(i).getType())) {
+                if (!currentMethod.getParameterList().get(i).getType().getName().equals(inheritedMethod.getParameterList().get(i).getType().getName())) {
                     validParameters = false;
                     break;
                 }
