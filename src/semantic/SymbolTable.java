@@ -56,8 +56,14 @@ public class SymbolTable {
             }
         }
         checkMain();
+        consolidate();
     }
-    public void consolidate() {
+    public void consolidate() throws Exception {
+        for(Class c : classHash.values()) {
+            if(!c.isConsolidated()) {
+                c.consolidate();
+            }
+        }
         isConsolidated = true;
     }
     public boolean isConsolidated() {
@@ -81,6 +87,9 @@ public class SymbolTable {
     }
     private Token initObjectClass() {
         Class objectClass = new Class(new Token("idClase", "Object", 0));
+        objectClass.setConsolidated();
+        Method debugPrint = new Method(new Token("idMetVar","debugPrint",0),new PrimitiveType("void"),"public","static");
+        objectClass.addMethod(debugPrint);
         insertClass(objectClass);
         return objectClass.getId();
     }
@@ -90,7 +99,11 @@ public class SymbolTable {
         systemClass.setSuperclass(objectClass);
         insertClass(systemClass);
     }
-
+    private void initStringClass(Token objectClass) {
+        Class stringClass = new Class(new Token("idClase", "String", 0));
+        stringClass.setSuperclass(objectClass);
+        insertClass(stringClass);
+    }
     private void addSystemMethods(Class systemClass) {
         String modifier = "static";
         String visibility = "public";
@@ -142,11 +155,5 @@ public class SymbolTable {
         systemClass.addMethod(printSlnMethod);
     }
 
-    private void initStringClass(Token objectClass) {
-        Class stringClass = new Class(new Token("idClase", "String", 0));
-        stringClass.setSuperclass(objectClass);
-        Method debugPrint = new Method(new Token("idMetVar","debugPrint",0),new PrimitiveType("void"),"public","static");
-        stringClass.addMethod(debugPrint);
-        insertClass(stringClass);
-    }
+
 }

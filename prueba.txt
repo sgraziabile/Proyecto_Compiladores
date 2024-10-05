@@ -1,45 +1,31 @@
 class A{
-    private static int atr1;
+    private int atr1;
     public int atr2;
     public String atr3;
-    private static String atr6;
-    Persona atr4;
-    private static int atr5;
 
     public A(Object a) {
 
     }
-    public void met1(Persona a, String b) {
-        
-    }
-    private void met2(int a, String b) {
-        return a + 1;
-    }
-    public String met3() {
-        return "Hola";
-    }
-}
-class B extends A {
-    public B() {
-
-    }
-    public static int main() {
-
-    }
-    public int met1(int a) {
-
-    }
-}
-class C extends B{
+    public int met1() {}
+    public void met2(int a) {}
 
 }
-class D extends A {
-    public int met1(int a) {
-        return a;
-    }
-}
-class Persona {
+class B extends A{
+    private int atr4;
+    public int atr5;
+    public String atr6;
 
+    public B(Object a) {
+        super(a);
+    }
+    public int met3() {}
+    public void met4(int a) {}
+    public static void main() {}
+
+}
+class C extends B {
+    private int atr2;
+    public int met5() {}
 }
 
 

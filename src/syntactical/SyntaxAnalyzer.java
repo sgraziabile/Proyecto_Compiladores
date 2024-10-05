@@ -34,10 +34,10 @@ public class SyntaxAnalyzer {
             if(c.getSuperclass() != null) {
                 System.out.println(c.getName() + " extends " + c.getSuperclass().getLexeme());
             }
-            for(Attribute a: c.getAttributes().values()) {
+            for(Attribute a: c.getAttributeList()) {
                 a.print();
             }
-            for(Method m: c.getMethods().values()) {
+            for(Method m: c.getMethodList()) {
                 m.print();
                 for(Parameter p: m.getParameterList()) {
                     p.print();

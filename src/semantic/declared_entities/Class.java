@@ -3,6 +3,7 @@ package semantic.declared_entities;
 import entities.Token;
 import exceptions.ClassNotDeclaredException;
 import exceptions.CyclicInheritanceException;
+import exceptions.InvalidRedefinitionException;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -35,9 +36,21 @@ public class Class {
         attributes.put(attribute.getId().getLexeme(), attribute);
         attributeList.add(attribute);
     }
+    private void addInheritedAttribute(Attribute attribute) {
+        attributes.put(attribute.getId().getLexeme(), attribute);
+        attributeList.addFirst(attribute);
+    }
     public void addMethod(Method method) {
         methods.put(method.getId().getLexeme(), method);
         methodList.add(method);
+    }
+    private void addInheritedMethod(Method method) {
+        methods.put(method.getId().getLexeme(), method);
+        methodList.addFirst(method);
+    }
+    private void removeMethod(Method method) {
+        methods.remove(method.getId().getLexeme());
+        methodList.remove(method);
     }
     public Token getId() {
         return id;
@@ -69,7 +82,52 @@ public class Class {
     public ArrayList<Method> getMethodList() {
         return methodList;
     }
-    public void consolidate() {
+    public void consolidate() throws Exception {
+        System.out.println("Consolidating class: " + id.getLexeme());
+        if(superclass != null) {
+            Class superclass = symbolTable.getClass(this.superclass.getLexeme());
+            ArrayList<Method> methodAuxList = new ArrayList<>();
+            ArrayList<Attribute> attributeAuxList = new ArrayList<>();
+            ArrayList<Parameter> parameterAuxList = new ArrayList<>();
+            if(!superclass.isConsolidated()) {
+                superclass.consolidate();
+            }
+            for(Method m: superclass.getMethodList()) {
+                Method currentMethod = methods.get(m.getId().getLexeme());
+                if(currentMethod == null) {
+                    methodAuxList.addFirst(m);
+                }
+                else {
+                    if(checkRedefinedMethod(m)) {
+                        removeMethod(currentMethod);
+                        methodAuxList.addFirst(m);
+                    }
+                    else {
+                        throw new InvalidRedefinitionException(currentMethod.getName(), currentMethod.getId().getLineNumber());
+                    }
+                }
+            }
+            for(Method method: methodAuxList) {
+                addInheritedMethod(method);
+            }
+            for(Attribute a: superclass.getAttributeList()) {
+                Attribute currentAttribute = attributes.get(a.getId().getLexeme());
+                if(currentAttribute == null) {
+                    attributeAuxList.addFirst(a);
+                }
+                else {
+                    if(checkRedefinedAttribute(a)) {
+                        throw new InvalidRedefinitionException(currentAttribute.getId().getLexeme(), currentAttribute.getId().getLineNumber());
+                    }
+                }
+            }
+            for(Attribute attribute: attributeAuxList) {
+                addInheritedAttribute(attribute);
+            }
+        }
+        setConsolidated();
+    }
+    public void setConsolidated() {
         isConsolidated = true;
     }
     public void checkDeclaration() throws Exception {
@@ -123,5 +181,47 @@ public class Class {
     }
     public void setConstructorDeclared() {
         constructorDeclared = true;
+    }
+    private boolean checkRedefinedMethod(Method m) {
+        boolean validRedefinition = true;
+        Method currentMethod = getMethod(m.getId().getLexeme());
+        if(!currentMethod.getType().getName().equals(m.getType().getName()))
+            validRedefinition = false;
+        else if(!currentMethod.getVisibility().equals(m.getVisibility()))
+            validRedefinition = false;
+        else if(!currentMethod.getModifier().equals(m.getModifier()))
+            validRedefinition = false;
+        else if(currentMethod.getParameterList().size() != m.getParameterList().size())
+            validRedefinition = false;
+        else {
+            for(int i = 0; i < currentMethod.getParameterList().size(); i++) {
+                if(!currentMethod.getParameterList().get(i).getType().equals(m.getParameterList().get(i).getType())) {
+                    validRedefinition = false;
+                    break;
+                }
+            }
+        }
+        return validRedefinition;
+    }
+    private boolean checkRedefinedAttribute(Attribute a) {
+        boolean isRedefined = false;
+        Attribute currentAttribute = getAttribute(a.getId().getLexeme());
+        if(currentAttribute.getName().equals(a.getName()))
+            isRedefined = true;
+        return isRedefined;
+    }
+    private boolean checkEqualParameters(Method currentMethod, Method inheritedMethod) {
+        boolean validParameters = true;
+        if (currentMethod.getParameterList().size() != inheritedMethod.getParameterList().size())
+            validParameters = false;
+        else {
+            for (int i = 0; i < currentMethod.getParameterList().size(); i++) {
+                if (!currentMethod.getParameterList().get(i).getType().equals(inheritedMethod.getParameterList().get(i).getType())) {
+                    validParameters = false;
+                    break;
+                }
+            }
+        }
+        return validParameters;
     }
 }
