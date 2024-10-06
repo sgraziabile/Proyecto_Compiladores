@@ -106,17 +106,17 @@ public class Class {
                 addInheritedAttribute(attribute);
             }
             for(Method m: superclass.getMethodList()) {
-                Method currentMethod = methods.get(m.getId().getLexeme());
-                if(currentMethod == null) {
-                    methodAuxList.addFirst(m);
-                }
-                else {
-                    if(checkRedefinedMethod(m)) {
-                        removeMethod(currentMethod);
-                        methodAuxList.addFirst(currentMethod);
-                    }
-                    else {
-                        throw new InvalidRedefinitionException(currentMethod.getName(), currentMethod.getId().getLineNumber());
+                if (!m.getType().getName().equals("constructor")) {
+                    Method currentMethod = methods.get(m.getId().getLexeme());
+                    if (currentMethod == null) {
+                        methodAuxList.addFirst(m);
+                    } else {
+                        if (checkRedefinedMethod(m)) {
+                            removeMethod(currentMethod);
+                            methodAuxList.addFirst(currentMethod);
+                        } else {
+                            throw new InvalidRedefinitionException(currentMethod.getName(), currentMethod.getId().getLineNumber());
+                        }
                     }
                 }
             }
