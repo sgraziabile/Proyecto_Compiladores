@@ -3,7 +3,7 @@
 
  class A {
      private int atr1;
-     String atr2 = 2;
+     public String atr2;
 
      public A() {
 
@@ -22,9 +22,3 @@
  class Persona {
 
  }
-
-
-
-
-
-

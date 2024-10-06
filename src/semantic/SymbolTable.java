@@ -98,12 +98,14 @@ public class SymbolTable {
         Class objectClass = new Class(new Token("idClase", "Object", 0));
         objectClass.setConsolidated();
         Method debugPrint = new Method(new Token("idMetVar","debugPrint",0),new PrimitiveType("void"),"public","static");
+        objectClass.checkConstructor();
         objectClass.addMethod(debugPrint);
         insertClass(objectClass);
         return objectClass.getId();
     }
     private void initSystemClass(Token objectClass) throws Exception {
         Class systemClass = new Class(new Token("idClase", "System", 0));
+        systemClass.checkConstructor();
         addSystemMethods(systemClass);
         systemClass.setSuperclass(objectClass);
         insertClass(systemClass);
@@ -111,6 +113,7 @@ public class SymbolTable {
     private void initStringClass(Token objectClass) throws Exception{
         Class stringClass = new Class(new Token("idClase", "String", 0));
         stringClass.setSuperclass(objectClass);
+        stringClass.checkConstructor();
         insertClass(stringClass);
     }
     private void addSystemMethods(Class systemClass) {

@@ -1,0 +1,24 @@
+///[Error:String|15]
+ //Invalid String declaration.
+
+ class A {
+     private int atr1;
+     public String atr2;
+
+     public A() {
+
+     }
+     public int met1(int a, String s) {}
+     public void met2(int a) {}
+     public String met3() {}
+ }
+ class String {
+
+ }
+ class B extends A{
+     private int atr3;
+     public float atr4;
+     public int met1(int b,String str) {}
+     public void met4() {}
+     public static void main() {}
+ }
