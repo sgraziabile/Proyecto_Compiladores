@@ -113,7 +113,7 @@ public class Class {
                 else {
                     if(checkRedefinedMethod(m)) {
                         removeMethod(currentMethod);
-                        methodAuxList.addFirst(m);
+                        methodAuxList.addFirst(currentMethod);
                     }
                     else {
                         throw new InvalidRedefinitionException(currentMethod.getName(), currentMethod.getId().getLineNumber());

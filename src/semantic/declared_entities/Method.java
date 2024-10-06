@@ -2,6 +2,7 @@ package semantic.declared_entities;
 
 import entities.Token;
 import exceptions.CantResolveSymbolException;
+import exceptions.InvalidConstructorNameException;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -68,13 +69,15 @@ public class Method extends ClassMember {
         isConsolidated = true;
     }
     public void checkMain() throws Exception {
-        if (id.getLexeme().equals("main")  && modifier.equals("static") && visibility.equals("public")) {
+        if (id.getLexeme().equals("main")  && modifier.equals("static") && visibility.equals("public") && type.getName().equals("void") && parameterList.isEmpty()) {
             symbolTable.setMainDeclared();
         }
     }
-    private void checkIfConstructor(Class myClass) {
-        if (id.getLexeme().equals(myClass.getName())) {
-            myClass.setConstructorDeclared();
-        }
+    private void checkIfConstructor(Class myClass) throws Exception {
+        if(type.getName().equals("constructor"))
+            if (id.getLexeme().equals(myClass.getName())) {
+                myClass.setConstructorDeclared();
+            }
+            else throw new InvalidConstructorNameException(id.getLineNumber(), id.getLexeme());
     }
 }

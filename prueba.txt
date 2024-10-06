@@ -11,15 +11,15 @@ class A {
     public String met3() {}
 
 }
-class A extends A{
+class B extends A{
     private int atr4;
-    public int atr5;
+    public Persona atr5;
     public String atr6;
 
     public B(Object a) {
         super(a);
     }
-    public int met4(int b, String a) {}
+    public int met1(int b, String a) {}
     public void met2(int a) {}
     public void met5(int b) {}
 

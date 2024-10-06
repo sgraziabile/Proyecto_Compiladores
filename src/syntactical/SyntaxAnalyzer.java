@@ -171,9 +171,6 @@ public class SyntaxAnalyzer {
             match("idClase");
             if(currentToken.getTokenClass().equals("parentesisAbre")) {
                 type = new PrimitiveType("constructor");
-                if(!id.getLexeme().equals(symbolTable.getCurrentClass().getName())) {
-                    throw new InvalidConstructorNameException(id.getLineNumber(),id.getLexeme());
-                }
             }
             classMember = MetAtrCons2(id);
             classMember.setType(type);
