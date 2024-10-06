@@ -1,17 +1,17 @@
-class A{
+class A extends B{
     private int atr1;
     public int atr2;
     public String atr3;
 
-    public A(Object a) {
+    public A() {
 
     }
-    public int met1() {}
+    public int met1(int a, String s) {}
     public void met2(int a) {}
     public String met3() {}
 
 }
-class B extends A{
+class B extends B{
     private int atr4;
     public int atr5;
     public String atr6;
@@ -19,15 +19,22 @@ class B extends A{
     public B(Object a) {
         super(a);
     }
-    public int met4() {}
-    public void met2(int b) {}
+    public int met4(int b, String a) {}
+    public void met2(int a) {}
+    public void met5(int b) {}
 
 }
 class C extends B {
-    public int met5() {}
-    public void met6(int a) {}
+    private Object atr7;
+    public void met6() {}
+    public void met7(int a) {}
     public static void main() {}
 }
+class Persona extends A {
+
+}
+
+
 
 
 

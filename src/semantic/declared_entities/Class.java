@@ -83,7 +83,6 @@ public class Class {
         return methodList;
     }
     public void consolidate() throws Exception {
-        System.out.println("Consolidating class: " + id.getLexeme());
         if(superclass != null) {
             Class superclass = symbolTable.getClass(this.superclass.getLexeme());
             ArrayList<Method> methodAuxList = new ArrayList<>();
@@ -169,7 +168,6 @@ public class Class {
         return constructorDeclared;
     }
     public void checkConstructor() {
-        System.out.println("clase: " +id.getLexeme()+ constructorDeclared);
         if(!isConstructorDeclared()) {
             Method constructor = new Method();
             constructor.setId(new Token("idMetVar",id.getLexeme() ,0));
