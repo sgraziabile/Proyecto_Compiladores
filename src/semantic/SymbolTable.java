@@ -2,6 +2,7 @@ package semantic;
 
 import com.sun.jdi.ClassType;
 import entities.Token;
+import exceptions.CyclicInheritanceException;
 import exceptions.MainNotDeclaredException;
 import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
@@ -21,16 +22,24 @@ public class SymbolTable {
         this.currentClass = null;
         this.currentMethod = null;
         this.classHash = new Hashtable<>();
-        initBaseClasses();
-    }
+        try {
+            initBaseClasses();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } }
     public void setCurrentClass(Class c) {
         currentClass = c;
     }
     public void setCurrentMethod(Method method) {
         currentMethod = method;
     }
-    public void insertClass(Class c) {
-        classHash.put(c.getName(), c);
+    public void insertClass(Class c) throws Exception {
+        if(c.getSuperclass() == null)
+            classHash.put(c.getName(), c);
+        else if(!c.getName().equals(c.getSuperclass().getLexeme()))
+            classHash.put(c.getName(), c);
+        else
+            throw new CyclicInheritanceException(c.getId().getLineNumber(),c.getName());
     }
     public void printClasses() {
         for (Class c : classHash.values()) {
@@ -80,12 +89,12 @@ public class SymbolTable {
     public void setMainDeclared() {
         mainDeclared = true;
     }
-    private void initBaseClasses() {
+    private void initBaseClasses() throws Exception{
         Token objectClass = initObjectClass();
         initSystemClass(objectClass);
         initStringClass(objectClass);
     }
-    private Token initObjectClass() {
+    private Token initObjectClass() throws Exception {
         Class objectClass = new Class(new Token("idClase", "Object", 0));
         objectClass.setConsolidated();
         Method debugPrint = new Method(new Token("idMetVar","debugPrint",0),new PrimitiveType("void"),"public","static");
@@ -93,13 +102,13 @@ public class SymbolTable {
         insertClass(objectClass);
         return objectClass.getId();
     }
-    private void initSystemClass(Token objectClass) {
+    private void initSystemClass(Token objectClass) throws Exception {
         Class systemClass = new Class(new Token("idClase", "System", 0));
         addSystemMethods(systemClass);
         systemClass.setSuperclass(objectClass);
         insertClass(systemClass);
     }
-    private void initStringClass(Token objectClass) {
+    private void initStringClass(Token objectClass) throws Exception{
         Class stringClass = new Class(new Token("idClase", "String", 0));
         stringClass.setSuperclass(objectClass);
         insertClass(stringClass);

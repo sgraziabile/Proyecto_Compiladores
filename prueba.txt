@@ -1,4 +1,4 @@
-class A extends B{
+class A {
     private int atr1;
     public int atr2;
     public String atr3;
@@ -11,7 +11,7 @@ class A extends B{
     public String met3() {}
 
 }
-class B extends B{
+class A extends A{
     private int atr4;
     public int atr5;
     public String atr6;
@@ -24,7 +24,7 @@ class B extends B{
     public void met5(int b) {}
 
 }
-class C extends B {
+class C extends B{
     private Object atr7;
     public void met6() {}
     public void met7(int a) {}

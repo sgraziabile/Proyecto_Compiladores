@@ -154,12 +154,14 @@ public class Class {
         }
     }
     private void checkCircularInheritance() throws Exception {
-        if(superclass != null) {
+        if (superclass != null) {
             Class currentClass = this;
-            while(currentClass.getSuperclass() != null) {
-                currentClass = symbolTable.getClass(currentClass.getSuperclass().getLexeme());
-                if(currentClass.getName().equals(this.getName())) {
-                    throw new CyclicInheritanceException(this.getId().getLineNumber(), this.getName());
+            if (currentClass.getSuperclass() != null) {
+                while (currentClass.getSuperclass() != null) {
+                    currentClass = symbolTable.getClass(currentClass.getSuperclass().getLexeme());
+                    if (currentClass.getName().equals(this.getName())) {
+                        throw new CyclicInheritanceException(this.getId().getLineNumber(), this.getName());
+                    }
                 }
             }
         }
