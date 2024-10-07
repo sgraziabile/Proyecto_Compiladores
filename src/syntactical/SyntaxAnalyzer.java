@@ -30,22 +30,6 @@ public class SyntaxAnalyzer {
         currentToken = lexicalAnalyzer.nextToken();
         Init();
         symbolTable.checkDeclarations();
-        for(Class c: symbolTable.getClasses().values()) {
-            if(c.getSuperclass() != null) {
-                System.out.println(c.getName() + " extends " + c.getSuperclass().getLexeme());
-            }
-            else System.out.println(c.getName());
-            for(Attribute a: c.getAttributeList()) {
-                a.print();
-            }
-            for(Method m: c.getMethodList()) {
-                m.print();
-                for(Parameter p: m.getParameterList()) {
-                    p.print();
-                }
-            }
-            System.out.println();
-        }
     }
 
     private void match(String tokenName) throws Exception {

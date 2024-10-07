@@ -1,26 +1,28 @@
-///[SinErrores]
-//Class types declared
+///[Error:main|1]
+//main not declared
 
- class A {
+ class A{
      private int atr1;
      String atr2 = 2;
 
      public A() {
 
      }
-     public Object met1(int a, String s) {}
-     public System met2(int a) {}
-     public String met3() {}
-     public Persona met4() {}
+     public int met1(int a, String b) {}
+     public static void met2(int a) {}
+     public static void main() {}
  }
  class B extends A{
      private int atr3;
      public float atr4;
-     public void met5() {}
-     public static void main() {}
+     public int met1(int param1, String param2) {}
+     public void met3() {}
  }
- class Persona {
-
+ class Persona extends B{
+    public int met5() {
+        var a = 3;
+    }
+    public int met1(int param1, String param2) {}
  }
 
 
