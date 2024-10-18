@@ -329,7 +329,7 @@ public class SyntaxAnalyzer {
     private Type MemberType() throws Exception {
         Type type = null;
         if(currentToken.getTokenClass().equals("keyword_void")) {
-            type = new PrimitiveType("void");       //tipo void?
+            type = new PrimitiveType("void");
             match("keyword_void");
         }
         else if(primerosHandler.Type.contains(currentToken.getTokenClass())) {

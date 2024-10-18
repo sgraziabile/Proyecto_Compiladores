@@ -2,14 +2,14 @@
 //main not declared
 
  class A{
-     private int atr1;
+     private char atr1;
      String atr2 = 2;
 
      public A() {
 
      }
      public int met1(int a, String b) {}
-     public static void met2(int a) {}
+     public static char met2(char a) {}
      public static void main() {}
  }
  class B extends A{
@@ -24,6 +24,7 @@
     }
     public int met1(int param1, String param2) {}
  }
+
 
 
 

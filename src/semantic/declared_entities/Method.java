@@ -56,7 +56,7 @@ public class Method extends ClassMember {
             checkMain();
         if(!myClass.isConstructorDeclared())
             checkIfConstructor(myClass);
-        if(!type.getName().equals("void") && !type.getName().equals("int") && !type.getName().equals("boolean") && !type.getName().equals("float") && !type.getName().equals("constructor")){
+        if(!type.getName().equals("void") && !type.getName().equals("int") && !type.getName().equals("boolean") && !type.getName().equals("float") && !type.getName().equals("char") && !type.getName().equals("constructor")){
                 if(symbolTable.getClass(type.getName()) == null) {
                     throw new CantResolveSymbolException(id.getLineNumber(), type.getName());
                 }
