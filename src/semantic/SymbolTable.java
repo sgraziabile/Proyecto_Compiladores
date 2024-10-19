@@ -1,13 +1,10 @@
 package semantic;
 
-import com.sun.jdi.ClassType;
 import entities.Token;
 import exceptions.CyclicInheritanceException;
 import exceptions.MainNotDeclaredException;
 import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
-
-import java.lang.ref.Reference;
 import java.util.Hashtable;
 
 public class SymbolTable {

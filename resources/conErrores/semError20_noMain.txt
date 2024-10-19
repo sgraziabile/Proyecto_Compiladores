@@ -1,0 +1,23 @@
+///[Error:main|1]
+//main not declared
+
+ class A {
+     private int atr1;
+     String atr2 = 2;
+
+     public A() {
+
+     }
+     public Object met1(int a, String b) {}
+     public System met2(int a) {}
+     public String met3() {}
+     public Persona met4() {}
+ }
+ class B extends A{
+     private int atr3;
+     public float atr4;
+     public void met5() {}
+ }
+ class Persona {
+
+ }
