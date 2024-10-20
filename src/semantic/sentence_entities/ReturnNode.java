@@ -14,4 +14,7 @@ public class ReturnNode extends SentenceNode {
     public ExpressionNode getReturnExpression() {
         return returnExpression;
     }
+    public void setReturnExpression(ExpressionNode returnExpression) {
+        this.returnExpression = returnExpression;
+    }
 }

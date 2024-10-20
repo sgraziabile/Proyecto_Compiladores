@@ -9,7 +9,10 @@ import lexical.LexicalAnalyzer;
 import semantic.SymbolTable;
 import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
+import semantic.expression_entities.*;
+import semantic.sentence_entities.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SyntaxAnalyzer {
@@ -430,136 +433,185 @@ public class SyntaxAnalyzer {
         parameter = new Parameter(paramName,paramType);
         return parameter;
     }
-    private void Block() throws Exception {
+    private Block Block() throws Exception {
         match("llaveAbre");
-        SentenceList();
+        Block block = new Block();
+        symbolTable.setCurrentBlock(block);
+        ArrayList<SentenceNode> sentenceList = new ArrayList<>();
+        SentenceList(sentenceList);
         match("llaveCierra");
+        block.addSentenceList(sentenceList);
+        return block;
     }
-    private void SentenceList() throws Exception {
+    private void SentenceList(ArrayList<SentenceNode> sentenceList) throws Exception {
         if(primerosHandler.Sentence.contains(currentToken.getTokenClass())) {
-            Sentence();
-            SentenceList();
+            SentenceNode sentence = Sentence();
+            if(sentence != null)
+                sentenceList.add(sentence);
+            SentenceList(sentenceList);
         }
         else {
             //vacio
         }
     }
-    private void Sentence() throws Exception {
+    private SentenceNode Sentence() throws Exception {
+        SentenceNode sentence = null;
         if(currentToken.getTokenClass().equals("puntoYComa")) {
             match("puntoYComa");
         }
         else if(primerosHandler.Expression.contains(currentToken.getTokenClass())) {
-            Asign_Call();
+            sentence = Asign_Call();
             match("puntoYComa");
         }
         else if(currentToken.getTokenClass().equals("keyword_var")) {
-            LocalVar();
+            sentence = LocalVar();
             match("puntoYComa");
         }
         else if(currentToken.getTokenClass().equals("keyword_return")) {
-            Return();
+            sentence = Return();
             match("puntoYComa");
         }
         else if(currentToken.getTokenClass().equals("keyword_switch")) {
-            Switch();
+            sentence = Switch();
         }
         else if(currentToken.getTokenClass().equals("keyword_break")) {
-            Break();
+            sentence = Break();
             match("puntoYComa");
         }
         else if(currentToken.getTokenClass().equals("keyword_while")) {
-            While();
+            sentence = While();
         }
         else if(currentToken.getTokenClass().equals("llaveAbre")) {
-            Block();
+            sentence = Block();
         }
         else if(currentToken.getTokenClass().equals("keyword_if")) {
-            If();
+            sentence = If();
         }
         else if(currentToken.getTokenClass().equals("keyword_for")) {
-            For();
+            sentence = For();
         }
         else {
             String lexeme = currentToken.getLexeme();
             throw new SyntaxException(List.of("inicio sentencia"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),lexeme);
         }
+        return sentence;
     }
-    private void LocalVar() throws Exception {
+    private LocalVarNode LocalVar() throws Exception {
+        LocalVarNode localVar;
         match("keyword_var");
+        Token varId = currentToken;
         match("idMetVar");
+        Token assignOp = currentToken;
         match("opAsign");
-        CompoundExpression();
+        CompoundExpNode assignmentExp = CompoundExpression();
+        localVar = new LocalVarNode(varId,assignOp,assignmentExp);
+        return localVar;
     }
-    private void Return() throws Exception {
+    private ReturnNode Return() throws Exception {
+        ReturnNode returnNode = new ReturnNode();
         match("keyword_return");
-        OptionalExpression();
+        ExpressionNode returnExpression = OptionalExpression();
+        if(returnExpression != null) {
+            returnNode.setReturnExpression(returnExpression);
+        }
+        return returnNode;
     }
-    private void OptionalExpression() throws Exception {
+    private ExpressionNode OptionalExpression() throws Exception {
+        ExpressionNode expression = null;
         if(primerosHandler.Expression.contains(currentToken.getTokenClass())) {
-            Expression();
+            expression = Expression();
         }
         else {
             //vacio
         }
+        return expression;
     }
-    private void Switch() throws Exception {
+    private SwitchNode Switch() throws Exception {
+        SwitchNode switchNode = new SwitchNode();
         match("keyword_switch");
         match("parentesisAbre");
-        Expression();
+        ExpressionNode switchExpression = Expression();
         match("parentesisCierra");
         match("llaveAbre");
-        SwitchSentenceList();
+        ArrayList<CaseNode> caseList = new ArrayList<>();
+        SwitchSentenceList(caseList);
         match("llaveCierra");
+        switchNode.setExpression(switchExpression);
+        switchNode.setCases(caseList);
+        for(CaseNode caseNode : caseList) {
+            if(caseNode.getCaseValue() == null) {
+                switchNode.setDefaultCase(caseNode);
+            }
+        }
+        return switchNode;
     }
-    private void SwitchSentenceList() throws Exception {
+    private void SwitchSentenceList(ArrayList<CaseNode> caseNodes) throws Exception {
         if(currentToken.getTokenClass().equals("keyword_case") || currentToken.getTokenClass().equals("keyword_default")) {
-            CaseList();
-            SwitchSentenceList();
+            CaseNode caseNode = CaseList();
+            if(caseNode != null)
+                caseNodes.add(caseNode);
         }
         else {
             //vacio
         }
     }
-    private void CaseList() throws Exception {
+    private CaseNode CaseList() throws Exception {
+        CaseNode caseNode = null;
         if(currentToken.getTokenClass().equals("keyword_case")) {
             match("keyword_case");
-            PrimitiveLiteral();
+            PrimitiveLiteralNode caseValue = PrimitiveLiteral();
             match("dosPuntos");
-            OptionalSentence();
+            SentenceNode caseSentence = OptionalSentence();
+            caseNode = new CaseNode(caseValue,caseSentence);
         }
         else if(currentToken.getTokenClass().equals("keyword_default")) {
             match("keyword_default");
             match("dosPuntos");
-            Sentence();
+            SentenceNode defaultSentence = Sentence();
+            caseNode = new CaseNode();
+            caseNode.setCaseBody(defaultSentence);
         }
         else {
             //vacio
         }
+        return caseNode;
     }
-    private void OptionalSentence() throws Exception {
+    private SentenceNode OptionalSentence() throws Exception {
+        SentenceNode sentence = null;
         if(primerosHandler.Sentence.contains(currentToken.getTokenClass())) {
-            Sentence();
+            sentence = Sentence();
         }
         else {
             //vacio
         }
+        return sentence;
     }
-    private void Break() throws Exception {
+    private BreakNode Break() throws Exception {
+        BreakNode breakNode;
+        Token breakToken = currentToken;
         match("keyword_break");
+        breakNode = new BreakNode(breakToken);
+        return breakNode;
     }
-    private void While() throws Exception {
+    private WhileNode While() throws Exception {
+        WhileNode whileNode = new WhileNode();
         match("keyword_while");
         match("parentesisAbre");
-        Expression();
+        ExpressionNode condition = Expression();
         match("parentesisCierra");
-        Sentence();
+        SentenceNode whileBody = Sentence();
+        whileNode.setCondition(condition);
+        whileNode.setBody(whileBody);
+        return whileNode;
     }
-    private void For() throws Exception {
+    private ForNode For() throws Exception {
+        ForNode forNode = new ForNode();
         match("keyword_for");
         match("parentesisAbre");
         ForCases();
         match("parentesisCierra");
         Sentence();
+        return forNode;
     }
     private void ForCases() throws Exception {
         if(primerosHandler.Type.contains(currentToken.getTokenClass())) {
@@ -601,13 +653,15 @@ public class SyntaxAnalyzer {
         match("puntoYComa");
         Expression();
     }
-    private void If() throws Exception {
+    private IfNode If() throws Exception {
+        IfNode ifNode = new IfNode();
         match("keyword_if");
         match("parentesisAbre");
         Expression();
         match("parentesisCierra");
         Sentence();
         ElseOptional();
+        return ifNode;
     }
     private void ElseOptional() throws Exception {
         if(currentToken.getTokenClass().equals("keyword_else")) {
@@ -618,23 +672,43 @@ public class SyntaxAnalyzer {
             //vacio
         }
     }
-    private void Asign_Call() throws Exception {
-        Expression();
+    private SentenceNode Asign_Call() throws Exception {
+        ExpressionNode expression = Expression();
+        SentenceNode sentence;
+        if(expression instanceof AssignmentExpNode) {
+            sentence = new AssignmentNode(expression);
+        }
+        else {
+            sentence = new CallNode(expression);
+        }
+        return sentence;
     }
-    private void Expression() throws Exception {
-        CompoundExpression();
-        Expression2();
+    private ExpressionNode Expression() throws Exception {
+        ExpressionNode expression = null;
+        expression = CompoundExpression();
+        AssignmentExpNode assignmentExpNode =  Expression2();
+        if(assignmentExpNode != null) {
+            assignmentExpNode.setLeftExp(expression);
+            expression = assignmentExpNode;
+        }
+        return expression;
     }
-    private void Expression2() throws Exception {
+    private AssignmentExpNode Expression2() throws Exception {
+        AssignmentExpNode assignmentExpNode = null;
         if(currentToken.getTokenClass().equals("opAsign") || currentToken.getTokenClass().equals("opSumaAsign") || currentToken.getTokenClass().equals("opMenosAsign")) {
-            AssignmentOperator();
-            CompoundExpression();
+            assignmentExpNode = new AssignmentExpNode();
+            Token operator = AssignmentOperator();
+            CompoundExpNode rightExp = CompoundExpression();
+            assignmentExpNode.setOperator(operator);
+            assignmentExpNode.setRightExp(rightExp);
         }
         else {
             //vacio
         }
+        return assignmentExpNode;
     }
-    private void AssignmentOperator() throws Exception {
+    private Token AssignmentOperator() throws Exception {
+        Token assignmentOp = currentToken;
         if(currentToken.getTokenClass().equals("opAsign")) {
             match("opAsign");
         }
@@ -647,10 +721,13 @@ public class SyntaxAnalyzer {
         else {
             throw new SyntaxException(List.of("operador de asignacion"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
+        return assignmentOp;
     }
-    private void CompoundExpression() throws Exception {
+    private CompoundExpNode CompoundExpression() throws Exception {
+        CompoundExpNode compoundExpNode = new BasicExpNode();   //MODIFICAR
         BasicExpression();
         CompoundExpression2();
+        return compoundExpNode;
     }
     private void CompoundExpression2() throws Exception {
         if(primerosHandler.BinaryOperator.contains(currentToken.getTokenClass())) {
@@ -754,7 +831,8 @@ public class SyntaxAnalyzer {
             throw new SyntaxException(List.of("literal"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
     }
-    private void PrimitiveLiteral() throws Exception {
+    private PrimitiveLiteralNode PrimitiveLiteral() throws Exception {
+        PrimitiveLiteralNode primitiveLiteral = null;
         if(currentToken.getTokenClass().equals("keyword_true")) {
             match("keyword_true");
         }
@@ -773,6 +851,7 @@ public class SyntaxAnalyzer {
         else {
             throw new SyntaxException(List.of("literal primitivo"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
+        return primitiveLiteral;
     }
     private void ObjectLiteral() throws Exception {
         if(currentToken.getTokenClass().equals("keyword_null")) {

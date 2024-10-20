@@ -2,7 +2,7 @@ package semantic.sentence_entities;
 
 import semantic.expression_entities.CompoundExpNode;
 
-public class IfNode {
+public class IfNode extends SentenceNode {
     CompoundExpNode condition;
     SentenceNode thenBody;
     SentenceNode elseBody;

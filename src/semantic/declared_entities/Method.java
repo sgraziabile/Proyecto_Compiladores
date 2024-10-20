@@ -3,6 +3,7 @@ package semantic.declared_entities;
 import entities.Token;
 import exceptions.CantResolveSymbolException;
 import exceptions.InvalidConstructorNameException;
+import semantic.sentence_entities.Block;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -13,6 +14,7 @@ public class Method extends ClassMember {
     private Hashtable<String, Parameter> parameterHash;
     private ArrayList<Parameter> parameterList;
     private boolean isConsolidated = false;
+    private Block mainBlock;
 
     public Method(Token name, Type returnType, String modifier, String visibility) {
         super(name, returnType, modifier,visibility);

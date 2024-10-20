@@ -5,12 +5,15 @@ import exceptions.CyclicInheritanceException;
 import exceptions.MainNotDeclaredException;
 import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
+import semantic.sentence_entities.Block;
+
 import java.util.Hashtable;
 
 public class SymbolTable {
     boolean isConsolidated = false;
     private Class currentClass;
     private Method currentMethod;
+    private Block currentBlock;
     private Hashtable<String,Class> classHash;
     private boolean mainDeclared = false;
 
@@ -30,6 +33,9 @@ public class SymbolTable {
     public void setCurrentMethod(Method method) {
         currentMethod = method;
     }
+    public void setCurrentBlock(Block block) {
+        currentBlock = block;
+    }
     public void insertClass(Class c) throws Exception {
         if(c.getSuperclass() == null)
             classHash.put(c.getName(), c);
@@ -48,6 +54,9 @@ public class SymbolTable {
     }
     public Method getCurrentMethod() {
         return currentMethod;
+    }
+    public Block getCurrentBlock() {
+        return currentBlock;
     }
     public Class getClass(String id) {
         return classHash.get(id);
