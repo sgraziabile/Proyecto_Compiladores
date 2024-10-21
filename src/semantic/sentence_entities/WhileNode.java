@@ -27,4 +27,7 @@ public class WhileNode extends SentenceNode {
     public void setBody(SentenceNode body) {
         this.body = body;
     }
+    public String toString() {
+        return "WhileNode";
+    }
 }

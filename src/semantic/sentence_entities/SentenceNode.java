@@ -6,4 +6,7 @@ public abstract class SentenceNode {
     public void setParentBlock(Block parentBlock) {
         this.parentBlock = parentBlock;
     }
+    public String toString() {
+        return "SentenceNode";
+    }
 }

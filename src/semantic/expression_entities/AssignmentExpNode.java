@@ -35,5 +35,8 @@ public class AssignmentExpNode extends ExpressionNode {
     public void setOperator(Token operator) {
         this.operator = operator;
     }
+    public String toString() {
+        return leftExp.toString() + " " + operator.getLexeme() + " " + rightExp.toString();
+    }
 
 }

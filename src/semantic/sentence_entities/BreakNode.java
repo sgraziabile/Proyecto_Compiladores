@@ -8,6 +8,9 @@ public class BreakNode extends SentenceNode {
     public BreakNode(Token breakToken) {
         this.breakToken = breakToken;
     }
+    public String toString() {
+        return "BreakNode";
+    }
 
 
 }

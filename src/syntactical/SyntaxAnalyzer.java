@@ -3,7 +3,6 @@ package syntactical;
 import entities.PrimerosHandler;
 import entities.Token;
 import exceptions.AlreadyDeclaredException;
-import exceptions.InvalidConstructorNameException;
 import exceptions.SyntaxException;
 import lexical.LexicalAnalyzer;
 import semantic.SymbolTable;
@@ -33,6 +32,7 @@ public class SyntaxAnalyzer {
         currentToken = lexicalAnalyzer.nextToken();
         Init();
         symbolTable.checkDeclarations();
+        symbolTable.printBlocks();
     }
 
     private void match(String tokenName) throws Exception {
@@ -47,6 +47,7 @@ public class SyntaxAnalyzer {
     public void Init() throws Exception {
         ClassList();
         match("$");
+
     }
     private void ClassList() throws Exception {
         if (currentToken.getTokenClass().equals("keyword_class")) {
@@ -176,7 +177,8 @@ public class SyntaxAnalyzer {
             classMember.setId(id);
             symbolTable.setCurrentMethod((Method) classMember);
             FormalArguments();
-            Block();
+            Block mainBlock = Block();
+            ((Method) classMember).setMainBlock(mainBlock);
             if(symbolTable.getCurrentClass().getMethod(id.getLexeme()) == null) {
                 symbolTable.getCurrentClass().addMethod((Method) classMember);
             }
@@ -214,7 +216,8 @@ public class SyntaxAnalyzer {
             member.setId(id);
             symbolTable.setCurrentMethod((Method) member);
             FormalArguments();
-            Block();
+            Block mainBlock = Block();
+            ((Method) member).setMainBlock(mainBlock);
             if(symbolTable.getCurrentClass().getMethod(id.getLexeme()) == null) {
                 symbolTable.getCurrentClass().addMethod((Method) member);
             }
@@ -494,6 +497,8 @@ public class SyntaxAnalyzer {
             String lexeme = currentToken.getLexeme();
             throw new SyntaxException(List.of("inicio sentencia"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),lexeme);
         }
+        if(sentence != null)
+            sentence.setParentBlock(symbolTable.getCurrentBlock());
         return sentence;
     }
     private LocalVarNode LocalVar() throws Exception {
@@ -548,8 +553,10 @@ public class SyntaxAnalyzer {
     private void SwitchSentenceList(ArrayList<CaseNode> caseNodes) throws Exception {
         if(currentToken.getTokenClass().equals("keyword_case") || currentToken.getTokenClass().equals("keyword_default")) {
             CaseNode caseNode = CaseList();
-            if(caseNode != null)
+            if(caseNode != null) {
                 caseNodes.add(caseNode);
+            }
+            SwitchSentenceList(caseNodes);
         }
         else {
             //vacio
@@ -657,26 +664,31 @@ public class SyntaxAnalyzer {
         IfNode ifNode = new IfNode();
         match("keyword_if");
         match("parentesisAbre");
-        Expression();
+        ExpressionNode condition = Expression();
         match("parentesisCierra");
-        Sentence();
-        ElseOptional();
+        SentenceNode thenBody = Sentence();
+        SentenceNode elseBody = ElseOptional();
+        ifNode.setCondition((CompoundExpNode) condition);
+        ifNode.setThenBody(thenBody);
+        ifNode.setElseBody(elseBody);
         return ifNode;
     }
-    private void ElseOptional() throws Exception {
+    private SentenceNode ElseOptional() throws Exception {
+        SentenceNode elseBody = null;
         if(currentToken.getTokenClass().equals("keyword_else")) {
             match("keyword_else");
-            Sentence();
+            elseBody = Sentence();
         }
         else {
             //vacio
         }
+        return elseBody;
     }
     private SentenceNode Asign_Call() throws Exception {
         ExpressionNode expression = Expression();
         SentenceNode sentence;
         if(expression instanceof AssignmentExpNode) {
-            sentence = new AssignmentNode(expression);
+            sentence = new AssignmentNode((AssignmentExpNode) expression);
         }
         else {
             sentence = new CallNode(expression);
@@ -710,12 +722,15 @@ public class SyntaxAnalyzer {
     private Token AssignmentOperator() throws Exception {
         Token assignmentOp = currentToken;
         if(currentToken.getTokenClass().equals("opAsign")) {
+            assignmentOp = currentToken;
             match("opAsign");
         }
         else if(currentToken.getTokenClass().equals("opSumaAsign")) {
+            assignmentOp = currentToken;
             match("opSumaAsign");
         }
         else if(currentToken.getTokenClass().equals("opMenosAsign")) {
+            assignmentOp = currentToken;
             match("opMenosAsign");
         }
         else {
@@ -724,34 +739,47 @@ public class SyntaxAnalyzer {
         return assignmentOp;
     }
     private CompoundExpNode CompoundExpression() throws Exception {
-        CompoundExpNode compoundExpNode = new BasicExpNode();   //MODIFICAR
-        BasicExpression();
-        CompoundExpression2();
-        return compoundExpNode;
+        CompoundExpNode compoundExpression = null;
+        CompoundExpNode basicExpression = BasicExpression();
+        CompoundExpNode binaryExpression = CompoundExpression2(basicExpression);
+        if(binaryExpression == null)
+            compoundExpression = basicExpression;
+        else
+            compoundExpression = binaryExpression;
+        return compoundExpression;
     }
-    private void CompoundExpression2() throws Exception {
+    private CompoundExpNode CompoundExpression2(CompoundExpNode leftExp) throws Exception {
+        BinaryExpNode binaryExpression = null;
+        CompoundExpNode nextExp = null;
         if(primerosHandler.BinaryOperator.contains(currentToken.getTokenClass())) {
-            BinaryOperator();
-            BasicExpression();
-            CompoundExpression2();
+            Token operator = BinaryOperator();
+            CompoundExpNode rightExp = BasicExpression();
+            binaryExpression = new BinaryExpNode(leftExp,operator,rightExp);
+            nextExp = CompoundExpression2(binaryExpression);
         }
         else {
-            //vacio
+            nextExp = leftExp;
         }
+        return nextExp;
     }
-    private void BasicExpression() throws Exception {
+    private CompoundExpNode BasicExpression() throws Exception {
+        CompoundExpNode returnExpression = null;
         if(primerosHandler.UnaryOperator.contains(currentToken.getTokenClass())) {
-            UnaryOperator();
-            Operand();
+            Token operator = UnaryOperator();
+            OperandNode operand = Operand();
+            returnExpression = new UnaryExpNode(operand,operator);
         }
         else if(primerosHandler.Literal.contains(currentToken.getTokenClass()) || primerosHandler.Access.contains(currentToken.getTokenClass())) {
-            Operand();
+            OperandNode operand = Operand();
+            returnExpression = operand;
         }
         else {
             throw new SyntaxException(List.of("operador unario", "operando"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
+        return returnExpression;
     }
-    private void BinaryOperator() throws Exception {
+    private Token BinaryOperator() throws Exception {
+        Token operator = currentToken;
         if(currentToken.getTokenClass().equals("opSuma")) {
             match("opSuma");
         }
@@ -794,8 +822,10 @@ public class SyntaxAnalyzer {
         else {
             throw new SyntaxException(List.of("operador binario"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
+        return operator;
     }
-    private void UnaryOperator() throws Exception {
+    private Token UnaryOperator() throws Exception {
+        Token operator = currentToken;
         if(currentToken.getTokenClass().equals("opNot")) {
             match("opNot");
         }
@@ -808,31 +838,36 @@ public class SyntaxAnalyzer {
         else {
             throw new SyntaxException(List.of("operador unario"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
+        return operator;
     }
-    private void Operand() throws Exception {
+    private OperandNode Operand() throws Exception {
+        OperandNode operand;
         if(primerosHandler.Literal.contains(currentToken.getTokenClass())) {
-            Literal();
+            operand = Literal();
         }
         else if(primerosHandler.Access.contains(currentToken.getTokenClass())) {
-            Access();
+            operand = Access();
         }
         else {
             throw new SyntaxException(List.of("literal", "acceso"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
+        return operand;
     }
-    private void Literal() throws Exception {
+    private LiteralNode Literal() throws Exception {
+        LiteralNode literal;
         if(primerosHandler.PrimitiveLiteral.contains(currentToken.getTokenClass())) {
-            PrimitiveLiteral();
+            literal = PrimitiveLiteral();
         }
         else if(primerosHandler.ObjectLiteral.contains(currentToken.getTokenClass())) {
-            ObjectLiteral();
+            literal = ObjectLiteral();
         }
         else {
             throw new SyntaxException(List.of("literal"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
+        return literal;
     }
     private PrimitiveLiteralNode PrimitiveLiteral() throws Exception {
-        PrimitiveLiteralNode primitiveLiteral = null;
+        PrimitiveLiteralNode primitiveLiteral = new PrimitiveLiteralNode(currentToken);
         if(currentToken.getTokenClass().equals("keyword_true")) {
             match("keyword_true");
         }
@@ -853,7 +888,8 @@ public class SyntaxAnalyzer {
         }
         return primitiveLiteral;
     }
-    private void ObjectLiteral() throws Exception {
+    private ObjectLiteralNode ObjectLiteral() throws Exception {
+        ObjectLiteralNode objectLiteral = new ObjectLiteralNode(currentToken);
         if(currentToken.getTokenClass().equals("keyword_null")) {
             match("keyword_null");
         }
@@ -863,110 +899,161 @@ public class SyntaxAnalyzer {
         else {
             throw new SyntaxException(List.of("literal objeto"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
+        return objectLiteral;
     }
-    private void Access() throws Exception {
+    private PrimaryNode Access() throws Exception {
+        PrimaryNode primary;
         if(primerosHandler.Primary.contains(currentToken.getTokenClass())) {
-            Primary();
-            OptionalChain();
+            primary = Primary();
+            Chained chained = OptionalChain();
+            if(chained != null) {
+                primary.setChained(chained);
+            }
         }
         else {
             throw new SyntaxException(List.of("acceso"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
+        return primary;
     }
-    private void Primary() throws Exception{
+    private PrimaryNode Primary() throws Exception{
+        PrimaryNode primary;
         if(currentToken.getTokenClass().equals("idMetVar")) {
+            Token id = currentToken;
             match("idMetVar");
-            VarMetAccess();
+            primary = VarMetAccess();
+            if(primary == null) {
+                primary = new VarAccessNode(id);
+            } else {
+                ((MethodAccessNode) primary).setId(id);
+            }
         }
         else if(currentToken.getTokenClass().equals("keyword_this")) {
-            ThisAccess();
+            primary = ThisAccess();
         }
         else if(currentToken.getTokenClass().equals("keyword_new")) {
-            ConstructorAccess();
+            primary = ConstructorAccess();
         }
         else if(currentToken.getTokenClass().equals("idClase")) {
-            StaticMethodAccess();
+            primary = StaticMethodAccess();
         }
         else if(currentToken.getTokenClass().equals("parentesisAbre")) {
-            ParenthesizedExpression();
+            primary = ParenthesizedExpression();
         }
         else {
             throw new SyntaxException(List.of("idMetVar", "this", "new", "idClase", "("), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),currentToken.getLexeme());
         }
+        return primary;
     }
-    private void ThisAccess() throws Exception {
+    private ThisAccessNode ThisAccess() throws Exception {
         match("keyword_this");
+        return new ThisAccessNode();
     }
-    private void VarMetAccess() throws Exception {
+    private MethodAccessNode VarMetAccess() throws Exception {
+        MethodAccessNode methodAccess = null;
         if(currentToken.getTokenClass().equals("parentesisAbre")) {
-            ActualArgs();
+            methodAccess = new MethodAccessNode();
+            ArrayList<ExpressionNode> arguments = new ArrayList<>();
+            ActualArgs(arguments);
+            methodAccess.setArguments(arguments);
         }
         else {
             //vacio
         }
+        return methodAccess;
     }
-    private void ActualArgs() throws Exception {
+    private void ActualArgs(ArrayList<ExpressionNode> arguments) throws Exception {
         match("parentesisAbre");
-        ExpsListOptional();
+        ExpsListOptional(arguments);
         match("parentesisCierra");
     }
-    private void ExpsListOptional() throws Exception {
+    private void ExpsListOptional(ArrayList<ExpressionNode> arguments) throws Exception {
         if(primerosHandler.Expression.contains(currentToken.getTokenClass())) {
-            ExpsList();
+            ExpsList(arguments);
         }
         else {
             //vacio
         }
     }
-    private void ExpsList() throws Exception {
-        Expression();
-        ExpsList2();
+    private void ExpsList(ArrayList<ExpressionNode> arguments) throws Exception {
+        ExpressionNode argument = Expression();
+        arguments.add(argument);
+        ExpsList2(arguments);
     }
-    private void ExpsList2() throws Exception {
+    private void ExpsList2(ArrayList<ExpressionNode> arguments) throws Exception {
         if(currentToken.getTokenClass().equals("coma")) {
             match("coma");
-            ExpsList();
+            ExpsList(arguments);
         }
         else {
             //vacio
         }
     }
-    private void ConstructorAccess() throws Exception {
+    private MethodAccessNode ConstructorAccess() throws Exception {
+        MethodAccessNode constructorAccess = new MethodAccessNode();
         match("keyword_new");
+        Token idClase = currentToken;
         match("idClase");
-        ActualArgs();
+        ArrayList<ExpressionNode> arguments = new ArrayList<>();
+        ActualArgs(arguments);
+        constructorAccess.setId(idClase);
+        constructorAccess.setArguments(arguments);
+        return constructorAccess;
     }
-    private void StaticMethodAccess() throws Exception {
+    private StaticMethodAccessNode StaticMethodAccess() throws Exception {
+        Token classId = currentToken;
         match("idClase");
         match("punto");
+        Token methodId = currentToken;
         match("idMetVar");
-        ActualArgs();
+        ArrayList<ExpressionNode> arguments = new ArrayList<>();
+        ActualArgs(arguments);
+        StaticMethodAccessNode staticMethodAccess = new StaticMethodAccessNode(classId,methodId,arguments);
+        return staticMethodAccess;
     }
-    private void ParenthesizedExpression() throws Exception {
+    private ParenthesizedExpNode ParenthesizedExpression() throws Exception {
         match("parentesisAbre");
-        Expression();
+        ExpressionNode expression = Expression();
         match("parentesisCierra");
+        return new ParenthesizedExpNode(expression);
     }
-    private void OptionalChain() throws Exception {
+    private Chained OptionalChain() throws Exception {
+        Chained optionalChain = null;
         if(currentToken.getTokenClass().equals("punto")) {
             match("punto");
+            Token id = currentToken;
             match("idMetVar");
-            VarMetChain();
+            optionalChain = VarMetChain();
+            if(optionalChain != null) {
+                if(optionalChain instanceof ChainedCallNode) {
+                    ((ChainedCallNode) optionalChain).setName(id);
+                } else {
+                    optionalChain = new ChainedVarNode(id);
+                }
+            }
         }
         else {
             //vacio
         }
+        return optionalChain;
     }
-    private void VarMetChain() throws Exception {
+    private Chained VarMetChain() throws Exception {
+        Chained chainedNode = null;
         if(currentToken.getTokenClass().equals("punto")) {
-            OptionalChain();
+            chainedNode = OptionalChain();
         }
         else if(currentToken.getTokenClass().equals("parentesisAbre")) {
-            ActualArgs();
-            OptionalChain();
+            chainedNode = new ChainedCallNode();
+            ArrayList<ExpressionNode> args = new ArrayList<>();
+            ActualArgs(args);
+            ((ChainedCallNode) chainedNode).setArguments(args);
+            Chained optionalChained = OptionalChain();
+            if(optionalChained != null) {
+                chainedNode.setChained(optionalChained);
+            }
         }
         else {
             //vacio
         }
+        return chainedNode;
     }
 }

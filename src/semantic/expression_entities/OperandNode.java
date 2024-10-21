@@ -1,4 +1,9 @@
 package semantic.expression_entities;
 
-public class OperandNode extends CompoundExpNode{
+import entities.Token;
+
+public abstract class OperandNode extends CompoundExpNode{
+
+
+
 }

@@ -26,5 +26,8 @@ public class Block extends SentenceNode {
     public Block getParentBlock() {
         return parentBlock;
     }
+    public String toString() {
+        return "Block";
+    }
 
 }

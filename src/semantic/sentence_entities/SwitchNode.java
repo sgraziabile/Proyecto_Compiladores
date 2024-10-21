@@ -37,4 +37,7 @@ public class SwitchNode extends SentenceNode {
     public void setDefaultCase(CaseNode defaultCase) {
         this.defaultCase = defaultCase;
     }
+    public String toString() {
+        return "SwitchNode";
+    }
 }

@@ -38,4 +38,7 @@ public class IfNode extends SentenceNode {
     public boolean hasElseBody() {
         return elseBody != null;
     }
+    public String toString() {
+        return "IfNode";
+    }
 }

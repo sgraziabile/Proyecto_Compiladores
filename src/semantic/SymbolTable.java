@@ -5,7 +5,7 @@ import exceptions.CyclicInheritanceException;
 import exceptions.MainNotDeclaredException;
 import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
-import semantic.sentence_entities.Block;
+import semantic.sentence_entities.*;
 
 import java.util.Hashtable;
 
@@ -171,6 +171,84 @@ public class SymbolTable {
         param1 = new Parameter(new Token("idMetVar","s",0),new ReferenceType("String"));
         printSlnMethod.addParameter("s",param1);
         systemClass.addMethod(printSlnMethod);
+    }
+    public void printBlocks() {
+        for(Class c : classHash.values()) {
+            for(Method m : c.getMethods().values()) {
+                Block mainBlock = m.getMainBlock();
+                if(mainBlock != null) {
+                    for(SentenceNode s: mainBlock.getSentenceList()) {
+                        System.out.println(s.toString());
+                        if(s instanceof Block) {
+                            Block b = (Block) s;
+                            printBlock(b);
+                        }
+                        else if(s instanceof WhileNode) {
+                            WhileNode w = (WhileNode) s;
+                            printBlock((Block) w.getBody());
+                        }
+                        else if(s instanceof IfNode) {
+                            IfNode i = (IfNode) s;
+                            if(i.getThenBody() != null)
+                                printBlock((Block) i.getThenBody());
+                            if(i.getElseBody() != null) {
+                                printBlock((Block) i.getElseBody());
+                            }
+                        }
+                        else if(s instanceof SwitchNode) {
+                            SwitchNode sw = (SwitchNode) s;
+                            for(CaseNode cn : sw.getCases()) {
+                                System.out.println("    "+cn.toString());
+                            }
+                        }
+                        else if(s instanceof LocalVarNode) {
+                            LocalVarNode l = (LocalVarNode) s;
+                            System.out.println("        "+l.getId().getLexeme());
+                        }
+                        else if(s instanceof AssignmentNode) {
+                            AssignmentNode a = (AssignmentNode) s;
+                            System.out.println("    "+a.getAssignmentExp().getLeftExp().toString());
+                            System.out.println("    "+ a.getAssignmentExp().getOperator().getLexeme());
+                            System.out.println("    "+ a.getAssignmentExp().getRightExp().toString());
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private void printBlock(Block b) {
+        for(SentenceNode s: b.getSentenceList()) {
+            System.out.println("    "+s.toString());
+            if(s instanceof Block) {
+                Block b2 = (Block) s;
+                printBlock(b2);
+            }
+            else if (s instanceof WhileNode) {
+                WhileNode w = (WhileNode) s;
+                printBlock((Block) w.getBody());
+            }
+            else if(s instanceof IfNode) {
+                IfNode i = (IfNode) s;
+                printBlock((Block) i.getThenBody());
+                if(i.getElseBody() != null) {
+                    printBlock((Block) i.getElseBody());
+                }
+            }
+            else if(s instanceof SwitchNode) {
+                SwitchNode sw = (SwitchNode) s;
+                for(CaseNode c : sw.getCases()) {
+                    c.toString();
+                }
+            }
+            else if(s instanceof LocalVarNode) {
+                LocalVarNode l = (LocalVarNode) s;
+                System.out.println("        "+l.getId().getLexeme());
+            }
+            else if(s instanceof AssignmentNode) {
+                AssignmentNode a = (AssignmentNode) s;
+                System.out.println("        "+a.getAssignmentExp().toString()+ " "+ a.getAssignmentExp().getOperator().getLexeme());
+            }
+        }
     }
 
 

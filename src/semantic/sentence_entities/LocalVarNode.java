@@ -36,5 +36,8 @@ public class LocalVarNode extends SentenceNode {
     public void setExpression(CompoundExpNode expression) {
         this.expression = expression;
     }
+    public String toString() {
+        return "LocalVarNode";
+    }
 
 }

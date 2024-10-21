@@ -1,29 +1,11 @@
-///[Error:main|1]
-//main not declared
-
- class A{
-     private char atr1;
-     String atr2 = 2;
-
-     public A() {
-
-     }
-     public int met1(int a, String b) {}
-     public static char met2(char a) {}
-     public static void main() {}
- }
- class B extends A{
-     private int atr3;
-     public float atr4;
-     public int met1(int param1, String param2) {}
-     public void met3() {}
- }
- class Persona extends B{
-    public int met5() {
-        var a = 3;
+class ClassTest{
+    public int met1() {
+        a = b + 2 + 3 * c;
     }
-    public int met1(int param1, String param2) {}
- }
+    public static void main() {
+
+    }
+}
 
 
 

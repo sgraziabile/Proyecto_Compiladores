@@ -26,4 +26,10 @@ public class CaseNode {
     public void setCaseBody(SentenceNode caseBody) {
         this.caseBody = caseBody;
     }
+    public SentenceNode getBody() {
+        return caseBody;
+    }
+    public String toString() {
+        return "CaseNode";
+    }
 }

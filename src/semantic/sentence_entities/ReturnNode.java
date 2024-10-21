@@ -17,4 +17,8 @@ public class ReturnNode extends SentenceNode {
     public void setReturnExpression(ExpressionNode returnExpression) {
         this.returnExpression = returnExpression;
     }
+    public String toString() {
+        String msg = "Return ";
+        return msg + returnExpression.toString();
+    }
 }

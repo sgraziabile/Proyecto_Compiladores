@@ -17,4 +17,7 @@ public class CallNode extends SentenceNode {
     public void setExpression(ExpressionNode expression) {
         this.expression = expression;
     }
+    public String toString() {
+        return "CallNode";
+    }
 }

@@ -25,6 +25,12 @@ public class Method extends ClassMember {
         this.parameterHash = new Hashtable<>();
         this.parameterList = new ArrayList<>();
     }
+    public void setMainBlock(Block mainBlock) {
+        this.mainBlock = mainBlock;
+    }
+    public Block getMainBlock() {
+        return mainBlock;
+    }
     public void addParameter(String name, Parameter parameter) {
         parameterHash.put(name,parameter);
         parameterList.add(parameter);
