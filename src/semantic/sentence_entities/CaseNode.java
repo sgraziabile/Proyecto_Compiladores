@@ -30,6 +30,11 @@ public class CaseNode {
         return caseBody;
     }
     public String toString() {
-        return "CaseNode";
+        String msg = "CaseNode: ";
+        if(caseValue != null)
+            msg += caseValue.toString();
+        else
+            msg += "default";
+        return msg;
     }
 }

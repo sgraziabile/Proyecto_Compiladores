@@ -1,6 +1,11 @@
 class ClassTest{
     public int met1() {
-        a = b + 2 + 3 * c;
+            if(a == 1) {
+                a = 2;
+            }
+            else {
+                a = 3;
+            }
     }
     public static void main() {
 

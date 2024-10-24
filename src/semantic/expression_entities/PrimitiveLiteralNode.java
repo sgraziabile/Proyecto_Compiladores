@@ -7,5 +7,8 @@ public class PrimitiveLiteralNode extends LiteralNode {
     public PrimitiveLiteralNode(Token token) {
         super(token);
     }
+    public String toString() {
+        return value.getLexeme();
+    }
 
 }

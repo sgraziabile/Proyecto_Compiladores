@@ -548,6 +548,7 @@ public class SyntaxAnalyzer {
                 switchNode.setDefaultCase(caseNode);
             }
         }
+        caseList.remove(switchNode.getDefaultCase());
         return switchNode;
     }
     private void SwitchSentenceList(ArrayList<CaseNode> caseNodes) throws Exception {
@@ -661,16 +662,19 @@ public class SyntaxAnalyzer {
         Expression();
     }
     private IfNode If() throws Exception {
-        IfNode ifNode = new IfNode();
+        IfNode ifNode;
         match("keyword_if");
         match("parentesisAbre");
         ExpressionNode condition = Expression();
         match("parentesisCierra");
         SentenceNode thenBody = Sentence();
         SentenceNode elseBody = ElseOptional();
-        ifNode.setCondition((CompoundExpNode) condition);
-        ifNode.setThenBody(thenBody);
-        ifNode.setElseBody(elseBody);
+        if(elseBody == null) {
+            ifNode = new IfNode((CompoundExpNode) condition, thenBody);
+        }
+        else {
+            ifNode = new IfWithElseNode((CompoundExpNode) condition,thenBody,elseBody);
+        }
         return ifNode;
     }
     private SentenceNode ElseOptional() throws Exception {
@@ -742,10 +746,11 @@ public class SyntaxAnalyzer {
         CompoundExpNode compoundExpression = null;
         CompoundExpNode basicExpression = BasicExpression();
         CompoundExpNode binaryExpression = CompoundExpression2(basicExpression);
-        if(binaryExpression == null)
+        if(binaryExpression == null) {
             compoundExpression = basicExpression;
-        else
+        } else {
             compoundExpression = binaryExpression;
+        }
         return compoundExpression;
     }
     private CompoundExpNode CompoundExpression2(CompoundExpNode leftExp) throws Exception {

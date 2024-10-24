@@ -189,10 +189,14 @@ public class SymbolTable {
                         }
                         else if(s instanceof IfNode) {
                             IfNode i = (IfNode) s;
+                            if(i.getCondition() != null)
+                                System.out.println("    "+i.getCondition().toString());
                             if(i.getThenBody() != null)
                                 printBlock((Block) i.getThenBody());
-                            if(i.getElseBody() != null) {
-                                printBlock((Block) i.getElseBody());
+                            if(s instanceof IfWithElseNode) {
+                                IfWithElseNode i2 = (IfWithElseNode) s;
+                                if(i2.getElseBody() != null)
+                                    printBlock((Block) i2.getElseBody());
                             }
                         }
                         else if(s instanceof SwitchNode) {
@@ -207,9 +211,10 @@ public class SymbolTable {
                         }
                         else if(s instanceof AssignmentNode) {
                             AssignmentNode a = (AssignmentNode) s;
-                            System.out.println("    "+a.getAssignmentExp().getLeftExp().toString());
-                            System.out.println("    "+ a.getAssignmentExp().getOperator().getLexeme());
-                            System.out.println("    "+ a.getAssignmentExp().getRightExp().toString());
+                            System.out.print("      "+a.getAssignmentExp().getLeftExp().toString());
+                            System.out.print(" "+ a.getAssignmentExp().getOperator().getLexeme());
+                            System.out.print(" "+ a.getAssignmentExp().getRightExp().toString());
+                            System.out.println();
                         }
                     }
                 }
@@ -229,9 +234,12 @@ public class SymbolTable {
             }
             else if(s instanceof IfNode) {
                 IfNode i = (IfNode) s;
+                if(i.getCondition() != null)
+                    System.out.println("    "+i.getCondition().toString());
                 printBlock((Block) i.getThenBody());
-                if(i.getElseBody() != null) {
-                    printBlock((Block) i.getElseBody());
+                if(s instanceof IfWithElseNode) {
+                    IfWithElseNode i2 = (IfWithElseNode) s;
+                    printBlock((Block) i2.getElseBody());
                 }
             }
             else if(s instanceof SwitchNode) {
@@ -246,7 +254,10 @@ public class SymbolTable {
             }
             else if(s instanceof AssignmentNode) {
                 AssignmentNode a = (AssignmentNode) s;
-                System.out.println("        "+a.getAssignmentExp().toString()+ " "+ a.getAssignmentExp().getOperator().getLexeme());
+                System.out.print("      "+a.getAssignmentExp().getLeftExp().toString());
+                System.out.print("  "+ a.getAssignmentExp().getOperator().getLexeme());
+                System.out.print("  "+ a.getAssignmentExp().getRightExp().toString());
+                System.out.println();
             }
         }
     }
