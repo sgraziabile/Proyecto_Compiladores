@@ -81,6 +81,15 @@ public class SymbolTable {
         }
         isConsolidated = true;
     }
+    public void checkSentences() throws Exception {
+        for(Class c : classHash.values()) {
+            setCurrentClass(c);
+            for(Method m : c.getMethods().values()) {
+                setCurrentMethod(m);
+                m.checkSentences();
+            }
+        }
+    }
     public boolean isConsolidated() {
         return isConsolidated;
     }

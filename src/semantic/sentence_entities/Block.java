@@ -26,6 +26,11 @@ public class Block extends SentenceNode {
     public Block getParentBlock() {
         return parentBlock;
     }
+    public void checkSentences() throws Exception {
+        for(SentenceNode s : sentenceList) {
+            s.checkSentences();
+        }
+    }
     public String toString() {
         return "Block";
     }

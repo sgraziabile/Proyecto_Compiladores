@@ -1,9 +1,14 @@
 package semantic.expression_entities;
 
 import entities.Token;
+import exceptions.CannotResolveMethodException;
+import exceptions.PrimitiveTypeCallException;
+import semantic.declared_entities.ReferenceType;
 import semantic.declared_entities.Type;
 
 import java.util.ArrayList;
+
+import static main.MainModule.symbolTable;
 
 public class ChainedCallNode extends Chained {
     protected ArrayList<ExpressionNode> args;
@@ -31,6 +36,22 @@ public class ChainedCallNode extends Chained {
     }
     public Type check (Type type) {
         return type;
+    }
+    public void resolveNames(PrimaryNode parentChain) throws Exception {
+        MethodAccessNode parent;
+        if(parentChain instanceof MethodAccessNode) {
+            parent = (MethodAccessNode) parentChain;
+            String methodName = parent.getId().getLexeme();
+            Type methodType = symbolTable.getCurrentClass().getMethod(methodName).getType();
+            if(methodType instanceof ReferenceType) {
+                if(symbolTable.getClass(methodType.getName()).getMethod(name.getLexeme()) == null) {
+                    throw new CannotResolveMethodException(name);
+                }
+            }
+            else {
+                throw new PrimitiveTypeCallException(parent.getId(),name,methodType);
+            }
+        }
     }
     public String toString() {
         return name.getLexeme() + args.toString()+  (chained == null ? " " : chained.toString());

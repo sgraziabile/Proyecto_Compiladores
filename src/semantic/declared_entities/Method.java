@@ -73,6 +73,10 @@ public class Method extends ClassMember {
             p.checkDeclaration();
         }
     }
+    public void checkSentences() throws Exception {
+        if(mainBlock != null)
+            mainBlock.checkSentences();
+    }
     public void consolidate() {
         isConsolidated = true;
     }

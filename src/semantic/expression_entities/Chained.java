@@ -3,6 +3,8 @@ package semantic.expression_entities;
 import entities.Token;
 import semantic.declared_entities.Type;
 
+import static main.MainModule.symbolTable;
+
 public abstract class Chained extends PrimaryNode{
     protected Token name;
     protected Chained chained;
@@ -18,6 +20,9 @@ public abstract class Chained extends PrimaryNode{
     }
     public void setChained(Chained chained) {
         this.chained = chained;
+    }
+    public void resolveNames(PrimaryNode parentChain) throws Exception {
+
     }
     public abstract Type check(Type type);
 

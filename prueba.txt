@@ -1,16 +1,30 @@
-class ClassTest{
+class A{
     public int met1() {
-        if(1==1){
-            a = 1;
-            {
-                a = 2;
-            }
-        }
+        met2(1);
     }
     public static void main() {
 
     }
+    public void met2(int a) {
+
+    }
 }
+class B {
+    public int met3() {
+        return new Persona();
+    }
+    public void met4(int b) {
+        //var x = new Persona();
+        x.talk;
+    }
+}
+class Persona {
+    public String talk() {
+        return "Hola";
+    }
+}
+
+
 
 
 

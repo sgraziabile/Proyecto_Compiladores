@@ -32,6 +32,7 @@ public class SyntaxAnalyzer {
         currentToken = lexicalAnalyzer.nextToken();
         Init();
         symbolTable.checkDeclarations();
+        symbolTable.checkSentences();
         symbolTable.printBlocks();
     }
 
