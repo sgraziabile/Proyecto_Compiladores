@@ -19,6 +19,6 @@ public class AssignmentNode extends SentenceNode {
         this.assignmentExp = assignmentExp;
     }
     public String toString() {
-        return "AssignmentNode";
+        return "AssignmentNode " + assignmentExp.toString();
     }
 }

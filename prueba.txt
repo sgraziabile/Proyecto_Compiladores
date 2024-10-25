@@ -1,11 +1,11 @@
 class ClassTest{
     public int met1() {
-            if(a == 1) {
+        if(1==1){
+            a = 1;
+            {
                 a = 2;
             }
-            else {
-                a = 3;
-            }
+        }
     }
     public static void main() {
 

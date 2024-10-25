@@ -12,7 +12,11 @@ public class ChainedVarNode extends Chained{
         this.name = name;
         this.chained = next;
     }
+    public ChainedVarNode() {
+
+    }
     public Type check (Type type) {
         return type;
     }
+
 }

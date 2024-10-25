@@ -177,10 +177,12 @@ public class SymbolTable {
             for(Method m : c.getMethods().values()) {
                 Block mainBlock = m.getMainBlock();
                 if(mainBlock != null) {
+                    System.out.println(m.getName()+" "+mainBlock.getSentenceList().size());
                     for(SentenceNode s: mainBlock.getSentenceList()) {
                         System.out.println(s.toString());
                         if(s instanceof Block) {
                             Block b = (Block) s;
+                            System.out.println(" "+b.getSentenceList().size());
                             printBlock(b);
                         }
                         else if(s instanceof WhileNode) {
@@ -207,7 +209,7 @@ public class SymbolTable {
                         }
                         else if(s instanceof LocalVarNode) {
                             LocalVarNode l = (LocalVarNode) s;
-                            System.out.println("        "+l.getId().getLexeme());
+                            System.out.println(" " +l.toString());
                         }
                         else if(s instanceof AssignmentNode) {
                             AssignmentNode a = (AssignmentNode) s;
@@ -226,6 +228,7 @@ public class SymbolTable {
             System.out.println("    "+s.toString());
             if(s instanceof Block) {
                 Block b2 = (Block) s;
+                System.out.println("    "+b2.getSentenceList().size());
                 printBlock(b2);
             }
             else if (s instanceof WhileNode) {
@@ -250,7 +253,7 @@ public class SymbolTable {
             }
             else if(s instanceof LocalVarNode) {
                 LocalVarNode l = (LocalVarNode) s;
-                System.out.println("        "+l.getId().getLexeme());
+                System.out.println("        "+l.toString());
             }
             else if(s instanceof AssignmentNode) {
                 AssignmentNode a = (AssignmentNode) s;

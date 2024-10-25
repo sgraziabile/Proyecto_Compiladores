@@ -24,6 +24,6 @@ public class MethodAccessNode extends PrimaryNode {
         this.arguments = arguments;
     }
     public String toString() {
-        return id.getLexeme();
+        return id.getLexeme() + (arguments == null ? " " : arguments.toString());
     }
 }

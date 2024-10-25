@@ -32,4 +32,7 @@ public class ChainedCallNode extends Chained {
     public Type check (Type type) {
         return type;
     }
+    public String toString() {
+        return name.getLexeme() + args.toString()+  (chained == null ? " " : chained.toString());
+    }
 }

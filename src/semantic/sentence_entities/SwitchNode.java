@@ -39,6 +39,6 @@ public class SwitchNode extends SentenceNode {
     }
     public String toString() {
         String msg = "SwitchNode: ";
-        return msg + expression.toString() + cases.toString();
+        return msg + expression.toString() + cases.toString() + " " +(defaultCase == null ? "" : defaultCase.toString());
     }
 }

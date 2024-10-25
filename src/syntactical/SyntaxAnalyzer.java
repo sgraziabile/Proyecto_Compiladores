@@ -177,6 +177,7 @@ public class SyntaxAnalyzer {
             classMember.setId(id);
             symbolTable.setCurrentMethod((Method) classMember);
             FormalArguments();
+            symbolTable.setCurrentBlock(null);
             Block mainBlock = Block();
             ((Method) classMember).setMainBlock(mainBlock);
             if(symbolTable.getCurrentClass().getMethod(id.getLexeme()) == null) {
@@ -216,6 +217,7 @@ public class SyntaxAnalyzer {
             member.setId(id);
             symbolTable.setCurrentMethod((Method) member);
             FormalArguments();
+            symbolTable.setCurrentBlock(null);
             Block mainBlock = Block();
             ((Method) member).setMainBlock(mainBlock);
             if(symbolTable.getCurrentClass().getMethod(id.getLexeme()) == null) {
@@ -439,6 +441,7 @@ public class SyntaxAnalyzer {
     private Block Block() throws Exception {
         match("llaveAbre");
         Block block = new Block();
+        block.setParentBlock(symbolTable.getCurrentBlock());
         symbolTable.setCurrentBlock(block);
         ArrayList<SentenceNode> sentenceList = new ArrayList<>();
         SentenceList(sentenceList);
@@ -497,7 +500,7 @@ public class SyntaxAnalyzer {
             String lexeme = currentToken.getLexeme();
             throw new SyntaxException(List.of("inicio sentencia"), currentToken.getTokenClass(), Integer.toString(currentToken.getLineNumber()),lexeme);
         }
-        if(sentence != null)
+        if(sentence != null && !(sentence instanceof Block))
             sentence.setParentBlock(symbolTable.getCurrentBlock());
         return sentence;
     }
@@ -1029,11 +1032,7 @@ public class SyntaxAnalyzer {
             match("idMetVar");
             optionalChain = VarMetChain();
             if(optionalChain != null) {
-                if(optionalChain instanceof ChainedCallNode) {
-                    ((ChainedCallNode) optionalChain).setName(id);
-                } else {
-                    optionalChain = new ChainedVarNode(id);
-                }
+                optionalChain.setName(id);
             }
         }
         else {
@@ -1044,7 +1043,11 @@ public class SyntaxAnalyzer {
     private Chained VarMetChain() throws Exception {
         Chained chainedNode = null;
         if(currentToken.getTokenClass().equals("punto")) {
-            chainedNode = OptionalChain();
+            chainedNode = new ChainedVarNode();
+            Chained optionalChained = OptionalChain();
+            if(optionalChained != null) {
+                chainedNode.setChained(optionalChained);
+            }
         }
         else if(currentToken.getTokenClass().equals("parentesisAbre")) {
             chainedNode = new ChainedCallNode();

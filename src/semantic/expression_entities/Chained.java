@@ -20,4 +20,8 @@ public abstract class Chained extends PrimaryNode{
         this.chained = chained;
     }
     public abstract Type check(Type type);
+
+    public String toString() {
+        return name.getLexeme() + " " + (chained == null ? "" : chained.toString());
+    }
 }

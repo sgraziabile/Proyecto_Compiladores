@@ -31,8 +31,7 @@ public class MainModule {
                 System.out.println("File not found");
             } catch(Exception e) {
                 success = false;
-                //System.out.println(e.getMessage());
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
             if(success) {
                 System.out.println("Compilation successful");

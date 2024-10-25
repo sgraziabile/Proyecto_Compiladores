@@ -15,7 +15,7 @@ public class VarAccessNode extends PrimaryNode {
         this.id = id;
     }
     public String toString() {
-        return id.getLexeme();
+        return id.getLexeme() + " " + (chained == null ? "" : chained.toString());
     }
 
 

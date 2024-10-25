@@ -37,7 +37,7 @@ public class LocalVarNode extends SentenceNode {
         this.expression = expression;
     }
     public String toString() {
-        return "LocalVarNode";
+        return id.getLexeme() + " " + assignOp.getLexeme() + " " + expression.toString();
     }
 
 }

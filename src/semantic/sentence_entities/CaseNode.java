@@ -32,9 +32,9 @@ public class CaseNode {
     public String toString() {
         String msg = "CaseNode: ";
         if(caseValue != null)
-            msg += caseValue.toString();
+            msg += caseValue.toString() +" " +caseBody.toString();
         else
-            msg += "default";
+            msg += "default" +" " +caseBody.toString();
         return msg;
     }
 }

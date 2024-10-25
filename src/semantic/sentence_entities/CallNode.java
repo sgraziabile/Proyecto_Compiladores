@@ -18,6 +18,6 @@ public class CallNode extends SentenceNode {
         this.expression = expression;
     }
     public String toString() {
-        return "CallNode";
+        return expression.toString();
     }
 }
