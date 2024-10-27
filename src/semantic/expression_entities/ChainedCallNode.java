@@ -84,8 +84,12 @@ public class ChainedCallNode extends Chained {
             }
         }
     }
-    public Type typeCheck(Type type) {
-        return type;
+    public boolean isAssignable() {
+        if(chained == null) {
+            return false;
+        } else {
+            return chained.isAssignable();
+        }
     }
     public String toString() {
         return id.getLexeme() + args.toString()+  (chained == null ? " " : chained.toString());

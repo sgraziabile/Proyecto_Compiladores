@@ -58,5 +58,11 @@ public class ChainedVarNode extends Chained{
             }
         }
     }
-
+    public boolean isAssignable() {
+        if(chained == null) {
+            return true;
+        } else {
+            return chained.isAssignable();
+        }
+    }
 }

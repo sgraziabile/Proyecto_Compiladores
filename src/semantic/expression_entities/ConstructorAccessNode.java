@@ -38,7 +38,7 @@ public class ConstructorAccessNode extends PrimaryNode{
         if(classRef == null) {
             throw new ClassNotDeclaredException(id.getLineNumber(), id.getLexeme());
         } else {
-            return new ReferenceType("constructor");
+            return new ReferenceType(classRef.getName());
         }
     }
     public String toString() {

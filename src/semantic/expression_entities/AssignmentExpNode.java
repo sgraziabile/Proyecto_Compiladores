@@ -40,6 +40,9 @@ public class AssignmentExpNode extends ExpressionNode {
         if(!(leftExp instanceof PrimaryNode)) {
             throw new Exception("Variable expected in assignment");  //crear excepcion
         }
+        else if(!leftExp.isAssignable()) {
+            throw new Exception("Variable is not assignable");  //crear excepcion
+        }
         Type leftType = leftExp.typeCheck();
         Type rightType = rightExp.typeCheck();
         if(leftType != null && rightType != null) {

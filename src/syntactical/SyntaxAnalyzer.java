@@ -1042,9 +1042,8 @@ public class SyntaxAnalyzer {
             Token id = currentToken;
             match("idMetVar");
             optionalChain = VarMetChain();
-            if(optionalChain != null) {
-                optionalChain.setId(id);
-            }
+            optionalChain.setId(id);
+
         }
         else {
             //vacio
@@ -1071,7 +1070,7 @@ public class SyntaxAnalyzer {
             }
         }
         else {
-            //vacio
+            chainedNode = new ChainedVarNode();
         }
         return chainedNode;
     }

@@ -1,23 +1,14 @@
-class A{
-    public int met1() {
-        met2(1);
-    }
+class B {
     public static void main() {
 
     }
-    public void met2(int a) {
-
-    }
-}
-class B {
     public Persona met3() {
         return new Persona();
     }
     public Persona met4(Persona y, int a) {
-        a = 1;
         var x = new Persona();
+        met3().x= 1;
         x.met3().talk();
-
     }
 }
 class Persona {

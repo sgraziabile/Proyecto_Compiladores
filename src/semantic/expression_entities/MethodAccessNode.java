@@ -39,7 +39,14 @@ public class MethodAccessNode extends PrimaryNode {
         }
         return symbolTable.getCurrentClass().getMethod(methodName).getType();
     }
+    public boolean isAssignable() {
+        if(chained == null) {
+            return false;
+        } else {
+            return chained.isAssignable();
+        }
+    }
     public String toString() {
-        return id.getLexeme() + (arguments == null ? " " : arguments.toString());
+        return id.getLexeme() + arguments.toString()+  (chained == null ? " " : chained.toString());
     }
 }

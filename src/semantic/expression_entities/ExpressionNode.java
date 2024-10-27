@@ -11,7 +11,9 @@ public abstract class ExpressionNode {
         Type type = null;
         return type;
     }
-
+    public boolean isAssignable() {
+        return false;
+    }
 
 
 }
