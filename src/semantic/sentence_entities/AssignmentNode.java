@@ -18,6 +18,9 @@ public class AssignmentNode extends SentenceNode {
     public void setAssignmentExp(AssignmentExpNode assignmentExp) {
         this.assignmentExp = assignmentExp;
     }
+    public void checkSentence() throws Exception {
+        assignmentExp.typeCheck();
+    }
     public String toString() {
         return "AssignmentNode " + assignmentExp.toString();
     }

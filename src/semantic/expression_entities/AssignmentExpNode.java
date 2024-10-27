@@ -1,6 +1,7 @@
 package semantic.expression_entities;
 
 import entities.Token;
+import semantic.declared_entities.Type;
 
 public class AssignmentExpNode extends ExpressionNode {
     private CompoundExpNode rightExp;
@@ -34,6 +35,17 @@ public class AssignmentExpNode extends ExpressionNode {
     }
     public void setOperator(Token operator) {
         this.operator = operator;
+    }
+    public Type typeCheck() throws Exception {
+        if(!(leftExp instanceof PrimaryNode)) {
+            throw new Exception("Variable expected in assignment");  //crear excepcion
+        }
+        Type leftType = leftExp.typeCheck();
+        Type rightType = rightExp.typeCheck();
+        if(leftType != null && rightType != null) {
+
+        }
+        return leftType;
     }
     public String toString() {
         return leftExp.toString() + " " + operator.getLexeme() + " " + rightExp.toString();

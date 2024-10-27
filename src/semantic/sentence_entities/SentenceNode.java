@@ -19,7 +19,7 @@ public abstract class SentenceNode {
     public String toString() {
         return "SentenceNode";
     }
-    public void checkSentences() throws Exception {
+    public void checkSentence() throws Exception {
 
     }
 }

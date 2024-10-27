@@ -10,15 +10,18 @@ class A{
     }
 }
 class B {
-    public int met3() {
+    public Persona met3() {
         return new Persona();
     }
-    public void met4(int b) {
-        //var x = new Persona();
-        x.talk;
+    public Persona met4(Persona y, int a) {
+        a = 1;
+        var x = new Persona();
+        x.met3().talk();
+
     }
 }
 class Persona {
+    public int x;
     public String talk() {
         return "Hola";
     }

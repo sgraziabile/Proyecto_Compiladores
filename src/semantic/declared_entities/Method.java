@@ -74,8 +74,10 @@ public class Method extends ClassMember {
         }
     }
     public void checkSentences() throws Exception {
-        if(mainBlock != null)
-            mainBlock.checkSentences();
+        if(mainBlock != null) {
+            symbolTable.setCurrentBlock(mainBlock);
+            mainBlock.checkSentence();
+        }
     }
     public void consolidate() {
         isConsolidated = true;

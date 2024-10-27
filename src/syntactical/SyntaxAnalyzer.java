@@ -463,39 +463,49 @@ public class SyntaxAnalyzer {
     }
     private SentenceNode Sentence() throws Exception {
         SentenceNode sentence = null;
+        int currentLine = currentToken.getLineNumber();
         if(currentToken.getTokenClass().equals("puntoYComa")) {
             match("puntoYComa");
         }
         else if(primerosHandler.Expression.contains(currentToken.getTokenClass())) {
             sentence = Asign_Call();
+            sentence.setLine(currentLine);
             match("puntoYComa");
         }
         else if(currentToken.getTokenClass().equals("keyword_var")) {
             sentence = LocalVar();
+            sentence.setLine(currentLine);
             match("puntoYComa");
         }
         else if(currentToken.getTokenClass().equals("keyword_return")) {
             sentence = Return();
+            sentence.setLine(currentLine);
             match("puntoYComa");
         }
         else if(currentToken.getTokenClass().equals("keyword_switch")) {
             sentence = Switch();
+            sentence.setLine(currentLine);
         }
         else if(currentToken.getTokenClass().equals("keyword_break")) {
             sentence = Break();
+            sentence.setLine(currentLine);
             match("puntoYComa");
         }
         else if(currentToken.getTokenClass().equals("keyword_while")) {
             sentence = While();
+            sentence.setLine(currentLine);
         }
         else if(currentToken.getTokenClass().equals("llaveAbre")) {
             sentence = Block();
+            sentence.setLine(currentLine);
         }
         else if(currentToken.getTokenClass().equals("keyword_if")) {
             sentence = If();
+            sentence.setLine(currentLine);
         }
         else if(currentToken.getTokenClass().equals("keyword_for")) {
             sentence = For();
+            sentence.setLine(currentLine);
         }
         else {
             String lexeme = currentToken.getLexeme();
@@ -997,8 +1007,8 @@ public class SyntaxAnalyzer {
             //vacio
         }
     }
-    private MethodAccessNode ConstructorAccess() throws Exception {
-        MethodAccessNode constructorAccess = new MethodAccessNode();
+    private ConstructorAccessNode ConstructorAccess() throws Exception {
+        ConstructorAccessNode constructorAccess = new ConstructorAccessNode();
         match("keyword_new");
         Token idClase = currentToken;
         match("idClase");
@@ -1033,7 +1043,7 @@ public class SyntaxAnalyzer {
             match("idMetVar");
             optionalChain = VarMetChain();
             if(optionalChain != null) {
-                optionalChain.setName(id);
+                optionalChain.setId(id);
             }
         }
         else {

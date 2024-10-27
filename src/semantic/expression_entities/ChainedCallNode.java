@@ -14,11 +14,11 @@ public class ChainedCallNode extends Chained {
     protected ArrayList<ExpressionNode> args;
 
     public ChainedCallNode(Token name) {
-        this.name = name;
+        this.id = name;
         this.args = new ArrayList<>();
     }
     public ChainedCallNode(Token name, Chained next) {
-        this.name = name;
+        this.id = name;
         this.chained = next;
         this.args = new ArrayList<>();
     }
@@ -37,23 +37,57 @@ public class ChainedCallNode extends Chained {
     public Type check (Type type) {
         return type;
     }
-    public void resolveNames(PrimaryNode parentChain) throws Exception {
+    public Type typeCheck(PrimaryNode parentChain) throws Exception {
+        Type type = null;
+        PrimaryNode parent;
+        if(parentChain instanceof MethodAccessNode) {
+            resolveMethodAccessName(parentChain);
+        } else if(parentChain instanceof ChainedCallNode) {
+            resolveChainedMethodName(parentChain);
+        }
+        if(chained != null) {
+            type = chained.typeCheck(this);
+        } else {
+            //encontrar la clase que tiene el metodo
+        }
+        return type;
+    }
+    private void resolveMethodAccessName(PrimaryNode parentChain) throws Exception {
         MethodAccessNode parent;
         if(parentChain instanceof MethodAccessNode) {
             parent = (MethodAccessNode) parentChain;
             String methodName = parent.getId().getLexeme();
             Type methodType = symbolTable.getCurrentClass().getMethod(methodName).getType();
             if(methodType instanceof ReferenceType) {
-                if(symbolTable.getClass(methodType.getName()).getMethod(name.getLexeme()) == null) {
-                    throw new CannotResolveMethodException(name);
+                if(symbolTable.getClass(methodType.getName()).getMethod(id.getLexeme()) == null) {
+                    throw new CannotResolveMethodException(id);
                 }
             }
             else {
-                throw new PrimitiveTypeCallException(parent.getId(),name,methodType);
+                throw new PrimitiveTypeCallException(parent.getId(), id,methodType);
             }
         }
     }
+    private void resolveChainedMethodName(PrimaryNode parentChain) throws Exception {
+        ChainedCallNode parent;
+        if(parentChain instanceof ChainedCallNode) {
+            parent = (ChainedCallNode) parentChain;
+            String methodName = parent.getId().getLexeme();
+            Type methodType = symbolTable.getCurrentClass().getMethod(methodName).getType();
+            if(methodType instanceof ReferenceType) {
+                if(symbolTable.getClass(methodType.getName()).getMethod(id.getLexeme()) == null) {
+                    throw new CannotResolveMethodException(id);
+                }
+            }
+            else {
+                throw new PrimitiveTypeCallException(parent.getId(), id,methodType);
+            }
+        }
+    }
+    public Type typeCheck(Type type) {
+        return type;
+    }
     public String toString() {
-        return name.getLexeme() + args.toString()+  (chained == null ? " " : chained.toString());
+        return id.getLexeme() + args.toString()+  (chained == null ? " " : chained.toString());
     }
 }

@@ -17,8 +17,7 @@ public class CallNode extends SentenceNode {
     public void setExpression(ExpressionNode expression) {
         this.expression = expression;
     }
-    public void checkSentences() throws Exception {
-        expression.resolveNames();
+    public void checkSentence() throws Exception {
         expression.typeCheck();
     }
     public String toString() {

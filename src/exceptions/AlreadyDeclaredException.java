@@ -26,6 +26,9 @@ public class AlreadyDeclaredException extends Exception{
             case "parameter" -> {
                 return getParameterMessage();
             }
+            case "local_var" -> {
+                return getLocalVarMessage();
+            }
             default -> {
                 return "";
             }
@@ -58,6 +61,12 @@ public class AlreadyDeclaredException extends Exception{
     private String getParameterMessage() {
         String message = "Error Semantico en linea " +errorLine+ ":";
         message += " El parametro " + lexeme + " ya fue definido en este alcance \n";
+        message += "[Error:"+ lexeme +"|"+ errorLine +"]";
+        return message;
+    }
+    private String getLocalVarMessage() {
+        String message = "Error Semantico en linea " +errorLine+ ":";
+        message += " La variable local " + lexeme + " ya fue definida en este alcance \n";
         message += "[Error:"+ lexeme +"|"+ errorLine +"]";
         return message;
     }

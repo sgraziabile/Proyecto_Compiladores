@@ -3,17 +3,15 @@ package semantic.expression_entities;
 import entities.Token;
 import semantic.declared_entities.Type;
 
-import static main.MainModule.symbolTable;
-
 public abstract class Chained extends PrimaryNode{
-    protected Token name;
+    protected Token id;
     protected Chained chained;
 
-    public Token getName() {
-        return name;
+    public Token getId() {
+        return id;
     }
-    public void setName(Token name) {
-        this.name = name;
+    public void setId(Token id) {
+        this.id = id;
     }
     public Chained getChained() {
         return chained;
@@ -21,12 +19,19 @@ public abstract class Chained extends PrimaryNode{
     public void setChained(Chained chained) {
         this.chained = chained;
     }
-    public void resolveNames(PrimaryNode parentChain) throws Exception {
-
+    public boolean isAssignable() {
+        if(chained == null) {
+            return this instanceof ChainedVarNode;
+        } else {
+            return chained.isAssignable();
+        }
     }
-    public abstract Type check(Type type);
+    public Type typeCheck(PrimaryNode parentChain) throws Exception {
+        Type type = null;
+        return type;
+    }
 
     public String toString() {
-        return name.getLexeme() + " " + (chained == null ? "" : chained.toString());
+        return id.getLexeme() + " " + (chained == null ? "" : chained.toString());
     }
 }
