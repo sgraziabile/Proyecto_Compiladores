@@ -12,6 +12,7 @@ import static main.MainModule.symbolTable;
 
 public class ChainedCallNode extends Chained {
     protected ArrayList<ExpressionNode> args;
+    protected Type type;
 
     public ChainedCallNode(Token name) {
         this.id = name;
@@ -34,8 +35,11 @@ public class ChainedCallNode extends Chained {
     public void addArgument(ExpressionNode arg) {
         this.args.add(arg);
     }
-    public Type check (Type type) {
+    public Type getType() {
         return type;
+    }
+    public void setType(Type type) {
+        this.type = type;
     }
     public Type typeCheck(PrimaryNode parentChain) throws Exception {
         Type type = null;

@@ -1,6 +1,7 @@
 package semantic.expression_entities;
 
 import entities.Token;
+import exceptions.InvalidOperatorException;
 import semantic.declared_entities.Type;
 
 public class AssignmentExpNode extends ExpressionNode {
@@ -46,7 +47,15 @@ public class AssignmentExpNode extends ExpressionNode {
         Type leftType = leftExp.typeCheck();
         Type rightType = rightExp.typeCheck();
         if(leftType != null && rightType != null) {
-
+            if(operator.getLexeme().equals("+=")|| operator.getLexeme().equals("-=")) {
+                if(!leftType.getName().equals("int") || !rightType.getName().equals("int")) {
+                    throw new InvalidOperatorException(operator.getLexeme(), leftType.getName(), rightType.getName(), operator.getLineNumber());
+                }
+            } else {
+                if(!rightType.conformsTo(leftType)) {
+                    throw new InvalidOperatorException(operator.getLexeme(), leftType.getName(), rightType.getName(), operator.getLineNumber());
+                }
+            }
         }
         return leftType;
     }

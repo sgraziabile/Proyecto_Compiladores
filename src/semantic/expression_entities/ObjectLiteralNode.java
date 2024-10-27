@@ -14,7 +14,7 @@ public class ObjectLiteralNode extends LiteralNode{
         if(value.getLexeme().equals("null")) {
             type = new ReferenceType("null");
         } else {
-            type = new ReferenceType(value.getLexeme());
+            type = new ReferenceType("String");
         }
         return type;
     }

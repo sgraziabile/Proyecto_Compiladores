@@ -1,7 +1,7 @@
 package semantic.declared_entities;
 
 public abstract class Type {
-    private String name;            //hacerlo Token
+    protected String name;            //hacerlo Token
 
     public Type(String name) {
         this.name = name;
@@ -9,4 +9,5 @@ public abstract class Type {
     public String getName() {
         return name;
     }
+    public abstract boolean conformsTo(Type other);
 }

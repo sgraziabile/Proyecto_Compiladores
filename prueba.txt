@@ -5,10 +5,13 @@ class B {
     public Persona met3() {
         return new Persona();
     }
-    public Persona met4(Persona y, int a) {
-        var x = new Persona();
-        met3().x= 1;
-        x.met3().talk();
+    public Persona met4(Persona y) {
+        //var x = new Persona();
+        var x = "hola";
+        x = "adios";
+        //x = new Persona();
+        //met3().x = 1;
+        //x.met3().talk();
     }
 }
 class Persona {
