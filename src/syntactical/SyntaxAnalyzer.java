@@ -582,15 +582,19 @@ public class SyntaxAnalyzer {
         if(currentToken.getTokenClass().equals("keyword_case")) {
             match("keyword_case");
             PrimitiveLiteralNode caseValue = PrimitiveLiteral();
+            int line = currentToken.getLineNumber();
             match("dosPuntos");
             SentenceNode caseSentence = OptionalSentence();
             caseNode = new CaseNode(caseValue,caseSentence);
+            caseNode.setLine(line);
         }
         else if(currentToken.getTokenClass().equals("keyword_default")) {
             match("keyword_default");
+            int line = currentToken.getLineNumber();
             match("dosPuntos");
             SentenceNode defaultSentence = Sentence();
             caseNode = new CaseNode();
+            caseNode.setLine(line);
             caseNode.setCaseBody(defaultSentence);
         }
         else {

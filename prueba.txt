@@ -17,14 +17,24 @@ class B {
         }
     }
     public boolean met5() {
-        return true;
+        switch("Hola") {
+            case 1:
+                return " ";
+            case 2:
+                return " ";
+            default:
+                return " ";
+        }
     }
     public static void met6() {
+        if(true) {
 
+        }
     }
 }
-class Persona {
+class Persona extends B{
     public String talk() {
+        a2 = 3;
         return "Hola";
     }
 }

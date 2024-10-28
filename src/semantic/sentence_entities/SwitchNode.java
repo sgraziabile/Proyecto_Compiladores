@@ -1,5 +1,9 @@
 package semantic.sentence_entities;
 
+import exceptions.IncompatibleTypesException;
+import exceptions.InvalidSwitchTypeException;
+import semantic.declared_entities.PrimitiveType;
+import semantic.declared_entities.Type;
 import semantic.expression_entities.ExpressionNode;
 
 import java.util.ArrayList;
@@ -36,6 +40,19 @@ public class SwitchNode extends SentenceNode {
     }
     public void setDefaultCase(CaseNode defaultCase) {
         this.defaultCase = defaultCase;
+    }
+    public void checkSentence() throws Exception {
+        Type type;
+        type = expression.typeCheck();
+        if(type.getName().equals("int") || type.getName().equals("char") || type.getName().equals("boolean")) {
+            for (CaseNode c : cases) {
+                c.checkSentence(type);
+            }
+            defaultCase.checkSentence();
+        }
+        else {
+            throw new InvalidSwitchTypeException(type,line);
+        }
     }
     public String toString() {
         String msg = "SwitchNode: ";

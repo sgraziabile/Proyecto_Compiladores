@@ -3,6 +3,7 @@ package semantic.sentence_entities;
 import entities.Token;
 import exceptions.AlreadyDeclaredException;
 import exceptions.InvalidLocalVarAssignment;
+import exceptions.StaticReferenceException;
 import semantic.declared_entities.Parameter;
 import semantic.declared_entities.Type;
 import semantic.expression_entities.CompoundExpNode;
@@ -52,7 +53,12 @@ public class LocalVarNode extends SentenceNode {
     public void checkSentence() throws Exception {
         checkRepeatedVar();
         checkParameter();
-        Type type = expression.typeCheck();
+        Type type;
+        try {
+            type = expression.typeCheck();
+        } catch (StaticReferenceException e) {
+            throw new StaticReferenceException(id.getLineNumber(), e.getToken());
+        }
         if(type != null) {
             if(type.getName().equals("null")) {
                 throw new InvalidLocalVarAssignment(id.getLineNumber());

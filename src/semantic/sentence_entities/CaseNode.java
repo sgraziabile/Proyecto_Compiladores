@@ -1,8 +1,10 @@
 package semantic.sentence_entities;
 
+import exceptions.IncompatibleTypesException;
+import semantic.declared_entities.Type;
 import semantic.expression_entities.PrimitiveLiteralNode;
 
-public class CaseNode {
+public class CaseNode extends SentenceNode {
     protected PrimitiveLiteralNode caseValue;
     protected SentenceNode caseBody;
 
@@ -28,6 +30,18 @@ public class CaseNode {
     }
     public SentenceNode getBody() {
         return caseBody;
+    }
+    public void checkSentence(Type expressionType) throws Exception {
+        if(caseValue != null) {
+            Type caseType = caseValue.typeCheck();
+            if(!caseType.getName().equals(expressionType.getName())) {
+                throw new IncompatibleTypesException(expressionType, caseType, line, caseValue.getValue().getLexeme());
+            }
+        }
+        caseBody.checkSentence();
+    }
+    public void checkSentence() throws Exception {
+        caseBody.checkSentence();
     }
     public String toString() {
         String msg = "CaseNode: ";

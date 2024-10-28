@@ -19,5 +19,11 @@ public class IncompatibleTypesException extends Exception {
         message += "[Error:"+expression+"|"+ lineNumber +"]";
         return message;
     }
+    public Type getExcpetedType() {
+        return type1;
+    }
+    public String getExpression() {
+        return expression;
+    }
 
 }
