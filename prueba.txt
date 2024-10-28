@@ -2,17 +2,11 @@ class B {
     public static void main() {
 
     }
-    public Persona met3() {
+    public Persona met3(int x, B b) {
         return new Persona();
     }
-    public Persona met4(Persona y) {
-        var x = new Persona();
-        var t = new B();
-        var z = 1;
-        //x = new Persona();
-        met3().x = 1;
-        z = z / 2;
-        //x.met3().talk();
+    public Persona met4(B y) {
+        y = met3(1,new Persona());
     }
 }
 class Persona extends B {

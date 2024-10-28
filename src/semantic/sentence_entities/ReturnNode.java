@@ -1,6 +1,10 @@
 package semantic.sentence_entities;
 
+import exceptions.IncompatibleTypesException;
+import semantic.declared_entities.Type;
 import semantic.expression_entities.ExpressionNode;
+
+import static main.MainModule.symbolTable;
 
 public class ReturnNode extends SentenceNode {
     private ExpressionNode returnExpression;
@@ -16,6 +20,13 @@ public class ReturnNode extends SentenceNode {
     }
     public void setReturnExpression(ExpressionNode returnExpression) {
         this.returnExpression = returnExpression;
+    }
+    public void checkSentence() throws Exception {
+        Type returnType = returnExpression.typeCheck();
+        Type declaredReturnType = symbolTable.getCurrentMethod().getReturnType();
+        if(!returnType.conformsTo(declaredReturnType)) {
+            throw new IncompatibleTypesException(returnType, declaredReturnType, line, "return");
+        }
     }
     public String toString() {
         String msg = "Return ";

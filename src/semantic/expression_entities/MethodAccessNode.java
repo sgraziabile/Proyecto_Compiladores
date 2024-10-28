@@ -2,6 +2,7 @@ package semantic.expression_entities;
 
 import entities.Token;
 import exceptions.CannotResolveMethodException;
+import semantic.declared_entities.Parameter;
 import semantic.declared_entities.Type;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class MethodAccessNode extends PrimaryNode {
         if(symbolTable.getCurrentClass().getMethod(methodName) == null) {
             throw new CannotResolveMethodException(id);
         }
+        chechArguments();
         if(chained != null) {
             type = chained.typeCheck(this);
             return type;
@@ -44,6 +46,18 @@ public class MethodAccessNode extends PrimaryNode {
             return false;
         } else {
             return chained.isAssignable();
+        }
+    }
+    private void chechArguments() throws Exception {
+        String methodName = id.getLexeme();
+        ArrayList<Parameter> methodArgs = symbolTable.getCurrentClass().getMethod(methodName).getParameterList();
+        if(arguments.size() != methodArgs.size()) {
+            throw new CannotResolveMethodException(id);
+        }
+        for(int i = 0; i < arguments.size(); i++) {
+            if(!arguments.get(i).typeCheck().conformsTo(methodArgs.get(i).getType())) {
+                throw new CannotResolveMethodException(id);
+            }
         }
     }
     public String toString() {

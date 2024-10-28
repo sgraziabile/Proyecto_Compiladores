@@ -1,8 +1,10 @@
 package semantic.expression_entities;
 
 import entities.Token;
+import exceptions.CannotResolveMethodException;
 import exceptions.ClassNotDeclaredException;
 import semantic.declared_entities.Class;
+import semantic.declared_entities.Parameter;
 import semantic.declared_entities.ReferenceType;
 import semantic.declared_entities.Type;
 
@@ -38,7 +40,21 @@ public class ConstructorAccessNode extends PrimaryNode{
         if(classRef == null) {
             throw new ClassNotDeclaredException(id.getLineNumber(), id.getLexeme());
         } else {
+            checkArguments();
             return new ReferenceType(classRef.getName());
+        }
+    }
+    public void checkArguments() throws Exception{
+        String constructorName = id.getLexeme();
+        Class classRef = symbolTable.getClass(constructorName);
+        ArrayList<Parameter> methodArgs = classRef.getMethod(constructorName).getParameterList();
+        if(arguments.size() != methodArgs.size()) {
+            throw new CannotResolveMethodException(id);
+        }
+        for(int i = 0; i < arguments.size(); i++) {
+            if(!arguments.get(i).typeCheck().conformsTo(methodArgs.get(i).getType())) {
+                throw new CannotResolveMethodException(id);
+            }
         }
     }
     public String toString() {
