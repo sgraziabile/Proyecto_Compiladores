@@ -21,6 +21,9 @@ public class CallNode extends SentenceNode {
     public void checkSentence() throws Exception {
         try {
             expression.typeCheck();
+            if(!expression.canBeCalled()) {
+                throw new Exception("Expression cannot be called");
+            }
         }catch (StaticReferenceException e) {
             throw new StaticReferenceException(line, e.getToken());
         }

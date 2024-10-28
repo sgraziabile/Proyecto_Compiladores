@@ -57,6 +57,9 @@ public class ConstructorAccessNode extends PrimaryNode{
             }
         }
     }
+    public boolean canBeCalled() {
+        return true;
+    }
     public String toString() {
         return id.getLexeme() + (arguments == null ? " " : arguments.toString());
     }

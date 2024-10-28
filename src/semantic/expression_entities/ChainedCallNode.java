@@ -3,8 +3,8 @@ package semantic.expression_entities;
 import entities.Token;
 import exceptions.CannotResolveMethodException;
 import exceptions.PrimitiveTypeCallException;
-import semantic.declared_entities.ReferenceType;
-import semantic.declared_entities.Type;
+import semantic.declared_entities.*;
+import semantic.declared_entities.Class;
 
 import java.util.ArrayList;
 
@@ -48,11 +48,11 @@ public class ChainedCallNode extends Chained {
             resolveMethodAccessName(parentChain);
         } else if(parentChain instanceof ChainedCallNode) {
             resolveChainedMethodName(parentChain);
+        } else if(parentChain instanceof VarAccessNode) {
+            resolveChainVarName(parentChain);
         }
         if(chained != null) {
             type = chained.typeCheck(this);
-        } else {
-            //encontrar la clase que tiene el metodo
         }
         return type;
     }
@@ -65,6 +65,8 @@ public class ChainedCallNode extends Chained {
             if(methodType instanceof ReferenceType) {
                 if(symbolTable.getClass(methodType.getName()).getMethod(id.getLexeme()) == null) {
                     throw new CannotResolveMethodException(id);
+                } else {
+                    this.type = symbolTable.getClass(methodType.getName()).getMethod(id.getLexeme()).getType();
                 }
             }
             else {
@@ -81,10 +83,43 @@ public class ChainedCallNode extends Chained {
             if(methodType instanceof ReferenceType) {
                 if(symbolTable.getClass(methodType.getName()).getMethod(id.getLexeme()) == null) {
                     throw new CannotResolveMethodException(id);
+                } else {
+                    this.type = ((ChainedCallNode) parentChain).getType();
                 }
             }
             else {
                 throw new PrimitiveTypeCallException(parent.getId(), id,methodType);
+            }
+        }
+    }
+    private void resolveChainVarName(PrimaryNode parentChain) throws Exception {
+        VarAccessNode parent;
+        boolean found = false;
+        if(parentChain instanceof VarAccessNode) {
+            VarAccessNode var = (VarAccessNode) parentChain;
+            if (var.getType() instanceof PrimitiveType) {
+                throw new PrimitiveTypeCallException(id, var.getId(), var.getType());
+            } else {
+                ReferenceType refType = (ReferenceType)var.getType();
+                Class c = symbolTable.getClass(refType.getName());
+                for(Method m: c.getMethods().values()) {
+                    if(m.getName().equals(id.getLexeme())) {
+                        if(m.getParameterList().size() == args.size()) {
+                            for(int i = 0; i < args.size(); i++) {
+                                if(!args.get(i).typeCheck().conformsTo(m.getParameterList().get(i).getType())) {
+                                    throw new CannotResolveMethodException(id);
+                                }
+                            }
+                            this.type = m.getType();
+                            found = true;
+                        } else {
+                            throw new CannotResolveMethodException(id);
+                        }
+                    }
+                }
+                if(!found) {
+                    throw new CannotResolveMethodException(id);
+                }
             }
         }
     }
@@ -94,6 +129,9 @@ public class ChainedCallNode extends Chained {
         } else {
             return chained.isAssignable();
         }
+    }
+    public boolean canBeCalled() {
+        return true;
     }
     public String toString() {
         return id.getLexeme() + args.toString()+  (chained == null ? " " : chained.toString());

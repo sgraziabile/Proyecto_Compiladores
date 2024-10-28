@@ -14,6 +14,7 @@ public abstract class ExpressionNode {
     public boolean isAssignable() {
         return false;
     }
-
-
+    public boolean canBeCalled() {
+        return false;
+    }
 }

@@ -17,26 +17,24 @@ class B {
         }
     }
     public boolean met5() {
-        switch("Hola") {
-            case 1:
-                return " ";
-            case 2:
-                return " ";
-            default:
-                return " ";
-        }
+        var a = 1;
+        //var a = new Persona();
+        //a.met6().talk();
     }
     public static void met6() {
-        if(true) {
+        if() {
 
         }
     }
 }
-class Persona extends B{
+class Persona {
     public String talk() {
-        a2 = 3;
         return "Hola";
     }
+    public Persona met6() {
+        return;
+    }
+
 }
 
 

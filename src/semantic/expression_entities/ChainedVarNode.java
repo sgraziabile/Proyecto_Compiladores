@@ -82,4 +82,7 @@ public class ChainedVarNode extends Chained{
             return chained.isAssignable();
         }
     }
+    public boolean canBeCalled() {
+        return true;
+    }
 }

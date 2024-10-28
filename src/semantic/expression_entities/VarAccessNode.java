@@ -2,9 +2,11 @@ package semantic.expression_entities;
 
 import entities.Token;
 import exceptions.CantResolveSymbolException;
+import exceptions.PrimitiveTypeCallException;
 import exceptions.StaticReferenceException;
 import semantic.declared_entities.Attribute;
 import semantic.declared_entities.Parameter;
+import semantic.declared_entities.PrimitiveType;
 import semantic.declared_entities.Type;
 import semantic.sentence_entities.LocalVarNode;
 
@@ -97,7 +99,13 @@ public class VarAccessNode extends PrimaryNode {
         }
         return declared;
     }
-
+    public boolean canBeCalled() {
+        if(chained == null) {
+            return true;
+        } else {
+            return chained.canBeCalled();
+        }
+    }
     public String toString() {
         return id.getLexeme() + " " + (chained == null ? "" : chained.toString());
     }

@@ -67,6 +67,9 @@ public class MethodAccessNode extends PrimaryNode {
             throw new StaticReferenceException(0, id.getLexeme());
         }
     }
+    public boolean canBeCalled() {
+        return true;
+    }
     public String toString() {
         return id.getLexeme() + arguments.toString()+  (chained == null ? " " : chained.toString());
     }
