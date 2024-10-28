@@ -16,7 +16,6 @@ public class BreakNode extends SentenceNode {
         }
     }
     public boolean isInsideLoop() {
-        System.out.println("BreakNode isInsideLoop");
         boolean insideLoop = false;
         Block sentenceBlock = this.getParentBlock().getParentBlock();
         if(sentenceBlock != null) {

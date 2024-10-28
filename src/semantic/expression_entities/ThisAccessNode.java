@@ -1,5 +1,6 @@
 package semantic.expression_entities;
 
+import exceptions.StaticReferenceException;
 import semantic.declared_entities.ReferenceType;
 import semantic.declared_entities.Type;
 
@@ -13,7 +14,10 @@ public class ThisAccessNode extends PrimaryNode {
     public String toString() {
         return "ThisAccessNode";
     }
-    public Type typeCheck(PrimaryNode parentChain) throws Exception {
+    public Type typeCheck() throws Exception {
+        if(symbolTable.getCurrentMethod().getModifier().equals("static")) {
+            throw new StaticReferenceException(0, "this");
+        }
         String className = symbolTable.getCurrentClass().getName();
         return new ReferenceType(className);
     }

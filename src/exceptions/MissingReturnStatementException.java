@@ -9,8 +9,7 @@ public class MissingReturnStatementException extends Exception {
         this.lineNumber = lineNumber;
     }
     public String getMessage() {
-        String message = "Error Semantico en linea " +lineNumber+ "\n";
-        message += "Sentencia de retorno vacia \n";
+        String message = "Error Semantico en linea " +lineNumber+ ": sentencia de retorno vacia \n";
         message += "[Error:"+symbol+"|"+ lineNumber +"]";
         return message;
     }

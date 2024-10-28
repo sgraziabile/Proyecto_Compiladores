@@ -1,5 +1,6 @@
 package semantic.sentence_entities;
 
+import exceptions.StaticReferenceException;
 import semantic.expression_entities.ExpressionNode;
 
 public class CallNode extends SentenceNode {
@@ -18,7 +19,11 @@ public class CallNode extends SentenceNode {
         this.expression = expression;
     }
     public void checkSentence() throws Exception {
-        expression.typeCheck();
+        try {
+            expression.typeCheck();
+        }catch (StaticReferenceException e) {
+            throw new StaticReferenceException(line, e.getToken());
+        }
     }
     public String toString() {
         return expression.toString();

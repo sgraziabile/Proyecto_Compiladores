@@ -2,6 +2,7 @@ package semantic.sentence_entities;
 
 import exceptions.IncompatibleTypesException;
 import exceptions.MissingReturnStatementException;
+import exceptions.StaticReferenceException;
 import semantic.declared_entities.Type;
 import semantic.expression_entities.ExpressionNode;
 
@@ -23,14 +24,21 @@ public class ReturnNode extends SentenceNode {
         this.returnExpression = returnExpression;
     }
     public void checkSentence() throws Exception {
+        Type returnType;
         if(returnExpression != null) {
-            Type returnType = returnExpression.typeCheck();
+            try {
+                returnType = returnExpression.typeCheck();
+            } catch(StaticReferenceException e) {
+                throw new StaticReferenceException(line, e.getToken());
+            }
             Type declaredReturnType = symbolTable.getCurrentMethod().getReturnType();
             if (!returnType.conformsTo(declaredReturnType)) {
                 throw new IncompatibleTypesException(returnType, declaredReturnType, line, "return");
             }
         }
-        else throw new MissingReturnStatementException(";", line);
+        else if(!symbolTable.getCurrentMethod().getReturnType().getName().equals("void")) {
+            throw new MissingReturnStatementException(";", line);
+        }
     }
     public String toString() {
         String msg = "Return ";

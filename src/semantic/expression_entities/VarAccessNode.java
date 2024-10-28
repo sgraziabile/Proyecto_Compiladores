@@ -2,6 +2,7 @@ package semantic.expression_entities;
 
 import entities.Token;
 import exceptions.CantResolveSymbolException;
+import exceptions.StaticReferenceException;
 import semantic.declared_entities.Attribute;
 import semantic.declared_entities.Parameter;
 import semantic.declared_entities.Type;
@@ -39,8 +40,8 @@ public class VarAccessNode extends PrimaryNode {
         }
     }
     public Type typeCheck() throws Exception {
-        Type type = null;
-        boolean isDeclared = false;
+        Type type;
+        boolean isDeclared;
         isDeclared = checkLocalVar(id);
         if(!isDeclared) {
             isDeclared = checkParameter(id);
@@ -88,6 +89,9 @@ public class VarAccessNode extends PrimaryNode {
         String varName = var.getLexeme();
         Attribute attribute = symbolTable.getCurrentClass().getAttribute(varName);
         if(attribute != null) {
+            if(attribute.getModifier().equals("dynamic") && symbolTable.getCurrentMethod().getModifier().equals("static")) {
+                throw new StaticReferenceException(var.getLineNumber(), var.getLexeme());
+            }
             setType(attribute.getType());
             declared = true;
         }

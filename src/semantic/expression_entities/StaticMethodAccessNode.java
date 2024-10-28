@@ -29,6 +29,7 @@ public class StaticMethodAccessNode extends PrimaryNode {
     public void setClassName(Token className) {
         this.className = className;
     }
+
     public String toString() {
         return className.getLexeme() + "." + methodId.getLexeme();
     }
