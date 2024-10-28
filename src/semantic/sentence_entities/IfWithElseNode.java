@@ -20,6 +20,10 @@ public class IfWithElseNode extends IfNode {
     public void setElseBody(SentenceNode elseBody) {
         this.elseBody = elseBody;
     }
+    public void checkSentence() throws Exception {
+        super.checkSentence();
+        elseBody.checkSentence();
+    }
     public String toString() {
         return "IfWithElseNode";
     }

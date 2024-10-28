@@ -1,5 +1,8 @@
 package semantic.sentence_entities;
 
+import exceptions.IncompatibleTypesException;
+import semantic.declared_entities.PrimitiveType;
+import semantic.declared_entities.Type;
 import semantic.expression_entities.CompoundExpNode;
 
 public class IfNode extends SentenceNode {
@@ -25,6 +28,13 @@ public class IfNode extends SentenceNode {
     }
     public void setThenBody(SentenceNode thenBody) {
         this.thenBody = thenBody;
+    }
+    public void checkSentence() throws Exception {
+        Type conditionType = condition.typeCheck();
+        if(!conditionType.getName().equals("boolean")) {
+            throw new IncompatibleTypesException(new PrimitiveType("boolean"), conditionType, line,"if");
+        }
+        thenBody.checkSentence();
     }
     public String toString() {
         return "IfNode";

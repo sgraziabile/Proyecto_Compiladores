@@ -1,15 +1,25 @@
 class B {
     public static void main() {
-
     }
     public Persona met3(int x, B b) {
+        while(true) {
+            break;
+        }
         return new Persona();
     }
-    public Persona met4(B y) {
-        y = met3(1,new Persona());
+    public Persona met4(B y, int x) {
+        //y = met3(1,new Persona());
+        var a = new Persona();
+        while(met5()) {
+            break;
+            return a;
+        }
+    }
+    public boolean met5() {
+        return true;
     }
 }
-class Persona extends B {
+class Persona {
     public String talk() {
         return "Hola";
     }
