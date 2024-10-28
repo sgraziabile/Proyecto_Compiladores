@@ -14,6 +14,7 @@ public class Method extends ClassMember {
     private Hashtable<String, Parameter> parameterHash;
     private ArrayList<Parameter> parameterList;
     private boolean isConsolidated = false;
+    private boolean isChecked = false;
     private Block mainBlock;
 
     public Method(Token name, Type returnType, String modifier, String visibility) {
@@ -93,5 +94,11 @@ public class Method extends ClassMember {
                 myClass.setConstructorDeclared();
             }
             else throw new InvalidConstructorNameException(id.getLineNumber(), id.getLexeme());
+    }
+    public void setChecked() {
+        isChecked = true;
+    }
+    public boolean isChecked() {
+        return isChecked;
     }
 }

@@ -83,10 +83,15 @@ public class SymbolTable {
     }
     public void checkSentences() throws Exception {
         for(Class c : classHash.values()) {
-            setCurrentClass(c);
-            for(Method m : c.getMethods().values()) {
-                setCurrentMethod(m);
-                m.checkSentences();
+            if (!(c.getName().equals("Object") || c.getName().equals("System") || c.getName().equals("String"))) {
+                setCurrentClass(c);
+                for (Method m : c.getMethods().values()) {
+                    setCurrentMethod(m);
+                    if (!m.isChecked()) {
+                        m.checkSentences();
+                        m.setChecked();
+                    }
+                }
             }
         }
     }
