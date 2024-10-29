@@ -31,8 +31,9 @@ class Persona {
     public static String talk() {
         return "Hola";
     }
-    public void met6(String a) {
+    public void met6() {
         var p = new Persona();
+        var a = 1;
     }
 
 }

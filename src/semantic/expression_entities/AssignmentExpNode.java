@@ -1,6 +1,7 @@
 package semantic.expression_entities;
 
 import entities.Token;
+import exceptions.InvalidAssignmentException;
 import exceptions.InvalidOperatorException;
 import semantic.declared_entities.Type;
 
@@ -8,6 +9,7 @@ public class AssignmentExpNode extends ExpressionNode {
     private CompoundExpNode rightExp;
     private ExpressionNode leftExp;
     private Token operator;
+
 
     public AssignmentExpNode(ExpressionNode leftExp, Token operator, CompoundExpNode rightExp) {
         this.leftExp = leftExp;
@@ -39,10 +41,10 @@ public class AssignmentExpNode extends ExpressionNode {
     }
     public Type typeCheck() throws Exception {
         if(!(leftExp instanceof PrimaryNode)) {
-            throw new Exception("Variable expected in assignment");  //crear excepcion
+            throw new InvalidAssignmentException(operator.getLineNumber(),operator.getLexeme());
         }
         else if(!leftExp.isAssignable()) {
-            throw new Exception("Variable is not assignable");  //crear excepcion
+            throw new InvalidAssignmentException(operator.getLineNumber(),operator.getLexeme());
         }
         Type leftType = leftExp.typeCheck();
         Type rightType = rightExp.typeCheck();
