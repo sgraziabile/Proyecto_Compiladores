@@ -23,7 +23,7 @@ public class ThisAccessNode extends PrimaryNode {
         }
         reference = symbolTable.getCurrentClass();
         if(chained != null) {
-            type = chained.typeCheck(this);
+            type = chained.typeCheck(reference.getType());
         } else {
             type = reference.getType();
         }

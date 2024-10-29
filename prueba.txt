@@ -12,6 +12,7 @@ class B {
         //y = met3(1,new Persona());
         var a = new Persona();
         while(met5()) {
+            met6();
             break;
         }
     }
@@ -19,7 +20,7 @@ class B {
         //var a = new Persona();
         //a.met6().talk();
     }
-    public static void met6() {
+    private static void met6() {
         if(true) {
 
         }
@@ -30,9 +31,8 @@ class Persona {
     public static String talk() {
         return "Hola";
     }
-    public void met6(int a) {
-        var b = this;
-        (b).met6();
+    public void met6(String a) {
+        var p = new Persona();
     }
 
 }

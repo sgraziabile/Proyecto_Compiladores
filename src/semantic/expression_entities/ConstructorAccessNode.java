@@ -42,7 +42,7 @@ public class ConstructorAccessNode extends PrimaryNode{
         } else {
             checkArguments();
             if(chained != null) {
-                type = chained.typeCheck(this);
+                type = chained.typeCheck(reference.getType());
             }
             else {
                 type = reference.getType();

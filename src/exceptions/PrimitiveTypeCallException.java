@@ -15,7 +15,7 @@ public class PrimitiveTypeCallException extends Exception {
     }
     public String getMessage() {
         String message = "Error Semantico en linea " + methodName.getLineNumber() + ":";
-        message += " No se puede llamar al metodo "+methodName.getLexeme()+" porque "+ parentName.getLexeme()+" tiene tipo primitivo " + primitiveType.getName() + "\n";
+        message += " No se puede llamar a "+methodName.getLexeme()+" porque "+ parentName.getLexeme()+" tiene tipo primitivo " + primitiveType.getName() + "\n";
         message += "[Error:" + methodName.getLexeme() + "|" + methodName.getLineNumber() + "]";
         return message;
     }

@@ -55,7 +55,7 @@ public class StaticMethodAccessNode extends PrimaryNode {
         chechArguments();
         reference = symbolTable.getClass(className.getLexeme()).getMethod(methodId.getLexeme());
         if(chained != null) {
-            type = chained.typeCheck(this);
+            type = chained.typeCheck(reference.getType());
         } else {
             type = reference.getType();
         }

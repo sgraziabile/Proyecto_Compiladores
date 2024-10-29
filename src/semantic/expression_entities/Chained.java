@@ -26,10 +26,8 @@ public abstract class Chained extends PrimaryNode{
             return chained.isAssignable();
         }
     }
-    public Type typeCheck(PrimaryNode parentChain) throws Exception {
-        Type type = null;
-        return type;
-    }
+    public abstract Type typeCheck(Type type) throws Exception;
+
 
     public String toString() {
         return id.getLexeme() + " " + (chained == null ? "" : chained.toString());

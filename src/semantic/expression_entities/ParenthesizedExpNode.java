@@ -16,10 +16,9 @@ public class ParenthesizedExpNode extends PrimaryNode {
     }
     public Type typeCheck() throws Exception {
         Type type;
+        type = expression.typeCheck();
         if(chained != null) {
-            type = chained.typeCheck(this);
-        } else {
-            type = expression.typeCheck();
+            type = chained.typeCheck(type);
         }
         return type;
     }

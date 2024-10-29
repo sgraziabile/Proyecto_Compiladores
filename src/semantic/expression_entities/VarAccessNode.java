@@ -7,6 +7,7 @@ import exceptions.StaticReferenceException;
 import semantic.declared_entities.*;
 import semantic.sentence_entities.LocalVarNode;
 
+import java.sql.Ref;
 import java.util.ArrayList;
 
 import static main.MainModule.symbolTable;
@@ -58,10 +59,14 @@ public class VarAccessNode extends PrimaryNode {
         if(!isDeclared) {
             throw new CantResolveSymbolException(id.getLineNumber(), id.getLexeme());
         }
+        type = reference.getType();
         if(chained != null) {
-            type = chained.typeCheck(this); //reference.getType();
-        } else {
-            type = reference.getType();
+            if(type instanceof ReferenceType) {
+                type = chained.typeCheck(reference.getType());
+            }
+            else {
+                throw new PrimitiveTypeCallException(id, chained.getId(), type);
+            }
         }
         return type;
     }

@@ -4,6 +4,7 @@ import entities.Token;
 import exceptions.CannotResolveMethodException;
 import exceptions.StaticReferenceException;
 import semantic.declared_entities.Parameter;
+import semantic.declared_entities.Symbol;
 import semantic.declared_entities.Type;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import static main.MainModule.symbolTable;
 public class MethodAccessNode extends PrimaryNode {
     protected Token id;
     protected ArrayList<ExpressionNode> arguments;
+    protected Symbol reference;
 
     public MethodAccessNode() {
 
@@ -37,11 +39,12 @@ public class MethodAccessNode extends PrimaryNode {
         }
         checkStatic();
         chechArguments();
+        reference = symbolTable.getCurrentClass().getMethod(methodName);
         if(chained != null) {
-            type = chained.typeCheck(this);
+            type = chained.typeCheck(reference.getType());
             return type;
         }
-        return symbolTable.getCurrentClass().getMethod(methodName).getType();
+        return reference.getType();
     }
     public boolean isAssignable() {
         if(chained == null) {
