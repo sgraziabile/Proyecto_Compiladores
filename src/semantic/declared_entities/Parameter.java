@@ -5,7 +5,7 @@ import exceptions.CantResolveSymbolException;
 
 import static main.MainModule.symbolTable;
 
-public class Parameter {
+public class Parameter implements Symbol{
     private Token id;
     private Type type;
 

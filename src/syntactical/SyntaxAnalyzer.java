@@ -465,6 +465,7 @@ public class SyntaxAnalyzer {
         SentenceNode sentence = null;
         int currentLine = currentToken.getLineNumber();
         if(currentToken.getTokenClass().equals("puntoYComa")) {
+            sentence = new EmptySentence();
             match("puntoYComa");
         }
         else if(primerosHandler.Expression.contains(currentToken.getTokenClass())) {
@@ -1030,7 +1031,7 @@ public class SyntaxAnalyzer {
         match("idMetVar");
         ArrayList<ExpressionNode> arguments = new ArrayList<>();
         ActualArgs(arguments);
-        StaticMethodAccessNode staticMethodAccess = new StaticMethodAccessNode(classId,methodId,arguments);
+        StaticMethodAccessNode staticMethodAccess = new StaticMethodAccessNode(methodId,classId,arguments);
         return staticMethodAccess;
     }
     private ParenthesizedExpNode ParenthesizedExpression() throws Exception {
@@ -1064,10 +1065,10 @@ public class SyntaxAnalyzer {
             }
         }
         else if(currentToken.getTokenClass().equals("parentesisAbre")) {
-            chainedNode = new ChainedCallNode();
+            chainedNode = new ChainedMethodCallNode();
             ArrayList<ExpressionNode> args = new ArrayList<>();
             ActualArgs(args);
-            ((ChainedCallNode) chainedNode).setArguments(args);
+            ((ChainedMethodCallNode) chainedNode).setArguments(args);
             Chained optionalChained = OptionalChain();
             if(optionalChained != null) {
                 chainedNode.setChained(optionalChained);

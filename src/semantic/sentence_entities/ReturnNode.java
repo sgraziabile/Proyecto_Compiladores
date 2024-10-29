@@ -37,7 +37,7 @@ public class ReturnNode extends SentenceNode {
             }
         }
         else if(!symbolTable.getCurrentMethod().getReturnType().getName().equals("void")) {
-            throw new MissingReturnStatementException(";", line);
+            throw new MissingReturnStatementException("return", line);
         }
     }
     public String toString() {

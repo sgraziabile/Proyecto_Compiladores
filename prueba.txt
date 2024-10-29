@@ -13,26 +13,26 @@ class B {
         var a = new Persona();
         while(met5()) {
             break;
-            return a;
         }
     }
     public boolean met5() {
-        var a = 1;
         //var a = new Persona();
         //a.met6().talk();
     }
     public static void met6() {
-        if() {
+        if(true) {
 
         }
     }
 }
 class Persona {
-    public String talk() {
+    public boolean a;
+    public static String talk() {
         return "Hola";
     }
-    public Persona met6() {
-        return;
+    public void met6(int a) {
+        var b = this;
+        (b).met6();
     }
 
 }

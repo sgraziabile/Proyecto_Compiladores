@@ -31,7 +31,7 @@ public class ChainedVarNode extends Chained{
         Type type = null;
         if(parentChain instanceof MethodAccessNode) {
             resolveMethodAccessName(parentChain);
-        } else if(parentChain instanceof ChainedCallNode) {
+        } else if(parentChain instanceof ChainedMethodCallNode) {
             resolveChainedMethodName(parentChain);
         } else if(parentChain instanceof VarAccessNode) {
             resolveChainVarName(parentChain);
@@ -55,8 +55,8 @@ public class ChainedVarNode extends Chained{
         }
     }
     private void resolveChainedMethodName(PrimaryNode parentChain) throws Exception {
-        ChainedCallNode parent;
-        parent = (ChainedCallNode) parentChain;
+        ChainedMethodCallNode parent;
+        parent = (ChainedMethodCallNode) parentChain;
         Type methodType = parent.getType();
         if(methodType instanceof ReferenceType) {
             for(Class c: symbolTable.getClasses().values()) {

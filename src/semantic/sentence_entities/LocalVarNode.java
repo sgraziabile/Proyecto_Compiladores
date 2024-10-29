@@ -5,12 +5,13 @@ import exceptions.AlreadyDeclaredException;
 import exceptions.InvalidLocalVarAssignment;
 import exceptions.StaticReferenceException;
 import semantic.declared_entities.Parameter;
+import semantic.declared_entities.Symbol;
 import semantic.declared_entities.Type;
 import semantic.expression_entities.CompoundExpNode;
 
 import static main.MainModule.symbolTable;
 
-public class LocalVarNode extends SentenceNode {
+public class LocalVarNode extends SentenceNode implements Symbol {
     protected Token id;
     protected Token assignOp;
     protected CompoundExpNode expression;

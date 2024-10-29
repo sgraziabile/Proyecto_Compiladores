@@ -3,18 +3,17 @@ package semantic.expression_entities;
 import entities.Token;
 import exceptions.CannotResolveMethodException;
 import exceptions.ClassNotDeclaredException;
+import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
-import semantic.declared_entities.Parameter;
-import semantic.declared_entities.ReferenceType;
-import semantic.declared_entities.Type;
 
 import java.util.ArrayList;
 
 import static main.MainModule.symbolTable;
 
 public class ConstructorAccessNode extends PrimaryNode{
-    Token id;
-    ArrayList<ExpressionNode> arguments;
+    private Token id;
+    private ArrayList<ExpressionNode> arguments;
+    private Symbol reference;
 
     public ConstructorAccessNode(Token id, ArrayList<ExpressionNode> arguments) {
         this.id = id;
@@ -36,18 +35,24 @@ public class ConstructorAccessNode extends PrimaryNode{
         this.arguments = arguments;
     }
     public Type typeCheck() throws Exception{
-        Class classRef = symbolTable.getClass(id.getLexeme());
-        if(classRef == null) {
+        Type type;
+        reference = symbolTable.getClass(id.getLexeme());
+        if(reference == null) {
             throw new ClassNotDeclaredException(id.getLineNumber(), id.getLexeme());
         } else {
             checkArguments();
-            return new ReferenceType(classRef.getName());
+            if(chained != null) {
+                type = chained.typeCheck(this);
+            }
+            else {
+                type = reference.getType();
+            }
         }
+        return type;
     }
     public void checkArguments() throws Exception{
         String constructorName = id.getLexeme();
-        Class classRef = symbolTable.getClass(constructorName);
-        ArrayList<Parameter> methodArgs = classRef.getMethod(constructorName).getParameterList();
+        ArrayList<Parameter> methodArgs = ((Class)reference).getMethod(constructorName).getParameterList();
         if(arguments.size() != methodArgs.size()) {
             throw new CannotResolveMethodException(id);
         }

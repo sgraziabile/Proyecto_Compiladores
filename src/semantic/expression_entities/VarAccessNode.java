@@ -4,10 +4,7 @@ import entities.Token;
 import exceptions.CantResolveSymbolException;
 import exceptions.PrimitiveTypeCallException;
 import exceptions.StaticReferenceException;
-import semantic.declared_entities.Attribute;
-import semantic.declared_entities.Parameter;
-import semantic.declared_entities.PrimitiveType;
-import semantic.declared_entities.Type;
+import semantic.declared_entities.*;
 import semantic.sentence_entities.LocalVarNode;
 
 import java.util.ArrayList;
@@ -17,10 +14,12 @@ import static main.MainModule.symbolTable;
 public class VarAccessNode extends PrimaryNode {
     protected Token id;
     private Type type;
-    private boolean isAssignable;
+    private Symbol reference;
+
 
     public VarAccessNode(Token id) {
         this.id = id;
+        reference = null;
     }
     public Token getId() {
         return id;
@@ -34,6 +33,12 @@ public class VarAccessNode extends PrimaryNode {
     public Type getType() {
         return type;
     }
+    public void setReference(Symbol reference) {
+        this.reference = reference;
+    }
+    public Symbol getReference() {
+        return reference;
+    }
     public boolean isAssignable() {
         if(chained == null) {
             return true;
@@ -44,9 +49,9 @@ public class VarAccessNode extends PrimaryNode {
     public Type typeCheck() throws Exception {
         Type type;
         boolean isDeclared;
-        isDeclared = checkLocalVar(id);
+        isDeclared = checkParameter(id);
         if(!isDeclared) {
-            isDeclared = checkParameter(id);
+            isDeclared = checkLocalVar(id);
             if (!isDeclared)
                 isDeclared = checkAttribute(id);
         }
@@ -54,9 +59,9 @@ public class VarAccessNode extends PrimaryNode {
             throw new CantResolveSymbolException(id.getLineNumber(), id.getLexeme());
         }
         if(chained != null) {
-            type = chained.typeCheck(this);
+            type = chained.typeCheck(this); //reference.getType();
         } else {
-            type = this.type;
+            type = reference.getType();
         }
         return type;
     }
@@ -67,7 +72,7 @@ public class VarAccessNode extends PrimaryNode {
             LocalVarNode localVar = symbolTable.getCurrentBlock().getLocalVar(varName);
             if(localVar != null) {
                 if(localVar.getId().getLineNumber() <= var.getLineNumber()) {
-                    setType(localVar.getType());
+                    reference = (Symbol) localVar;
                     declared = true;
                 }
             }
@@ -80,7 +85,7 @@ public class VarAccessNode extends PrimaryNode {
         ArrayList<Parameter> parameterList = symbolTable.getCurrentMethod().getParameterList();
         for(Parameter parameter : parameterList) {
             if(parameter.getId().getLexeme().equals(varName)) {
-                setType(parameter.getType());
+                reference = (Symbol) parameter;
                 declared = true;
             }
         }
@@ -94,7 +99,7 @@ public class VarAccessNode extends PrimaryNode {
             if(attribute.getModifier().equals("dynamic") && symbolTable.getCurrentMethod().getModifier().equals("static")) {
                 throw new StaticReferenceException(var.getLineNumber(), var.getLexeme());
             }
-            setType(attribute.getType());
+            reference = (Symbol) attribute;
             declared = true;
         }
         return declared;

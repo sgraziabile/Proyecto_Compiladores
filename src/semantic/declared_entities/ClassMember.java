@@ -2,7 +2,7 @@ package semantic.declared_entities;
 
 import entities.Token;
 
-public class ClassMember {
+public class ClassMember implements Symbol{
     protected Token id;
     protected Type type;
     protected String modifier;

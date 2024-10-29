@@ -10,20 +10,20 @@ import java.util.ArrayList;
 
 import static main.MainModule.symbolTable;
 
-public class ChainedCallNode extends Chained {
+public class ChainedMethodCallNode extends Chained {
     protected ArrayList<ExpressionNode> args;
     protected Type type;
 
-    public ChainedCallNode(Token name) {
+    public ChainedMethodCallNode(Token name) {
         this.id = name;
         this.args = new ArrayList<>();
     }
-    public ChainedCallNode(Token name, Chained next) {
+    public ChainedMethodCallNode(Token name, Chained next) {
         this.id = name;
         this.chained = next;
         this.args = new ArrayList<>();
     }
-    public ChainedCallNode() {
+    public ChainedMethodCallNode() {
         this.args = new ArrayList<>();
     }
     public ArrayList<ExpressionNode> getArgs() {
@@ -46,7 +46,7 @@ public class ChainedCallNode extends Chained {
         PrimaryNode parent;
         if(parentChain instanceof MethodAccessNode) {
             resolveMethodAccessName(parentChain);
-        } else if(parentChain instanceof ChainedCallNode) {
+        } else if(parentChain instanceof ChainedMethodCallNode) {
             resolveChainedMethodName(parentChain);
         } else if(parentChain instanceof VarAccessNode) {
             resolveChainVarName(parentChain);
@@ -75,16 +75,16 @@ public class ChainedCallNode extends Chained {
         }
     }
     private void resolveChainedMethodName(PrimaryNode parentChain) throws Exception {
-        ChainedCallNode parent;
-        if(parentChain instanceof ChainedCallNode) {
-            parent = (ChainedCallNode) parentChain;
+        ChainedMethodCallNode parent;
+        if(parentChain instanceof ChainedMethodCallNode) {
+            parent = (ChainedMethodCallNode) parentChain;
             String methodName = parent.getId().getLexeme();
             Type methodType = symbolTable.getCurrentClass().getMethod(methodName).getType();
             if(methodType instanceof ReferenceType) {
                 if(symbolTable.getClass(methodType.getName()).getMethod(id.getLexeme()) == null) {
                     throw new CannotResolveMethodException(id);
                 } else {
-                    this.type = ((ChainedCallNode) parentChain).getType();
+                    this.type = ((ChainedMethodCallNode) parentChain).getType();
                 }
             }
             else {

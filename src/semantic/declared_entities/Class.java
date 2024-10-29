@@ -11,7 +11,7 @@ import java.util.Hashtable;
 import static main.MainModule.symbolTable;
 
 
-public class Class {
+public class Class implements Symbol{
     private Token id;
     private Token superclass;
     private boolean isConsolidated = false;
@@ -57,6 +57,9 @@ public class Class {
     }
     public String getName() {
         return id.getLexeme();
+    }
+    public Type getType() {
+        return new ReferenceType(getName());
     }
     public Token getSuperclass() {
         return superclass;

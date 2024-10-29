@@ -2,11 +2,13 @@ package semantic.expression_entities;
 
 import exceptions.StaticReferenceException;
 import semantic.declared_entities.ReferenceType;
+import semantic.declared_entities.Symbol;
 import semantic.declared_entities.Type;
 
 import static main.MainModule.symbolTable;
 
 public class ThisAccessNode extends PrimaryNode {
+    private Symbol reference;
 
     public ThisAccessNode() {
 
@@ -15,18 +17,17 @@ public class ThisAccessNode extends PrimaryNode {
         return "ThisAccessNode";
     }
     public Type typeCheck() throws Exception {
+        Type type;
         if(symbolTable.getCurrentMethod().getModifier().equals("static")) {
             throw new StaticReferenceException(0, "this");
         }
-        String className = symbolTable.getCurrentClass().getName();
-        return new ReferenceType(className);
-    }
-    public boolean isAssignable() {
-        if(chained == null) {
-            return true;
+        reference = symbolTable.getCurrentClass();
+        if(chained != null) {
+            type = chained.typeCheck(this);
         } else {
-            return chained.isAssignable();
+            type = reference.getType();
         }
+        return type;
     }
 
 }

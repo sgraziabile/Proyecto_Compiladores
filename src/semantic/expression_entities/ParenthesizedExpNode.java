@@ -15,7 +15,27 @@ public class ParenthesizedExpNode extends PrimaryNode {
         this.expression = expression;
     }
     public Type typeCheck() throws Exception {
-        return expression.typeCheck();
+        Type type;
+        if(chained != null) {
+            type = chained.typeCheck(this);
+        } else {
+            type = expression.typeCheck();
+        }
+        return type;
+    }
+    public boolean isAssignable() {
+        if(chained == null) {
+            return expression.isAssignable();
+        } else {
+            return chained.isAssignable();
+        }
+    }
+    public boolean canBeCalled() {
+        if(chained == null) {
+            return expression.canBeCalled();
+        } else {
+            return chained.canBeCalled();
+        }
     }
     public String toString() {
         return expression.toString();
