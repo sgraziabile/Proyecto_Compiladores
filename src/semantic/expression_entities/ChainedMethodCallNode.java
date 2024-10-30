@@ -3,6 +3,7 @@ package semantic.expression_entities;
 import entities.Token;
 import exceptions.CannotResolveMethodException;
 import exceptions.PrimitiveTypeCallException;
+import exceptions.StaticReferenceException;
 import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
 
@@ -61,12 +62,29 @@ public class ChainedMethodCallNode extends Chained {
         Method method = classRef.getMethod(id.getLexeme());
         if(method != null) {
             if(method.getVisibility().equals("public")) {
+                checkParameters(method);
+                checkStatic(method);
                 reference = method;
             } else {
                 throw new CannotResolveMethodException(id);
             }
         } else {
             throw new CannotResolveMethodException(id);
+        }
+    }
+    private void checkParameters(Method method) throws Exception {
+        if(args.size() != method.getParameterList().size()) {
+            throw new CannotResolveMethodException(id);
+        }
+        for(int i = 0; i < args.size(); i++) {
+            if(!args.get(i).typeCheck().conformsTo(method.getParameterList().get(i).getType())) {
+                throw new CannotResolveMethodException(id);
+            }
+        }
+    }
+    private void checkStatic(Method method) throws Exception {
+        if(method.getModifier().equals("static")) {
+            throw new StaticReferenceException(0, id.getLexeme());
         }
     }
     public boolean isAssignable() {

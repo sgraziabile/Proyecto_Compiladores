@@ -44,7 +44,7 @@ public class SwitchNode extends SentenceNode {
     public void checkSentence() throws Exception {
         Type type;
         type = expression.typeCheck();
-        if(type.getName().equals("int") || type.getName().equals("char") || type.getName().equals("boolean")) {
+        if(type.getName().equals("int") || type.getName().equals("char") || type.getName().equals("boolean") || type.getName().equals("String")) {
             for (CaseNode c : cases) {
                 c.checkSentence(type);
             }

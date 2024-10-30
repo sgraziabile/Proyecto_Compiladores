@@ -38,7 +38,7 @@ public class MethodAccessNode extends PrimaryNode {
             throw new CannotResolveMethodException(id);
         }
         checkStatic();
-        chechArguments();
+        checkArguments();
         reference = symbolTable.getCurrentClass().getMethod(methodName);
         if(chained != null) {
             type = chained.typeCheck(reference.getType());
@@ -53,7 +53,7 @@ public class MethodAccessNode extends PrimaryNode {
             return chained.isAssignable();
         }
     }
-    private void chechArguments() throws Exception {
+    private void checkArguments() throws Exception {
         String methodName = id.getLexeme();
         ArrayList<Parameter> methodArgs = symbolTable.getCurrentClass().getMethod(methodName).getParameterList();
         if(arguments.size() != methodArgs.size()) {

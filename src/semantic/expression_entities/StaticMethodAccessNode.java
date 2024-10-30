@@ -3,6 +3,7 @@ package semantic.expression_entities;
 import entities.Token;
 import exceptions.CannotResolveMethodException;
 import exceptions.StaticReferenceException;
+import semantic.declared_entities.Method;
 import semantic.declared_entities.Parameter;
 import semantic.declared_entities.Symbol;
 import semantic.declared_entities.Type;
@@ -85,8 +86,13 @@ public class StaticMethodAccessNode extends PrimaryNode {
     }
     private void checkStatic() throws Exception {
         String className = this.className.getLexeme();
-        if(symbolTable.getClass(className).getMethod(methodId.getLexeme()).getModifier().equals("dynamic")) {
-            throw new StaticReferenceException(0, methodId.getLexeme());
+        Method callMethod = symbolTable.getClass(className).getMethod(methodId.getLexeme());
+        if(callMethod != null) {
+            if (callMethod.getModifier().equals("dynamic")) {
+                throw new StaticReferenceException(0, methodId.getLexeme());
+            }
+        } else {
+            throw new CannotResolveMethodException(methodId);
         }
     }
     public String toString() {

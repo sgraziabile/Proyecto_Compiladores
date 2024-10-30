@@ -8,7 +8,7 @@ class B {
         }
         return new Persona();
     }
-    public Persona met4(B y, int x) {
+    public Persona met4() {
         //y = met3(1,new Persona());
         var a = new Persona();
         while(met5()) {
@@ -28,12 +28,15 @@ class B {
 }
 class Persona {
     public boolean a;
-    public static String talk() {
+    public  String talk() {
         return "Hola";
     }
-    public void met6() {
+    public void met7(Persona per) {
         var p = new Persona();
-        var a = 1;
+        var t = new B();
+        var b = true;
+        t.met4().a;
+        per.met7(per);
     }
 
 }

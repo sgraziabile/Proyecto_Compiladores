@@ -117,7 +117,9 @@ public class SymbolTable {
     private Token initObjectClass() throws Exception {
         Class objectClass = new Class(new Token("idClase", "Object", 0));
         objectClass.setConsolidated();
-        Method debugPrint = new Method(new Token("idMetVar","debugPrint",0),new PrimitiveType("void"),"public","static");
+        Method debugPrint = new Method(new Token("idMetVar","debugPrint",0),new PrimitiveType("void"),"static","public");
+        Parameter param = new Parameter(new Token("idMetVar","i",0),new PrimitiveType("int"));
+        debugPrint.addParameter("i",param);
         objectClass.checkConstructor();
         objectClass.addMethod(debugPrint);
         insertClass(objectClass);
