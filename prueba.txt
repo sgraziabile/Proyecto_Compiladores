@@ -32,11 +32,16 @@ class Persona {
         return "Hola";
     }
     public void met7(Persona per) {
-        var p = new Persona();
+        var num = 3 * 2;
         var t = new B();
         var b = true;
         t.met4().a;
         per.met7(per);
+    }
+    public Persona met8(B p) {
+        var f = 1.1e-1;
+        f = f + 1.1;
+        return new Persona();
     }
 
 }

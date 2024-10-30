@@ -20,6 +20,7 @@ public class Class implements Symbol{
     private Hashtable<String, Method> methods;
     private ArrayList<Method> methodList;
     private boolean constructorDeclared = false;
+    private Type type;
 
     public Class(Token idClass) {
         id = idClass;
@@ -28,6 +29,7 @@ public class Class implements Symbol{
         methods = new Hashtable<>();
         attributeList = new ArrayList<>();
         methodList = new ArrayList<>();
+        type = new ReferenceType(id.getLexeme());
     }
     public void setSuperclass(Token superclass) {
         this.superclass = superclass;
@@ -59,7 +61,7 @@ public class Class implements Symbol{
         return id.getLexeme();
     }
     public Type getType() {
-        return new ReferenceType(getName());
+        return type;
     }
     public Token getSuperclass() {
         return superclass;

@@ -2,8 +2,10 @@ package semantic.expression_entities;
 
 import entities.Token;
 import exceptions.CannotResolveMethodException;
+import exceptions.PrimitiveTypeCallException;
 import exceptions.StaticReferenceException;
 import semantic.declared_entities.Parameter;
+import semantic.declared_entities.ReferenceType;
 import semantic.declared_entities.Symbol;
 import semantic.declared_entities.Type;
 
@@ -41,7 +43,11 @@ public class MethodAccessNode extends PrimaryNode {
         checkArguments();
         reference = symbolTable.getCurrentClass().getMethod(methodName);
         if(chained != null) {
-            type = chained.typeCheck(reference.getType());
+            if(reference.getType() instanceof ReferenceType) {
+                type = chained.typeCheck(reference.getType());
+            } else {
+                throw new PrimitiveTypeCallException(id, chained.getId(), reference.getType());
+            }
             return type;
         }
         return reference.getType();

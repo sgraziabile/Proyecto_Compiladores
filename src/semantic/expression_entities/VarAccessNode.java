@@ -65,7 +65,7 @@ public class VarAccessNode extends PrimaryNode {
                 type = chained.typeCheck(reference.getType());
             }
             else {
-                throw new PrimitiveTypeCallException(id, chained.getId(), type);
+                throw new PrimitiveTypeCallException(chained.getId(), id, type);
             }
         }
         return type;
@@ -77,7 +77,7 @@ public class VarAccessNode extends PrimaryNode {
             LocalVarNode localVar = symbolTable.getCurrentBlock().getLocalVar(varName);
             if(localVar != null) {
                 if(localVar.getId().getLineNumber() <= var.getLineNumber()) {
-                    reference = (Symbol) localVar;
+                    reference = localVar;
                     declared = true;
                 }
             }
@@ -90,7 +90,7 @@ public class VarAccessNode extends PrimaryNode {
         ArrayList<Parameter> parameterList = symbolTable.getCurrentMethod().getParameterList();
         for(Parameter parameter : parameterList) {
             if(parameter.getId().getLexeme().equals(varName)) {
-                reference = (Symbol) parameter;
+                reference = parameter;
                 declared = true;
             }
         }
@@ -104,7 +104,7 @@ public class VarAccessNode extends PrimaryNode {
             if(attribute.getModifier().equals("dynamic") && symbolTable.getCurrentMethod().getModifier().equals("static")) {
                 throw new StaticReferenceException(var.getLineNumber(), var.getLexeme());
             }
-            reference = (Symbol) attribute;
+            reference = attribute;
             declared = true;
         }
         return declared;

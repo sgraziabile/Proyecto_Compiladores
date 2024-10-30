@@ -1,5 +1,6 @@
 package semantic.sentence_entities;
 
+import exceptions.NotAStatementExceptionn;
 import exceptions.StaticReferenceException;
 import semantic.expression_entities.ExpressionNode;
 
@@ -22,7 +23,7 @@ public class CallNode extends SentenceNode {
         try {
             expression.typeCheck();
             if(!expression.canBeCalled()) {
-                throw new Exception("Expression cannot be called");
+                throw new NotAStatementExceptionn(line);
             }
         }catch (StaticReferenceException e) {
             throw new StaticReferenceException(line, e.getToken());

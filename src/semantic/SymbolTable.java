@@ -7,6 +7,7 @@ import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
 import semantic.sentence_entities.*;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class SymbolTable {
@@ -15,6 +16,7 @@ public class SymbolTable {
     private Method currentMethod;
     private Block currentBlock;
     private Hashtable<String,Class> classHash;
+    private ArrayList<Class> classList;
     private boolean mainDeclared = false;
 
 
@@ -22,6 +24,7 @@ public class SymbolTable {
         this.currentClass = null;
         this.currentMethod = null;
         this.classHash = new Hashtable<>();
+        this.classList = new ArrayList<>();
         try {
             initBaseClasses();
         } catch (Exception e) {
@@ -37,10 +40,14 @@ public class SymbolTable {
         currentBlock = block;
     }
     public void insertClass(Class c) throws Exception {
-        if(c.getSuperclass() == null)
+        if(c.getSuperclass() == null) {
             classHash.put(c.getName(), c);
-        else if(!c.getName().equals(c.getSuperclass().getLexeme()))
+            classList.add(c);
+        }
+        else if(!c.getName().equals(c.getSuperclass().getLexeme())) {
             classHash.put(c.getName(), c);
+            classList.add(c);
+        }
         else
             throw new CyclicInheritanceException(c.getId().getLineNumber(),c.getName());
     }
@@ -82,10 +89,10 @@ public class SymbolTable {
         isConsolidated = true;
     }
     public void checkSentences() throws Exception {
-        for(Class c : classHash.values()) {
+        for(Class c : classList) {
             if (!(c.getName().equals("Object") || c.getName().equals("System") || c.getName().equals("String"))) {
                 setCurrentClass(c);
-                for (Method m : c.getMethods().values()) {
+                for (Method m : c.getMethodList()) {
                     setCurrentMethod(m);
                     if (!m.isChecked()) {
                         m.checkSentences();
