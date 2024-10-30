@@ -7,6 +7,7 @@ import static main.MainModule.symbolTable;
 
 public class Attribute extends ClassMember {
 
+
     public Attribute(Token name, Type type, String modifier, String visibility) {
         super(name,type,modifier,visibility);
     }

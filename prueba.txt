@@ -27,7 +27,7 @@ class B {
     }
 }
 class Persona {
-    public boolean a;
+    public boolean a = true;
     public  String talk() {
         return "Hola";
     }
@@ -38,9 +38,9 @@ class Persona {
         t.met4().a;
         per.met7(per);
     }
-    public Persona met8(B p) {
-        var f = 1.1e-1;
-        f = f + 1.1;
+    public Persona met8(float p) {
+        var f = 1;
+        f = +f;
         return new Persona();
     }
 
