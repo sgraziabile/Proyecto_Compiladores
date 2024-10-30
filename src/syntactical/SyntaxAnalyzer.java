@@ -33,7 +33,6 @@ public class SyntaxAnalyzer {
         Init();
         symbolTable.checkDeclarations();
         symbolTable.checkSentences();
-        symbolTable.printBlocks();
     }
 
     private void match(String tokenName) throws Exception {
@@ -448,6 +447,7 @@ public class SyntaxAnalyzer {
         SentenceList(sentenceList);
         match("llaveCierra");
         block.addSentenceList(sentenceList);
+        symbolTable.setCurrentBlock(block.getParentBlock());
         return block;
     }
     private void SentenceList(ArrayList<SentenceNode> sentenceList) throws Exception {

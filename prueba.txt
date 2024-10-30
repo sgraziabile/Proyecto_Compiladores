@@ -1,49 +1,19 @@
-class B {
-    public int a2 = 1;
-    public static void main() {
-    }
-    public Persona met3(int x, B b) {
-        while(true) {
-            break;
-        }
-        return new Persona();
-    }
-    public Persona met4() {
-        //y = met3(1,new Persona());
-        var a = new Persona();
-        while(met5()) {
-            met6();
-            break;
-        }
-    }
-    public boolean met5() {
-        //var a = new Persona();
-        //a.met6().talk();
-    }
-    private static void met6() {
-        if(true) {
+///[Error:x|17]
+// Nombre de variable local o parametro repetido x - ln: 17
+class A {
+    int a1;
+    void m1(int p1)
+    {
+       var x = 2;
+       switch(x)
+       {
 
-        }
+       }
     }
 }
-class Persona {
-    public boolean a = true;
-    public  String talk() {
-        return "Hola";
-    }
-    public void met7(Persona per) {
-        var num = 3 * 2;
-        var t = new B();
-        var b = true;
-        t.met4().a;
-        per.met7(per);
-    }
-    public Persona met8(float p) {
-        var f = 1;
-        f = +f;
-        return new Persona();
-    }
-
+class Init{
+    static void main()
+    { }
 }
 
 

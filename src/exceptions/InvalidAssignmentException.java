@@ -9,7 +9,7 @@ public class InvalidAssignmentException extends Exception {
     }
     public String getMessage() {
         String message = "Error Semantico en la linea " + line + ": Se esperaba una variable en la asignacion \n";
-        message += "[Error"+operator+"|"+line+"]";
+        message += "[Error:"+operator+"|"+line+"]";
         return message;
     }
 }

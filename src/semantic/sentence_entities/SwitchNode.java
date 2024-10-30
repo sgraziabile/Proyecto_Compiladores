@@ -48,7 +48,8 @@ public class SwitchNode extends SentenceNode {
             for (CaseNode c : cases) {
                 c.checkSentence(type);
             }
-            defaultCase.checkSentence();
+            if(defaultCase != null)
+                defaultCase.checkSentence();
         }
         else {
             throw new InvalidSwitchTypeException(type,line);
