@@ -1,15 +1,21 @@
-///[Error:x|17]
-// Nombre de variable local o parametro repetido x - ln: 17
+///[SinErrores]
+// Expresion binaria invalida: int || boolean
 class A {
-    int a1;
-    void m1(int p1)
+    public int a1;
+    void m1(int a1)
     {
-       var x = 2;
-       switch(x)
-       {
-
-       }
+        var a = new A();
+        a = this;
+        m1("Hola");
     }
+}
+class B extends A {
+    public int b1;
+    void m2()
+    {
+
+    }
+
 }
 class Init{
     static void main()

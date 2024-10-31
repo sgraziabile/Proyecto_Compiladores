@@ -8,11 +8,18 @@ public class ReferenceType extends Type {
         super(name);
     }
     public boolean conformsTo(Type other) {
-        boolean conforms;
-        if(other.getName().equals(this.name)) {
-            conforms = true;
+        boolean conforms = false;
+        if(this.name.equals("null")) {
+            if(other instanceof ReferenceType) {
+                conforms = true;
+            }
         } else {
-            conforms = isSubtype(other);
+
+            if (other.getName().equals(this.name)) {
+                conforms = true;
+            } else {
+                conforms = isSubtype(other);
+            }
         }
         return conforms;
     }

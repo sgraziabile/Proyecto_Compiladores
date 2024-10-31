@@ -4,6 +4,7 @@ import entities.Token;
 import exceptions.CantResolveSymbolException;
 import exceptions.PrimitiveTypeCallException;
 import exceptions.StaticReferenceException;
+import exceptions.VariableNotInitializedException;
 import semantic.declared_entities.*;
 import semantic.sentence_entities.LocalVarNode;
 
@@ -76,9 +77,13 @@ public class VarAccessNode extends PrimaryNode {
         if(symbolTable.getCurrentBlock() != null) {
             LocalVarNode localVar = symbolTable.getCurrentBlock().getLocalVar(varName);
             if(localVar != null) {
-                if(localVar.getId().getLineNumber() <= var.getLineNumber()) {
-                    reference = localVar;
-                    declared = true;
+                if(localVar.getType() != null) {
+                    if (localVar.getId().getLineNumber() <= var.getLineNumber()) {
+                        reference = localVar;
+                        declared = true;
+                    }
+                } else {
+                    throw new VariableNotInitializedException(varName, var.getLineNumber());
                 }
             }
         }
