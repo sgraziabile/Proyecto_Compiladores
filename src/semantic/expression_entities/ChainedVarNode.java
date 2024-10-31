@@ -63,6 +63,10 @@ public class ChainedVarNode extends Chained{
         }
     }
     public boolean canBeCalled() {
-        return true;
+        if(chained == null) {
+            return false;
+        } else {
+            return chained.canBeCalled();
+        }
     }
 }

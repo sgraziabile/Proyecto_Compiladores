@@ -63,7 +63,11 @@ public class StaticMethodAccessNode extends PrimaryNode {
         return type;
     }
     public boolean canBeCalled() {
-        return true;
+        if(chained != null) {
+            return chained.canBeCalled();
+        } else {
+            return true;
+        }
     }
     public boolean isAssignable() {
         if(chained == null) {

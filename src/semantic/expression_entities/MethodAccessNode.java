@@ -77,7 +77,11 @@ public class MethodAccessNode extends PrimaryNode {
         }
     }
     public boolean canBeCalled() {
-        return true;
+        if(chained == null) {
+            return true;
+        } else {
+            return chained.canBeCalled();
+        }
     }
     public String toString() {
         return id.getLexeme() + arguments.toString()+  (chained == null ? " " : chained.toString());

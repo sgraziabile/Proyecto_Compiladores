@@ -63,7 +63,7 @@ public class ChainedMethodCallNode extends Chained {
         if(method != null) {
             if(method.getVisibility().equals("public")) {
                 checkParameters(method);
-                checkStatic(method);
+                //checkStatic(method);
                 reference = method;
             } else {
                 throw new CannotResolveMethodException(id);
@@ -77,7 +77,9 @@ public class ChainedMethodCallNode extends Chained {
             throw new CannotResolveMethodException(id);
         }
         for(int i = 0; i < args.size(); i++) {
-            if(!args.get(i).typeCheck().conformsTo(method.getParameterList().get(i).getType())) {
+            Type actualType = args.get(i).typeCheck();
+            Type expectedType = method.getParameterList().get(i).getType();
+            if(!actualType.conformsTo(expectedType)) {
                 throw new CannotResolveMethodException(id);
             }
         }
@@ -95,7 +97,11 @@ public class ChainedMethodCallNode extends Chained {
         }
     }
     public boolean canBeCalled() {
-        return true;
+        if(chained == null) {
+            return true;
+        } else {
+            return chained.canBeCalled();
+        }
     }
     public String toString() {
         return id.getLexeme() + args.toString()+  (chained == null ? " " : chained.toString());

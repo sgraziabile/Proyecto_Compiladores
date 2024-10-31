@@ -17,4 +17,11 @@ public class PrimaryNode extends OperandNode {
     public String toString() {
         return "PrimaryNode";
     }
+    public boolean canBeCalled() {
+        if(chained != null) {
+            return chained.canBeCalled();
+        } else {
+            return false;
+        }
+    }
 }

@@ -29,5 +29,12 @@ public class ThisAccessNode extends PrimaryNode {
         }
         return type;
     }
+    public boolean canBeCalled() {
+        if(chained != null) {
+            return chained.canBeCalled();
+        } else {
+            return false;
+        }
+    }
 
 }

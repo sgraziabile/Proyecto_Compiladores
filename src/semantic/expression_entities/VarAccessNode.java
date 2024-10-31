@@ -116,7 +116,7 @@ public class VarAccessNode extends PrimaryNode {
     }
     public boolean canBeCalled() {
         if(chained == null) {
-            return true;
+            return false;
         } else {
             return chained.canBeCalled();
         }
