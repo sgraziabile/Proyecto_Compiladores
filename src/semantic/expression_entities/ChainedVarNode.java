@@ -36,7 +36,7 @@ public class ChainedVarNode extends Chained{
             if (chainedType instanceof ReferenceType) {
                 chainedType = chained.typeCheck(reference.getType());
             } else {
-                throw new PrimitiveTypeCallException(id, chained.getId(), chainedType);
+                throw new PrimitiveTypeCallException(chained.getId(), id, chainedType);
             }
         }
         return chainedType;
