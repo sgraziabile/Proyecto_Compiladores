@@ -1,17 +1,19 @@
 ///[SinErrores]
  // Correcta asignacion del this
  class A {
-     public A a1;
-      static void m1()
+     public int a1;
+     static void m1(int a1)
      {
          var a = new A();
-         a.m3().a1 = new A();
-     }
-     public A m3() {
-        return new A();
-     }
-     public static A m4(A a) {
-        return new A();
+         switch(a1)
+         {
+             case 1:
+                 var b = 1;
+             case 2:
+                  b = 1;
+             default:
+                    b = 3;
+         }
      }
  }
  class B extends A {

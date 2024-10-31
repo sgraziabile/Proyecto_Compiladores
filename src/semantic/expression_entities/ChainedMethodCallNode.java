@@ -63,7 +63,6 @@ public class ChainedMethodCallNode extends Chained {
         if(method != null) {
             if(method.getVisibility().equals("public")) {
                 checkParameters(method);
-                //checkStatic(method);
                 reference = method;
             } else {
                 throw new CannotResolveMethodException(id);
@@ -82,11 +81,6 @@ public class ChainedMethodCallNode extends Chained {
             if(!actualType.conformsTo(expectedType)) {
                 throw new CannotResolveMethodException(id);
             }
-        }
-    }
-    private void checkStatic(Method method) throws Exception {
-        if(method.getModifier().equals("static")) {
-            throw new StaticReferenceException(0, id.getLexeme());
         }
     }
     public boolean isAssignable() {

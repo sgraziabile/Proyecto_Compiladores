@@ -12,6 +12,7 @@ import semantic.expression_entities.*;
 import semantic.sentence_entities.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class SyntaxAnalyzer {
@@ -558,12 +559,14 @@ public class SyntaxAnalyzer {
         match("llaveCierra");
         switchNode.setExpression(switchExpression);
         switchNode.setCases(caseList);
-        for(CaseNode caseNode : caseList) {
+        Iterator<CaseNode> iterator = caseList.iterator();
+        while(iterator.hasNext()) {
+            CaseNode caseNode = iterator.next();
             if(caseNode.getCaseValue() == null) {
                 switchNode.setDefaultCase(caseNode);
+                iterator.remove();
             }
         }
-        caseList.remove(switchNode.getDefaultCase());
         return switchNode;
     }
     private void SwitchSentenceList(ArrayList<CaseNode> caseNodes) throws Exception {
