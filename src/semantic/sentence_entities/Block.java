@@ -54,6 +54,12 @@ public class Block extends SentenceNode {
                 s.checkSentence();
         }
     }
+    public void setBreakable() {
+        isBrekable = true;
+        for(SentenceNode s : sentenceList) {
+            s.setBreakable();
+        }
+    }
     public String toString() {
         return "Block";
     }

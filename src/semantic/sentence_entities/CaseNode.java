@@ -43,6 +43,9 @@ public class CaseNode extends SentenceNode {
     public void checkSentence() throws Exception {
         caseBody.checkSentence();
     }
+    public void setBreakable() {
+        caseBody.setBreakable();
+    }
     public String toString() {
         String msg = "CaseNode: ";
         if(caseValue != null)

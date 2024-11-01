@@ -42,6 +42,9 @@ public class IfNode extends SentenceNode {
         }
         thenBody.checkSentence();
     }
+    public void setBreakable() {
+        thenBody.setBreakable();
+    }
     public String toString() {
         return "IfNode";
     }

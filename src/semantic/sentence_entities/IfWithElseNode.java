@@ -24,6 +24,10 @@ public class IfWithElseNode extends IfNode {
         super.checkSentence();
         elseBody.checkSentence();
     }
+    public void setBreakable() {
+        super.setBreakable();
+        elseBody.setBreakable();
+    }
     public String toString() {
         return "IfWithElseNode";
     }

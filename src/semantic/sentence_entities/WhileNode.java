@@ -29,6 +29,7 @@ public class WhileNode extends SentenceNode {
         return body;
     }
     public void setBody(SentenceNode body) {
+        body.setBreakable();
         this.body = body;
     }
     public void checkSentence() throws Exception {

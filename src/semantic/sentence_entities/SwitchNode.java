@@ -38,6 +38,9 @@ public class SwitchNode extends SentenceNode {
         return cases;
     }
     public void setCases(ArrayList<CaseNode> cases) {
+        for(CaseNode c : cases) {
+            c.setBreakable();
+        }
         this.cases = cases;
     }
     public CaseNode getDefaultCase() {
@@ -45,12 +48,13 @@ public class SwitchNode extends SentenceNode {
     }
     public void setDefaultCase(CaseNode defaultCase) {
         defaultCases.add(defaultCase);
+        defaultCase.setBreakable();
         this.defaultCase = defaultCase;
     }
     public void checkSentence() throws Exception {
         Type type;
         type = expression.typeCheck();
-        if(type.getName().equals("int") || type.getName().equals("char") || type.getName().equals("boolean") || type.getName().equals("String")) {
+        if(type.getName().equals("int") || type.getName().equals("char") || type.getName().equals("boolean")) {
             for (int i = 0; i < cases.size(); i++) {
                 CaseNode c = cases.get(i);
                 checkRepeatedLabel(c.getCaseValue().getValue().getLexeme(),i+1);
