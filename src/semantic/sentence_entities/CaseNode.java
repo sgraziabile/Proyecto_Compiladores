@@ -40,9 +40,6 @@ public class CaseNode extends SentenceNode {
         }
         caseBody.checkSentence();
     }
-    public void checkSentence() throws Exception {
-        caseBody.checkSentence();
-    }
     public void setBreakable() {
         caseBody.setBreakable();
     }

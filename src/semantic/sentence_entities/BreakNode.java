@@ -19,31 +19,7 @@ public class BreakNode extends SentenceNode {
     public boolean isInsideLoop() {
         return isBrekable;
     }
-    /*public boolean isInsideLoop() {
-        boolean insideLoop = false;
-        Block sentenceBlock = this.getParentBlock().getParentBlock();
-        while (sentenceBlock != null) {
-            System.out.println(sentenceBlock.getSentenceList().size());
-            for (SentenceNode sentence : sentenceBlock.getSentenceList()) {
-                if (sentence instanceof WhileNode) {
-                    SentenceNode whileBody = ((WhileNode) sentence).getBody();
-                    insideLoop = isInsideBlock(whileBody);
-                } else if (sentence instanceof SwitchNode) {
-                    for(CaseNode caseNode : ((SwitchNode) sentence).getCases()) {
-                        if(isInsideBlock(caseNode.getCaseBody())) {
-                            insideLoop = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            sentenceBlock = sentenceBlock.getParentBlock();
-            if(sentenceBlock == symbolTable.getCurrentBlock()) {
-                break;
-            }
-        }
-        return insideLoop;
-    }*/
+
     private boolean isInsideBlock(SentenceNode block) {
         boolean insideBlock = false;
         for(SentenceNode sentence : ((Block)block).getSentenceList()) {
