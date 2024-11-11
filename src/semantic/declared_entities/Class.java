@@ -19,6 +19,7 @@ public class Class implements Symbol{
     private ArrayList<Attribute> attributeList;
     private Hashtable<String, Method> methods;
     private ArrayList<Method> methodList;
+    private ArrayList<Method> VTable;
     private boolean constructorDeclared = false;
     private Type type;
 
@@ -29,6 +30,7 @@ public class Class implements Symbol{
         methods = new Hashtable<>();
         attributeList = new ArrayList<>();
         methodList = new ArrayList<>();
+        VTable = new ArrayList<>();
         type = new ReferenceType(id.getLexeme());
     }
     public void setSuperclass(Token superclass) {
@@ -45,6 +47,7 @@ public class Class implements Symbol{
     public void addMethod(Method method) {
         methods.put(method.getId().getLexeme(), method);
         methodList.add(method);
+        method.setMyClass(this);
     }
     private void addInheritedMethod(Method method) {
         methods.put(method.getId().getLexeme(), method);
@@ -130,9 +133,34 @@ public class Class implements Symbol{
             }
         }
         setConsolidated();
+        generateVTable();
     }
     public void setConsolidated() {
         isConsolidated = true;
+    }
+    public void generateVTable() {
+        for(Method m: methodList) {
+            m.setLabel();
+            if(m.getModifier().equals("dynamic")) {
+                VTable.add(m);
+            }
+        }
+        setAttributeOffsets();
+        setMethodOffsets();
+    }
+    private void setAttributeOffsets() {
+        int offset = 0;
+        for(Attribute a: attributeList) {
+            a.setOffset(offset);
+            offset += 1;
+        }
+    }
+    private void setMethodOffsets() {
+        int offset = 0;
+        for(Method m: VTable) {
+            m.setOffset(offset);
+            offset += 1;
+        }
     }
     public void checkDeclaration() throws Exception {
         checkSuperclass();

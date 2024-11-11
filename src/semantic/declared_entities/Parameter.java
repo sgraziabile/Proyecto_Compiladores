@@ -8,6 +8,7 @@ import static main.MainModule.symbolTable;
 public class Parameter implements Symbol{
     private Token id;
     private Type type;
+    private int offset;
 
     public Parameter(Token name, Type type) {
         this.id = name;
@@ -20,7 +21,13 @@ public class Parameter implements Symbol{
         return type;
     }
     public void print() {
-        System.out.println("Parameter: " + id.getLexeme() + " " + type.getName());
+        System.out.println("Parameter: " + id.getLexeme() + " " + type.getName()+" Offset: "+offset);
+    }
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+    public int getOffset() {
+        return offset;
     }
     public void checkDeclaration() throws Exception {
         if(!type.getName().equals("void") && !type.getName().equals("int") && !type.getName().equals("boolean") && !type.getName().equals("float") && !type.getName().equals("char")){

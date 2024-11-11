@@ -1,17 +1,19 @@
 ///[SinErrores]
 ///Method not defined in static type class
 class A {
-    public int a1;
+     public int a1;
      public A a2;
-     int m1(A a)
+     int m1(A a, int b)
      {
         a = new B();
         a.m3();
      }
     void m3() {
+
     }
  }
  class B extends A {
+    public int b1;
     void m3() {
 
     }

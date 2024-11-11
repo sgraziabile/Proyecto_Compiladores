@@ -52,8 +52,23 @@ public class SymbolTable {
             throw new CyclicInheritanceException(c.getId().getLineNumber(),c.getName());
     }
     public void printClasses() {
-        for (Class c : classHash.values()) {
-            System.out.println(c.getName() + " extends " + c.getSuperclass().getLexeme());
+        for (Class c : classList) {
+            if(c.getSuperclass() == null) {
+                System.out.println(c.getName());
+            }
+            else {
+                System.out.println(c.getName() + " extends " + c.getSuperclass().getLexeme());
+            }
+            for(Attribute a : c.getAttributeList()) {
+                a.print();
+            }
+            for(Method m : c.getMethodList()) {
+                m.print();
+                for(Parameter p : m.getParameterList()) {
+                    p.print();
+                }
+            }
+            System.out.println();
         }
     }
     public Class getCurrentClass() {

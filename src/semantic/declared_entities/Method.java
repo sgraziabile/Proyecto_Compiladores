@@ -16,15 +16,51 @@ public class Method extends ClassMember {
     private boolean isConsolidated = false;
     private boolean isChecked = false;
     private Block mainBlock;
+    String label;
+    int offset;
+    Class myClass;
 
     public Method(Token name, Type returnType, String modifier, String visibility) {
         super(name, returnType, modifier,visibility);
         this.parameterHash = new Hashtable<>();
         this.parameterList = new ArrayList<>();
+        mainBlock = new Block();
     }
     public Method() {
         this.parameterHash = new Hashtable<>();
         this.parameterList = new ArrayList<>();
+        mainBlock = new Block();
+    }
+    public void setMyClass(Class myClass) {
+        this.myClass = myClass;
+    }
+    public Class getMyClass() {
+        return myClass;
+    }
+    public void setLabel() {
+        if(this.getType().getName().equals("constructor")) {
+            label = "lblConstructor@"+myClass.getName();
+        } else {
+            if(label == null)
+                label = "lblMet"+id.getLexeme()+"@"+myClass.getName();
+        }
+    }
+    public String getLabel() {
+        return label;
+    }
+    public void setOffset(int offset) {
+        this.offset = offset;
+        setAttributeOffset();
+    }
+    public int getOffset() {
+        return offset;
+    }
+    private void setAttributeOffset() {
+        int i = 0;
+        for (Parameter p : parameterList) {
+            p.setOffset(i);
+            i++;
+        }
     }
     public void setMainBlock(Block mainBlock) {
         this.mainBlock = mainBlock;
@@ -59,6 +95,7 @@ public class Method extends ClassMember {
     }
     public void print() {
         System.out.println("Method: " + id.getLexeme() + " " + type.getName() + " " + modifier + " " + visibility);
+        System.out.println("Declared in: "+myClass.getName()+ " Offset: " + offset+" Label: "+label);
     }
     public void checkDeclaration(Class myClass) throws Exception {
         if(!symbolTable.isMainDeclared())
