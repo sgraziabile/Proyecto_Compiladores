@@ -99,6 +99,24 @@ public class MethodAccessNode extends PrimaryNode {
         writer.write(CodeGenerator.CALL+" ; Llama al metodo\n");
     }
     private void generateDynamicMethodCode() throws Exception{
+        if(reference.getType().getName().equals("void")) {
+            generateVoidMethodCode();
+        } else {
+            generateNonVoidMethodCode();
+        }
+    }
+    private void generateVoidMethodCode() throws Exception {
+        writer.write(CodeGenerator.LOAD+ " 4 ; Carga el CIR de la clase actual\n");
+        for(ExpressionNode e : arguments) {
+            e.generateCode();
+            writer.write(CodeGenerator.SWAP+" ; Bajo la referencia del CIR\n");
+        }
+        writer.write(CodeGenerator.DUP+" ; Duplica la referencia al CIR\n");
+        writer.write(CodeGenerator.LOADREF+ " 0 ; Cargo la referencia a la VT en el CIR\n");
+        writer.write(CodeGenerator.LOADREF+ " "+reference.getOffset()+" ; Cargo la referencia a la VT\n");
+        writer.write(CodeGenerator.CALL+" ; Llama al metodo "+reference.getName()+ "\n");
+    }
+    private void generateNonVoidMethodCode() throws Exception {
 
     }
 }

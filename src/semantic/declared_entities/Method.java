@@ -18,7 +18,7 @@ public class Method extends ClassMember {
     private boolean isChecked = false;
     private Block mainBlock;
     private String label;
-    private int offset;
+    private int offset = -100;
     private Class myClass;
 
     public Method(Token name, Type returnType, String modifier, String visibility) {
@@ -56,7 +56,7 @@ public class Method extends ClassMember {
     public int getOffset() {
         return offset;
     }
-    private void setParamsOffset() {
+    public void setParamsOffset() {
         if(modifier.equals("static")) {
             setStaticMethodParamsOffset();
         } else {
@@ -146,20 +146,20 @@ public class Method extends ClassMember {
         }
     }
     public void generateCode() throws Exception {
+        int ret = parameterList.size();
         if(type.getName().equals("constructor")) {
             codeGenerator.generateConstructorCode(label);
-            writer.write(CodeGenerator.STOREFP+" ; Almacena el tope de la pila en el registro \n");
             if(mainBlock != null) {
                 mainBlock.generateCode();
                 writer.write(CodeGenerator.STOREFP+" ; Almacena el tope de la pila en el registro \n");
-                writer.write(CodeGenerator.RET+ " "+parameterList.size()+" ; Libera el espacio de los parametros de "+getName() +"\n");
+                writer.write(CodeGenerator.RET+ " "+ret+" ; Libera el espacio de los parametros de "+getName() +"\n");
             }
         } else {
             codeGenerator.generateMethodCode(label);
             if(mainBlock != null) {
                 mainBlock.generateCode();
                 writer.write(CodeGenerator.STOREFP+" ; Almacena el tope de la pila en el registro \n");
-                writer.write(CodeGenerator.RET+ " "+parameterList.size()+" ; Libera el espacio de los parametros de "+getName() +"\n");
+                writer.write(CodeGenerator.RET+ " "+ret+" ; Libera el espacio de los parametros de "+getName() +"\n");
             }
         }
 

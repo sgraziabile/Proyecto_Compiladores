@@ -7,6 +7,7 @@ import exceptions.MainNotDeclaredException;
 import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
 import semantic.sentence_entities.*;
+import semantic.sentence_entities.default_blocks.DebugPrintBlock;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -163,6 +164,7 @@ public class SymbolTable {
         Method debugPrint = new Method(new Token("idMetVar","debugPrint",0),new PrimitiveType("void"),"static","public");
         Parameter param = new Parameter(new Token("idMetVar","i",0),new PrimitiveType("int"));
         debugPrint.addParameter("i",param);
+        debugPrint.setMainBlock(new DebugPrintBlock());
         objectClass.checkConstructor();
         objectClass.addMethod(debugPrint);
         insertClass(objectClass);

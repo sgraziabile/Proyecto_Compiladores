@@ -146,9 +146,7 @@ public class Class implements Symbol{
         generateVTable();
     }
     public void generateVTable() {
-        System.out.println("Generating VTable for class: " + id.getLexeme());
         for(Method m: methodList) {
-            System.out.println("Method: " + m.getId().getLexeme());
             m.setLabel();
             if(m.getModifier().equals("dynamic")) {
                 VTable.add(m);
@@ -180,8 +178,16 @@ public class Class implements Symbol{
     private void setMethodOffsets() {
         int offset = 0;
         for(Method m: VTable) {
-            m.setOffset(offset);
-            offset += 1;
+            if(m.getMyClass() == this) {
+                m.setOffset(offset);
+                offset += 1;
+            }
+        }
+        for(Method m: methodList) {
+            if(m.getModifier().equals("static") || m.getName().equals("constructor")) {
+                if(m.getMyClass() == this)
+                    m.setParamsOffset();
+            }
         }
     }
     public void checkDeclaration() throws Exception {

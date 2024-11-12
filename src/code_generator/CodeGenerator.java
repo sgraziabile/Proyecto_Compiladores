@@ -9,6 +9,15 @@ public class CodeGenerator {
     public static String PUSH = "PUSH";
     public static String CALL = "CALL";
     public static String RET = "RET";
+    public static String LOAD = "LOAD";
+    public static String IPRINT = "IPRINT";
+    public static String DUP = "DUP";
+    public static String ADD = "ADD";
+    public static String STORE = "STORE";
+    public static String RMEM = "RMEM";
+    public static String RMEM1 = "RMEM 1";
+    public static String SWAP = "SWAP";
+    public static String LOADREF = "LOADREF";
 
     public void generateMain(String label) throws Exception {
         writer.write("PUSH " + label + "\n");

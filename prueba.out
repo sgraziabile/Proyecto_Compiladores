@@ -25,7 +25,6 @@ lblVTObject: NOP
 lblConstructor@Object:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-STOREFP ; Almacena el tope de la pila en el registro 
 FMEM 0 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 0 ; Libera el espacio de los parametros de Object
@@ -33,7 +32,8 @@ RET 0 ; Libera el espacio de los parametros de Object
 lblMetdebugPrint@Object:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-FMEM 0 ; Libera espacio de variables locales
+LOAD 3    ; Apila el parametro
+IPRINT    ; Imprime el entero en el tope de la pila
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 1 ; Libera el espacio de los parametros de debugPrint
 
@@ -45,7 +45,6 @@ lblVTSystem: NOP
 lblConstructor@System:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-STOREFP ; Almacena el tope de la pila en el registro 
 FMEM 0 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 0 ; Libera el espacio de los parametros de System
@@ -128,7 +127,6 @@ lblVTString: NOP
 lblConstructor@String:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-STOREFP ; Almacena el tope de la pila en el registro 
 FMEM 0 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 0 ; Libera el espacio de los parametros de String
@@ -141,7 +139,7 @@ lblVTInit: NOP
 lblMetmain@Init:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-PUSH 12 ; Apila el valor
+PUSH 1234 ; Apila el valor
 PUSH lblMetdebugPrint@Object ; Apila el metodo
 CALL ; Llama al metodo
 FMEM 0 ; Libera espacio de variables locales
@@ -158,7 +156,6 @@ RET 2 ; Libera el espacio de los parametros de m1
 lblConstructor@Init:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-STOREFP ; Almacena el tope de la pila en el registro 
 FMEM 0 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 0 ; Libera el espacio de los parametros de Init

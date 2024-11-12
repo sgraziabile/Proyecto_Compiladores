@@ -4,7 +4,7 @@
      int atr1;
      String atr2;
      static void main() {
-        debugPrint(12);
+        debugPrint(1234);
       }
       void m1(int a, int b) {
 
