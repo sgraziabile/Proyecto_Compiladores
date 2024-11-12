@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import static main.MainModule.symbolTable;
+import static main.MainModule.writer;
 
 public class Block extends SentenceNode {
     private ArrayList<SentenceNode> sentenceList;
@@ -58,6 +59,21 @@ public class Block extends SentenceNode {
         isBrekable = true;
         for(SentenceNode s : sentenceList) {
             s.setBreakable();
+        }
+    }
+    public void generateCode() throws Exception{
+        for(SentenceNode s : sentenceList) {
+            s.generateCode();
+        }
+        writer.write("FMEM "+localVars.size()+" ; Libera espacio de variables locales\n");
+    }
+    public void setLocalVarOffsets() {
+        int i = 0;
+        int offset;
+        for(LocalVarNode l : localVars) {
+            offset = i * (-1);
+            l.setOffset(offset);
+            i += 1;
         }
     }
     public String toString() {

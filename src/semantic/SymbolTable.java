@@ -1,5 +1,6 @@
 package semantic;
 
+import code_generator.CodeGenerator;
 import entities.Token;
 import exceptions.CyclicInheritanceException;
 import exceptions.MainNotDeclaredException;
@@ -9,6 +10,9 @@ import semantic.sentence_entities.*;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+
+import static main.MainModule.codeGenerator;
+import static main.MainModule.writer;
 
 public class SymbolTable {
     boolean isConsolidated = false;
@@ -117,6 +121,24 @@ public class SymbolTable {
             }
         }
     }
+    public void generateCode() throws Exception {
+        writer.write(".CODE \n");
+        for(Class c : classList) {
+            if(c.hasMain()) {
+                String label = c.getMethod("main").getLabel();
+                codeGenerator.generateMain(label);
+            }
+        }
+        writer.write("HALT\n");
+        writer.write("\n");
+        codeGenerator.setPrimitives();
+        writer.write("\n");
+        writer.write(".DATA\n");
+        for(Class c : classList) {
+            c.generateCode();
+        }
+        writer.flush();
+    }
     public boolean isConsolidated() {
         return isConsolidated;
     }
@@ -138,13 +160,13 @@ public class SymbolTable {
     }
     private Token initObjectClass() throws Exception {
         Class objectClass = new Class(new Token("idClase", "Object", 0));
-        objectClass.setConsolidated();
         Method debugPrint = new Method(new Token("idMetVar","debugPrint",0),new PrimitiveType("void"),"static","public");
         Parameter param = new Parameter(new Token("idMetVar","i",0),new PrimitiveType("int"));
         debugPrint.addParameter("i",param);
         objectClass.checkConstructor();
         objectClass.addMethod(debugPrint);
         insertClass(objectClass);
+        objectClass.setConsolidated();
         return objectClass.getId();
     }
     private void initSystemClass(Token objectClass) throws Exception {

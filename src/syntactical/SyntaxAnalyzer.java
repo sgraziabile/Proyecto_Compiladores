@@ -34,7 +34,8 @@ public class SyntaxAnalyzer {
         Init();
         symbolTable.checkDeclarations();
         symbolTable.checkSentences();
-        symbolTable.printClasses();
+        //symbolTable.printClasses();
+        symbolTable.generateCode();
     }
 
     private void match(String tokenName) throws Exception {

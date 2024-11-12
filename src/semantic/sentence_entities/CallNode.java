@@ -29,6 +29,9 @@ public class CallNode extends SentenceNode {
             throw new StaticReferenceException(line, e.getToken());
         }
     }
+    public void generateCode() throws Exception{
+        expression.generateCode();
+    }
     public String toString() {
         return expression.toString();
     }

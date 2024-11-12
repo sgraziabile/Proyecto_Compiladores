@@ -1,22 +1,20 @@
 package semantic.expression_entities;
 
+import code_generator.CodeGenerator;
 import entities.Token;
 import exceptions.CannotResolveMethodException;
 import exceptions.PrimitiveTypeCallException;
 import exceptions.StaticReferenceException;
-import semantic.declared_entities.Parameter;
-import semantic.declared_entities.ReferenceType;
-import semantic.declared_entities.Symbol;
-import semantic.declared_entities.Type;
+import semantic.declared_entities.*;
 
 import java.util.ArrayList;
 
-import static main.MainModule.symbolTable;
+import static main.MainModule.*;
 
 public class MethodAccessNode extends PrimaryNode {
     protected Token id;
     protected ArrayList<ExpressionNode> arguments;
-    protected Symbol reference;
+    protected Method reference;
 
     public MethodAccessNode() {
 
@@ -85,5 +83,22 @@ public class MethodAccessNode extends PrimaryNode {
     }
     public String toString() {
         return id.getLexeme() + arguments.toString()+  (chained == null ? " " : chained.toString());
+    }
+    public void generateCode() throws Exception {
+        if(reference.getModifier().equals("static")) {
+            generateStaticMethodCode();
+        } else {
+            generateDynamicMethodCode();
+        }
+    }
+    private void generateStaticMethodCode() throws Exception{
+        for(ExpressionNode e : arguments) {
+            e.generateCode();
+        }
+        writer.write(CodeGenerator.PUSH+" "+reference.getLabel()+" ; Apila el metodo\n");
+        writer.write(CodeGenerator.CALL+" ; Llama al metodo\n");
+    }
+    private void generateDynamicMethodCode() throws Exception{
+
     }
 }

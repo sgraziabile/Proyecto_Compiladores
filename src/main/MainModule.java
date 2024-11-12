@@ -1,5 +1,6 @@
 package main;
 
+import code_generator.CodeGenerator;
 import entities.KeywordHandler;
 import entities.PrimerosHandler;
 import entities.Token;
@@ -8,11 +9,13 @@ import semantic.SymbolTable;
 import sourcemanager.SourceManagerImpl;
 import syntactical.SyntaxAnalyzer;
 
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class MainModule {
     public static SymbolTable symbolTable;
+    public static BufferedWriter writer;
+    public static CodeGenerator codeGenerator;
     public static void main(String[] args) {
         if(args.length == 0) {
             System.out.println("No file path provided.");
@@ -22,6 +25,13 @@ public class MainModule {
             KeywordHandler keywordHandler = new KeywordHandler();
             PrimerosHandler primerosHandler = new PrimerosHandler();
             symbolTable = new SymbolTable();
+            codeGenerator = new CodeGenerator();
+            String outputFilePath = "prueba.out";
+            try {
+                writer = new BufferedWriter(new FileWriter(outputFilePath));
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
             boolean success = true;
             try {
                 sourceManager.open(filePath);

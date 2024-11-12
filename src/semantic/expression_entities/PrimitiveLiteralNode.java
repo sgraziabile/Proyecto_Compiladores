@@ -4,6 +4,8 @@ import entities.Token;
 import semantic.declared_entities.PrimitiveType;
 import semantic.declared_entities.Type;
 
+import static main.MainModule.writer;
+
 public class PrimitiveLiteralNode extends LiteralNode {
 
     public PrimitiveLiteralNode(Token token) {
@@ -21,6 +23,9 @@ public class PrimitiveLiteralNode extends LiteralNode {
             type = new PrimitiveType("int");
         }
         return type;
+    }
+    public void generateCode() throws Exception{
+        writer.write("PUSH "+value.getLexeme()+" ; Apila el valor\n");
     }
     public String toString() {
         return value.getLexeme();

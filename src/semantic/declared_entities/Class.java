@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import static main.MainModule.symbolTable;
+import static main.MainModule.writer;
 
 
 public class Class implements Symbol{
@@ -22,6 +23,8 @@ public class Class implements Symbol{
     private ArrayList<Method> VTable;
     private boolean constructorDeclared = false;
     private Type type;
+    private boolean hasMain = false;
+    private String vtLabel;
 
     public Class(Token idClass) {
         id = idClass;
@@ -32,6 +35,7 @@ public class Class implements Symbol{
         methodList = new ArrayList<>();
         VTable = new ArrayList<>();
         type = new ReferenceType(id.getLexeme());
+        vtLabel = "lblVT"+id.getLexeme();
     }
     public void setSuperclass(Token superclass) {
         this.superclass = superclass;
@@ -48,6 +52,9 @@ public class Class implements Symbol{
         methods.put(method.getId().getLexeme(), method);
         methodList.add(method);
         method.setMyClass(this);
+        if(method.getId().getLexeme().equals("main")) {
+            hasMain = true;
+        }
     }
     private void addInheritedMethod(Method method) {
         methods.put(method.getId().getLexeme(), method);
@@ -133,13 +140,15 @@ public class Class implements Symbol{
             }
         }
         setConsolidated();
-        generateVTable();
     }
     public void setConsolidated() {
         isConsolidated = true;
+        generateVTable();
     }
     public void generateVTable() {
+        System.out.println("Generating VTable for class: " + id.getLexeme());
         for(Method m: methodList) {
+            System.out.println("Method: " + m.getId().getLexeme());
             m.setLabel();
             if(m.getModifier().equals("dynamic")) {
                 VTable.add(m);
@@ -148,11 +157,24 @@ public class Class implements Symbol{
         setAttributeOffsets();
         setMethodOffsets();
     }
+    public void generateCode() throws Exception {
+        writer.write(vtLabel + ": NOP\n");
+        writer.write("\n");
+        writer.write(".CODE\n");
+        for(Method m: methodList) {
+            if(m.getMyClass() == this)
+                m.generateCode();
+                writer.write("\n");
+        }
+        writer.write("\n");
+    }
     private void setAttributeOffsets() {
-        int offset = 0;
+        int i = 0;
+        int offset;
         for(Attribute a: attributeList) {
+            offset = attributeList.size() - i;
             a.setOffset(offset);
-            offset += 1;
+            i += 1;
         }
     }
     private void setMethodOffsets() {
@@ -214,6 +236,9 @@ public class Class implements Symbol{
     }
     public void setConstructorDeclared() {
         constructorDeclared = true;
+    }
+    public boolean hasMain() {
+        return hasMain;
     }
     private boolean checkRedefinedMethod(Method m) {
         boolean validRedefinition = true;

@@ -1,5 +1,6 @@
 package semantic.declared_entities;
 
+import code_generator.CodeGenerator;
 import entities.Token;
 import exceptions.CantResolveSymbolException;
 import exceptions.InvalidConstructorNameException;
@@ -8,7 +9,7 @@ import semantic.sentence_entities.Block;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import static main.MainModule.symbolTable;
+import static main.MainModule.*;
 
 public class Method extends ClassMember {
     private Hashtable<String, Parameter> parameterHash;
@@ -16,9 +17,9 @@ public class Method extends ClassMember {
     private boolean isConsolidated = false;
     private boolean isChecked = false;
     private Block mainBlock;
-    String label;
-    int offset;
-    Class myClass;
+    private String label;
+    private int offset;
+    private Class myClass;
 
     public Method(Token name, Type returnType, String modifier, String visibility) {
         super(name, returnType, modifier,visibility);
@@ -50,15 +51,33 @@ public class Method extends ClassMember {
     }
     public void setOffset(int offset) {
         this.offset = offset;
-        setAttributeOffset();
+        setParamsOffset();
     }
     public int getOffset() {
         return offset;
     }
-    private void setAttributeOffset() {
+    private void setParamsOffset() {
+        if(modifier.equals("static")) {
+            setStaticMethodParamsOffset();
+        } else {
+            setDynamicMethodParamsOffset();
+        }
+    }
+    private void setDynamicMethodParamsOffset() {
         int i = 0;
+        int offset;
         for (Parameter p : parameterList) {
-            p.setOffset(i);
+            offset = parameterList.size() - i + 3;
+            p.setOffset(offset);
+            i++;
+        }
+    }
+    private void setStaticMethodParamsOffset() {
+        int i = 0;
+        int offset;
+        for (Parameter p : parameterList) {
+            offset = parameterList.size() - i + 2;
+            p.setOffset(offset);
             i++;
         }
     }
@@ -115,6 +134,7 @@ public class Method extends ClassMember {
         if(mainBlock != null) {
             symbolTable.setCurrentBlock(mainBlock);
             mainBlock.checkSentence();
+            mainBlock.setLocalVarOffsets();
         }
     }
     public void consolidate() {
@@ -125,6 +145,26 @@ public class Method extends ClassMember {
             symbolTable.setMainDeclared();
         }
     }
+    public void generateCode() throws Exception {
+        if(type.getName().equals("constructor")) {
+            codeGenerator.generateConstructorCode(label);
+            writer.write(CodeGenerator.STOREFP+" ; Almacena el tope de la pila en el registro \n");
+            if(mainBlock != null) {
+                mainBlock.generateCode();
+                writer.write(CodeGenerator.STOREFP+" ; Almacena el tope de la pila en el registro \n");
+                writer.write(CodeGenerator.RET+ " "+parameterList.size()+" ; Libera el espacio de los parametros de "+getName() +"\n");
+            }
+        } else {
+            codeGenerator.generateMethodCode(label);
+            if(mainBlock != null) {
+                mainBlock.generateCode();
+                writer.write(CodeGenerator.STOREFP+" ; Almacena el tope de la pila en el registro \n");
+                writer.write(CodeGenerator.RET+ " "+parameterList.size()+" ; Libera el espacio de los parametros de "+getName() +"\n");
+            }
+        }
+
+    }
+
     private void checkIfConstructor(Class myClass) throws Exception {
         if(type.getName().equals("constructor"))
             if (id.getLexeme().equals(myClass.getName())) {

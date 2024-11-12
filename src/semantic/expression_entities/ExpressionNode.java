@@ -17,4 +17,6 @@ public abstract class ExpressionNode {
     public boolean canBeCalled() {
         return false;
     }
+    public void generateCode() throws Exception {
+    }
 }

@@ -16,6 +16,7 @@ public class LocalVarNode extends SentenceNode implements Symbol {
     protected Token assignOp;
     protected CompoundExpNode expression;
     protected Type type;
+    protected int offset;
 
     public LocalVarNode(Token id, Token assignOp, CompoundExpNode expression) {
         this.id = id;
@@ -67,6 +68,12 @@ public class LocalVarNode extends SentenceNode implements Symbol {
                 setType(type);
             }
         }
+    }
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+    public int getOffset() {
+        return offset;
     }
     private void checkRepeatedVar() throws Exception {
         if(parentBlock.getLocalVar(id.getLexeme()) == null) {

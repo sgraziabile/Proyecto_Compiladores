@@ -23,6 +23,7 @@ public abstract class SentenceNode {
     public void checkSentence() throws Exception {
 
     }
+    public void generateCode() throws Exception {};
     public void setBreakable() {
         isBrekable = true;
     }

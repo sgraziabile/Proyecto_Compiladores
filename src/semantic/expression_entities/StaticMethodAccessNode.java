@@ -1,5 +1,6 @@
 package semantic.expression_entities;
 
+import code_generator.CodeGenerator;
 import entities.Token;
 import exceptions.CannotResolveMethodException;
 import exceptions.StaticReferenceException;
@@ -11,12 +12,13 @@ import semantic.declared_entities.Type;
 import java.util.ArrayList;
 
 import static main.MainModule.symbolTable;
+import static main.MainModule.writer;
 
 public class StaticMethodAccessNode extends PrimaryNode {
     protected Token methodId;
     protected Token className;
     protected ArrayList<ExpressionNode> arguments;
-    protected Symbol reference;
+    protected Method reference;
 
     public StaticMethodAccessNode() {
 
@@ -75,6 +77,13 @@ public class StaticMethodAccessNode extends PrimaryNode {
         } else {
             return chained.isAssignable();
         }
+    }
+    public void generateCode() throws Exception{
+        for(ExpressionNode e : arguments) {
+            e.generateCode();
+        }
+        writer.write(CodeGenerator.PUSH+" "+reference.getLabel()+" ; Apila el metodo\n");
+        writer.write(CodeGenerator.CALL+" ; Llama al metodo\n");
     }
     private void chechArguments() throws Exception {
         String methodName = methodId.getLexeme();
