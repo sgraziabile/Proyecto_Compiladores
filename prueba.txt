@@ -1,12 +1,24 @@
 ///[SinErrores]
 
  class Init{
-     int atr1;
-     String atr2;
+    static int a1;
      static void main() {
-        debugPrint(1234);
-      }
-      void m1(int a, int b) {
-
-      }
+        //debugPrint(1234);
+        var a = 1;
+        var b = 2;
+        b = (a = 100);
+        debugPrint(b);
+     }
+ }
+ class A {
+        public int a1;
+        public int a2;
+        void m1(int a, int b) {
+            m2(1);
+            var c = 10;
+        }
+        int m2(int a) {
+            debugPrint(1234);
+            //return 10;
+        }
  }

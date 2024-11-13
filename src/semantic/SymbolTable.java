@@ -124,6 +124,8 @@ public class SymbolTable {
     }
     public void generateCode() throws Exception {
         writer.write(".CODE \n");
+        writer.write(CodeGenerator.PUSH + " simple_heap_init ; Carga direccion de rutina para inicializar el heap\n");
+        writer.write(CodeGenerator.CALL + " ; Llama a la rutina\n");
         for(Class c : classList) {
             if(c.hasMain()) {
                 String label = c.getMethod("main").getLabel();
@@ -136,6 +138,7 @@ public class SymbolTable {
         writer.write("\n");
         writer.write(".DATA\n");
         for(Class c : classList) {
+            setCurrentClass(c);
             c.generateCode();
         }
         writer.flush();

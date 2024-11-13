@@ -21,6 +21,9 @@ public class AssignmentNode extends SentenceNode {
     public void checkSentence() throws Exception {
         assignmentExp.typeCheck();
     }
+    public void generateCode() throws Exception {
+        assignmentExp.generateCode();
+    }
     public String toString() {
         return "AssignmentNode " + assignmentExp.toString();
     }

@@ -1,5 +1,6 @@
 package semantic.sentence_entities;
 
+import code_generator.CodeGenerator;
 import entities.Token;
 import exceptions.AlreadyDeclaredException;
 import exceptions.InvalidLocalVarAssignment;
@@ -10,6 +11,7 @@ import semantic.declared_entities.Type;
 import semantic.expression_entities.CompoundExpNode;
 
 import static main.MainModule.symbolTable;
+import static main.MainModule.writer;
 
 public class LocalVarNode extends SentenceNode implements Symbol {
     protected Token id;
@@ -74,6 +76,11 @@ public class LocalVarNode extends SentenceNode implements Symbol {
     }
     public int getOffset() {
         return offset;
+    }
+    public void generateCode() throws Exception {
+        writer.write(CodeGenerator.RMEM1 + " ; Reserva espacio para la variable local "+id.getLexeme()+ "\n");
+        expression.generateCode();  //completar la asignacion
+        writer.write(CodeGenerator.STORE + " " + offset + " ; Almacena el valor de la variable local "+id.getLexeme()+"\n");
     }
     private void checkRepeatedVar() throws Exception {
         if(parentBlock.getLocalVar(id.getLexeme()) == null) {

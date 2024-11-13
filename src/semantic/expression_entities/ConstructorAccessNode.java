@@ -1,5 +1,6 @@
 package semantic.expression_entities;
 
+import code_generator.CodeGenerator;
 import entities.Token;
 import exceptions.CannotResolveMethodException;
 import exceptions.ClassNotDeclaredException;
@@ -9,11 +10,12 @@ import semantic.declared_entities.Class;
 import java.util.ArrayList;
 
 import static main.MainModule.symbolTable;
+import static main.MainModule.writer;
 
 public class ConstructorAccessNode extends PrimaryNode{
     private Token id;
     private ArrayList<ExpressionNode> arguments;
-    private Symbol reference;
+    private Class reference;
 
     public ConstructorAccessNode(Token id, ArrayList<ExpressionNode> arguments) {
         this.id = id;
@@ -68,6 +70,24 @@ public class ConstructorAccessNode extends PrimaryNode{
         } else {
             return true;
         }
+    }
+    public void generateCode() throws Exception{
+        writer.write(CodeGenerator.RMEM1+ " ; Reserva espacio para el CIR generado\n");
+        int t = reference.getAttributeList().size() + 1;    //Attributes + CIR ref
+        writer.write(CodeGenerator.PUSH + " " + t + " ; Reserva espacio para el CIR\n");
+        writer.write(CodeGenerator.PUSH + " simple_malloc ;  Carga direccion de rutina para alojar el CIR\n");
+        writer.write(CodeGenerator.CALL + " ; Llama a la rutina de alojamiento\n");
+        writer.write(CodeGenerator.DUP + " ; Duplica la referencia al CIR\n");
+        String vtable = reference.getVtLabel();
+        writer.write(CodeGenerator.PUSH + " "+ vtable + " ; Carga la direccion de la VT\n");
+        writer.write(CodeGenerator.STOREREF+ " 0 ; Guarda la direccion de la VT en el CIR\n");
+        writer.write(CodeGenerator.DUP + " ; Duplica la referencia al CIR\n");
+        for(ExpressionNode e : arguments) {
+            e.generateCode();
+            writer.write(CodeGenerator.SWAP + " ; Bajo la referencia del CIR\n");
+        }
+        writer.write(CodeGenerator.PUSH + " "+ reference.getConstructorLabel() + " ; Carga la direccion del constructor\n");
+        writer.write(CodeGenerator.CALL + " ; Llama al constructor\n");
     }
     public String toString() {
         return id.getLexeme() + (arguments == null ? " " : arguments.toString());

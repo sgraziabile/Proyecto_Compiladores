@@ -25,6 +25,7 @@ public class Class implements Symbol{
     private Type type;
     private boolean hasMain = false;
     private String vtLabel;
+    private String constructorLabel;
 
     public Class(Token idClass) {
         id = idClass;
@@ -148,6 +149,9 @@ public class Class implements Symbol{
     public void generateVTable() {
         for(Method m: methodList) {
             m.setLabel();
+            if(m.getType().getName().equals("constructor")) {
+                constructorLabel = m.getLabel();
+            }
             if(m.getModifier().equals("dynamic")) {
                 VTable.add(m);
             }
@@ -160,11 +164,19 @@ public class Class implements Symbol{
         writer.write("\n");
         writer.write(".CODE\n");
         for(Method m: methodList) {
-            if(m.getMyClass() == this)
+            if(m.getMyClass() == this) {
+                symbolTable.setCurrentMethod(m);
                 m.generateCode();
                 writer.write("\n");
+            }
         }
         writer.write("\n");
+    }
+    public String getVtLabel() {
+        return vtLabel;
+    }
+    public String getConstructorLabel() {
+        return constructorLabel;
     }
     private void setAttributeOffsets() {
         int i = 0;

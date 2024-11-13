@@ -1,5 +1,6 @@
 package semantic.expression_entities;
 
+import entities.Token;
 import semantic.declared_entities.Type;
 
 public abstract class ExpressionNode {
@@ -18,5 +19,7 @@ public abstract class ExpressionNode {
         return false;
     }
     public void generateCode() throws Exception {
+    }
+    public void generateCode(Token op) throws Exception {
     }
 }

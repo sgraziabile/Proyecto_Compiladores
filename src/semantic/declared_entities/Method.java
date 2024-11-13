@@ -19,6 +19,7 @@ public class Method extends ClassMember {
     private Block mainBlock;
     private String label;
     private int offset = -100;
+    private int returnOffset = -100;
     private Class myClass;
 
     public Method(Token name, Type returnType, String modifier, String visibility) {
@@ -56,6 +57,9 @@ public class Method extends ClassMember {
     public int getOffset() {
         return offset;
     }
+    public int getReturnOffset() {
+        return returnOffset;
+    }
     public void setParamsOffset() {
         if(modifier.equals("static")) {
             setStaticMethodParamsOffset();
@@ -68,8 +72,14 @@ public class Method extends ClassMember {
         int offset;
         for (Parameter p : parameterList) {
             offset = parameterList.size() - i + 3;
+            if(i == 0) {
+                returnOffset = offset+1;
+            }
             p.setOffset(offset);
             i++;
+        }
+        if(parameterList.isEmpty()) {
+            returnOffset = 4;
         }
     }
     private void setStaticMethodParamsOffset() {
@@ -77,8 +87,14 @@ public class Method extends ClassMember {
         int offset;
         for (Parameter p : parameterList) {
             offset = parameterList.size() - i + 2;
+            if(i == 0) {
+                returnOffset = offset+1;
+            }
             p.setOffset(offset);
             i++;
+        }
+        if(parameterList.isEmpty()) {
+            returnOffset = 4;
         }
     }
     public void setMainBlock(Block mainBlock) {
@@ -151,6 +167,7 @@ public class Method extends ClassMember {
             codeGenerator.generateConstructorCode(label);
             if(mainBlock != null) {
                 mainBlock.generateCode();
+                ret += 1;
                 writer.write(CodeGenerator.STOREFP+" ; Almacena el tope de la pila en el registro \n");
                 writer.write(CodeGenerator.RET+ " "+ret+" ; Libera el espacio de los parametros de "+getName() +"\n");
             }
@@ -158,6 +175,9 @@ public class Method extends ClassMember {
             codeGenerator.generateMethodCode(label);
             if(mainBlock != null) {
                 mainBlock.generateCode();
+                if(modifier.equals("dynamic")) {
+                    ret += 1;
+                }
                 writer.write(CodeGenerator.STOREFP+" ; Almacena el tope de la pila en el registro \n");
                 writer.write(CodeGenerator.RET+ " "+ret+" ; Libera el espacio de los parametros de "+getName() +"\n");
             }

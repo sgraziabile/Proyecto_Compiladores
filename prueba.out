@@ -1,4 +1,6 @@
 .CODE 
+PUSH simple_heap_init ; Carga direccion de rutina para inicializar el heap
+CALL ; Llama a la rutina
 PUSH lblMetmain@Init
 CALL
 HALT
@@ -8,7 +10,8 @@ simple_heap_init: RET 0	; Retorna inmediatamente
 simple_malloc: LOADFP	; Inicialización unidad
 LOADSP 
 STOREFP ; Finaliza inicialización del RA
-LOADHL	; hlDUP	; hl
+LOADHL	; hl
+DUP
 PUSH 1	; 1
 ADD	; hl+1
 STORE 4 ; Guarda el resultado (un puntero a la primer celda de la región de memoria)
@@ -27,7 +30,7 @@ LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
 FMEM 0 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
-RET 0 ; Libera el espacio de los parametros de Object
+RET 1 ; Libera el espacio de los parametros de Object
 
 lblMetdebugPrint@Object:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
@@ -41,13 +44,12 @@ RET 1 ; Libera el espacio de los parametros de debugPrint
 lblVTSystem: NOP
 
 .CODE
-
 lblConstructor@System:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
 FMEM 0 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
-RET 0 ; Libera el espacio de los parametros de System
+RET 1 ; Libera el espacio de los parametros de System
 
 lblMetread@System:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
@@ -123,20 +125,69 @@ RET 1 ; Libera el espacio de los parametros de printSln
 lblVTString: NOP
 
 .CODE
-
 lblConstructor@String:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
 FMEM 0 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
-RET 0 ; Libera el espacio de los parametros de String
+RET 1 ; Libera el espacio de los parametros de String
 
 
 lblVTInit: NOP
 
 .CODE
-
 lblMetmain@Init:LOADFP ; Apila el valor del registro
+LOADSP ; Apila el valor en el registro sp
+STOREFP ; Almacena el tope de la pila en el registro
+RMEM 1 ; Reserva espacio para la variable local a
+PUSH 1 ; Apila el valor
+STORE 0 ; Almacena el valor de la variable local a
+RMEM 1 ; Reserva espacio para la variable local b
+PUSH 2 ; Apila el valor
+STORE -1 ; Almacena el valor de la variable local b
+PUSH 100 ; Apila el valor
+DUP ; Duplica el valor de la asignacion a
+STORE 0 ; Almacena el valor de la variable a
+DUP ; Duplica el valor de la asignacion b
+STORE -1 ; Almacena el valor de la variable b
+LOAD -1 ; Carga el valor de la variable local b
+PUSH lblMetdebugPrint@Object ; Apila el metodo
+CALL ; Llama al metodo
+FMEM 2 ; Libera espacio de variables locales
+STOREFP ; Almacena el tope de la pila en el registro 
+RET 0 ; Libera el espacio de los parametros de main
+
+lblConstructor@Init:LOADFP ; Apila el valor del registro
+LOADSP ; Apila el valor en el registro sp
+STOREFP ; Almacena el tope de la pila en el registro
+FMEM 0 ; Libera espacio de variables locales
+STOREFP ; Almacena el tope de la pila en el registro 
+RET 1 ; Libera el espacio de los parametros de Init
+
+
+lblVTA: NOP
+
+.CODE
+lblMetm1@A:LOADFP ; Apila el valor del registro
+LOADSP ; Apila el valor en el registro sp
+STOREFP ; Almacena el tope de la pila en el registro
+LOAD 3 ; Carga el CIR de la clase actual
+RMEM 1 ; Reserva espacio para el valor de retorno
+SWAP ; Bajo la referencia del CIR
+PUSH 1 ; Apila el valor
+SWAP ; Bajo la referencia del CIR
+DUP ; Duplica la referencia al CIR
+LOADREF 0 ; Cargo la referencia a la VT en el CIR
+LOADREF 1 ; Cargo la referencia a la VT
+CALL ; Llama al metodo m2
+RMEM 1 ; Reserva espacio para la variable local c
+PUSH 10 ; Apila el valor
+STORE 0 ; Almacena el valor de la variable local c
+FMEM 1 ; Libera espacio de variables locales
+STOREFP ; Almacena el tope de la pila en el registro 
+RET 3 ; Libera el espacio de los parametros de m1
+
+lblMetm2@A:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
 PUSH 1234 ; Apila el valor
@@ -144,20 +195,13 @@ PUSH lblMetdebugPrint@Object ; Apila el metodo
 CALL ; Llama al metodo
 FMEM 0 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
-RET 0 ; Libera el espacio de los parametros de main
+RET 2 ; Libera el espacio de los parametros de m2
 
-lblMetm1@Init:LOADFP ; Apila el valor del registro
+lblConstructor@A:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
 FMEM 0 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
-RET 2 ; Libera el espacio de los parametros de m1
-
-lblConstructor@Init:LOADFP ; Apila el valor del registro
-LOADSP ; Apila el valor en el registro sp
-STOREFP ; Almacena el tope de la pila en el registro
-FMEM 0 ; Libera espacio de variables locales
-STOREFP ; Almacena el tope de la pila en el registro 
-RET 0 ; Libera el espacio de los parametros de Init
+RET 1 ; Libera el espacio de los parametros de A
 
 

@@ -7,17 +7,20 @@ public class CodeGenerator {
     public static String LOADSP = "LOADSP";
     public static String STOREFP = "STOREFP";
     public static String PUSH = "PUSH";
+    public static String POP = "POP";
     public static String CALL = "CALL";
     public static String RET = "RET";
     public static String LOAD = "LOAD";
     public static String IPRINT = "IPRINT";
     public static String DUP = "DUP";
     public static String ADD = "ADD";
+    public static String SUB = "SUB";
     public static String STORE = "STORE";
     public static String RMEM = "RMEM";
     public static String RMEM1 = "RMEM 1";
     public static String SWAP = "SWAP";
     public static String LOADREF = "LOADREF";
+    public static String STOREREF = "STOREREF";
 
     public void generateMain(String label) throws Exception {
         writer.write("PUSH " + label + "\n");
@@ -30,8 +33,8 @@ public class CodeGenerator {
             writer.write("simple_malloc: LOADFP\t; Inicialización unidad\n");
             writer.write("LOADSP \n");
             writer.write("STOREFP ; Finaliza inicialización del RA\n");
-            writer.write("LOADHL\t; hl");
-            writer.write("DUP\t; hl\n");
+            writer.write("LOADHL\t; hl\n");
+            writer.write("DUP\n");
             writer.write("PUSH 1\t; 1\n");
             writer.write("ADD\t; hl+1\n");
             writer.write("STORE 4 ; Guarda el resultado (un puntero a la primer celda de la región de memoria)\n");

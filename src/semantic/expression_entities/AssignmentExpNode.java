@@ -61,6 +61,10 @@ public class AssignmentExpNode extends ExpressionNode {
         }
         return leftType;
     }
+    public void generateCode() throws Exception {
+        rightExp.generateCode();
+        leftExp.generateCode(operator);
+    }
     public String toString() {
         return leftExp.toString() + " " + operator.getLexeme() + " " + rightExp.toString();
     }

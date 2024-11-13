@@ -36,6 +36,9 @@ public class ParenthesizedExpNode extends PrimaryNode {
             return chained.canBeCalled();
         }
     }
+    public void generateCode() throws Exception {
+        expression.generateCode();
+    }
     public String toString() {
         return expression.toString();
     }

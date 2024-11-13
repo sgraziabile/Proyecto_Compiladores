@@ -1,5 +1,6 @@
 package semantic.expression_entities;
 
+import code_generator.CodeGenerator;
 import entities.Token;
 import exceptions.CannotResolveMethodException;
 import exceptions.PrimitiveTypeCallException;
@@ -10,11 +11,12 @@ import semantic.declared_entities.Class;
 import java.util.ArrayList;
 
 import static main.MainModule.symbolTable;
+import static main.MainModule.writer;
 
 public class ChainedMethodCallNode extends Chained {
     protected ArrayList<ExpressionNode> args;
     protected Type type;
-    protected Symbol reference;
+    protected Method reference;
 
     public ChainedMethodCallNode(Token name) {
         this.id = name;
@@ -96,6 +98,51 @@ public class ChainedMethodCallNode extends Chained {
         } else {
             return chained.canBeCalled();
         }
+    }
+    public void generateCode() throws Exception {
+        if(reference.getModifier().equals("static")) {
+            generateStaticMethodCode();
+        } else {
+            generateDynamicMethodCode();
+        }
+    }
+    private void generateStaticMethodCode() throws Exception{
+        for(ExpressionNode e : args) {
+            e.generateCode();
+        }
+        writer.write(CodeGenerator.PUSH+" "+reference.getLabel()+" ; Apila el metodo\n");
+        writer.write(CodeGenerator.CALL+" ; Llama al metodo\n");
+    }
+    private void generateDynamicMethodCode() throws Exception{
+        if(reference.getType().getName().equals("void")) {
+            generateVoidMethodCode();
+        } else {
+            generateNonVoidMethodCode();
+        }
+    }
+    private void generateVoidMethodCode() throws Exception {
+        writer.write(CodeGenerator.LOAD+ " 3 ; Carga el CIR de la clase actual\n");
+        for(ExpressionNode e : args) {
+            e.generateCode();
+            writer.write(CodeGenerator.SWAP+" ; Bajo la referencia del CIR\n");
+        }
+        writer.write(CodeGenerator.DUP+" ; Duplica la referencia al CIR\n");
+        writer.write(CodeGenerator.LOADREF+ " 0 ; Cargo la referencia a la VT en el CIR\n");
+        writer.write(CodeGenerator.LOADREF+ " "+reference.getOffset()+" ; Cargo la referencia a la VT\n");
+        writer.write(CodeGenerator.CALL+" ; Llama al metodo "+reference.getName()+ "\n");
+    }
+    private void generateNonVoidMethodCode() throws Exception {
+        writer.write(CodeGenerator.LOAD+ " 3 ; Carga el CIR de la clase actual\n");
+        writer.write(CodeGenerator.RMEM1+ " ; Reserva espacio para el valor de retorno\n");
+        writer.write(CodeGenerator.SWAP+" ; Bajo la referencia del CIR\n");
+        for(ExpressionNode e : args) {
+            e.generateCode();
+            writer.write(CodeGenerator.SWAP+" ; Bajo la referencia del CIR\n");
+        }
+        writer.write(CodeGenerator.DUP+" ; Duplica la referencia al CIR\n");
+        writer.write(CodeGenerator.LOADREF+ " 0 ; Cargo la referencia a la VT en el CIR\n");
+        writer.write(CodeGenerator.LOADREF+ " "+reference.getOffset()+" ; Cargo la referencia a la VT\n");
+        writer.write(CodeGenerator.CALL+" ; Llama al metodo "+reference.getName()+ "\n");
     }
     public String toString() {
         return id.getLexeme() + args.toString()+  (chained == null ? " " : chained.toString());

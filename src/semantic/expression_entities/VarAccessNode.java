@@ -1,5 +1,6 @@
 package semantic.expression_entities;
 
+import code_generator.CodeGenerator;
 import entities.Token;
 import exceptions.CantResolveSymbolException;
 import exceptions.PrimitiveTypeCallException;
@@ -12,6 +13,7 @@ import java.sql.Ref;
 import java.util.ArrayList;
 
 import static main.MainModule.symbolTable;
+import static main.MainModule.writer;
 
 public class VarAccessNode extends PrimaryNode {
     protected Token id;
@@ -119,6 +121,99 @@ public class VarAccessNode extends PrimaryNode {
             return false;
         } else {
             return chained.canBeCalled();
+        }
+    }
+    public void generateCode() throws Exception {
+        if(reference instanceof Parameter) {
+            Parameter parameter = (Parameter) reference;
+            int paramOffset = parameter.getOffset();
+            writer.write(CodeGenerator.LOAD + " "+paramOffset+" ; Carga el valor del parametro "+id.getLexeme()+"\n");
+        } else if (reference instanceof LocalVarNode) {
+            LocalVarNode localVar = (LocalVarNode) reference;
+            int localVarOffset = localVar.getOffset();
+            writer.write(CodeGenerator.LOAD + " "+localVarOffset+" ; Carga el valor de la variable local "+id.getLexeme()+"\n");
+        } else if (reference instanceof Attribute) {
+            Attribute attribute = (Attribute) reference;
+            int attrOffset = attribute.getOffset();
+            writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
+            writer.write(CodeGenerator.LOADREF + " "+attrOffset+" ; Carga el valor del atributo "+id.getLexeme()+"\n");
+        }
+        if(chained != null) {
+            chained.generateCode();
+        }
+    }
+    public void generateCode(Token assignmentOp) throws Exception{
+        if(chained == null) {
+            if(reference instanceof Parameter) {
+                Parameter parameter = (Parameter) reference;
+                int paramOffset = parameter.getOffset();
+                generateParamAssignmentCode(paramOffset, assignmentOp);
+            } else if (reference instanceof LocalVarNode) {
+                LocalVarNode localVar = (LocalVarNode) reference;
+                int localVarOffset = localVar.getOffset();
+                generateVarAssignmentCode(localVarOffset, assignmentOp);
+            } else if (reference instanceof Attribute) {
+                Attribute attribute = (Attribute) reference;
+                int attrOffset = attribute.getOffset();
+                generateAttributeAssignmentCode(attrOffset, assignmentOp);
+            }
+        } else {
+            generateCode();
+        }
+    }
+    private void generateParamAssignmentCode(int offset, Token operator) throws Exception{
+        if(operator.getLexeme().equals("=")) {
+            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.STORE + " " + offset + " ; Almacena el valor del parametro " + id.getLexeme() + "\n");
+        } else if(operator.getLexeme().equals("+=")) {
+            writer.write(CodeGenerator.LOAD + " " + offset + " ; Carga el valor del parametro " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.ADD + " ; Suma el valor del parametro " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.STORE + " " + offset + " ; Almacena el valor del parametro " + id.getLexeme() + "\n");
+        } else if(operator.getLexeme().equals("-=")) {
+            writer.write(CodeGenerator.LOAD + " " + offset + " ; Carga el valor del parametro " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.SWAP + " ; Invierto los operandos " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.SUB + " ; Resta el valor del parametro " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.STORE + " " + offset + " ; Almacena el valor del parametro " + id.getLexeme() + "\n");
+        }
+    }
+    private void generateVarAssignmentCode(int offset, Token operator) throws Exception {
+        if(operator.getLexeme().equals("=")) {
+            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.STORE + " " + offset + " ; Almacena el valor de la variable " + id.getLexeme() + "\n");
+        } else if(operator.getLexeme().equals("+=")) {
+            writer.write(CodeGenerator.LOAD + " " + offset + " ; Carga el valor de la variable " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.ADD + " ; Suma el valor de la variable " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.STORE + " " + offset + " ; Almacena el valor de la variable " + id.getLexeme() + "\n");
+        } else if(operator.getLexeme().equals("-=")) {
+            writer.write(CodeGenerator.LOAD + " " + offset + " ; Carga el valor de la variable " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.SWAP + " ; Invierto los operandos " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.SUB + " ; Resta el valor de la variable " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.STORE + " " + offset + " ; Almacena el valor de la variable " + id.getLexeme() + "\n");
+        }
+    }
+    private void generateAttributeAssignmentCode(int offset, Token operator) throws Exception {
+        if(operator.getLexeme().equals("=")) {
+            writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
+            writer.write(CodeGenerator.SWAP + " ; Bajo la referencia del CIR\n");
+            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.STOREREF + " " + offset + " ; Almacena el valor del atributo " + id.getLexeme() + "\n");
+        } else if(operator.getLexeme().equals("+=")) {
+            writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
+            writer.write(CodeGenerator.LOADREF + " " + offset + " ; Carga el valor del atributo " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.ADD + " ; Suma el valor del atributo " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.STOREREF + " " + offset + " ; Almacena el valor del atributo " + id.getLexeme() + "\n");
+        } else if(operator.getLexeme().equals("-=")) {
+            writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
+            writer.write(CodeGenerator.LOADREF + " " + offset + " ; Carga el valor del atributo " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.SWAP + " ; Invierto los operandos " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.SUB + " ; Resta el valor del atributo " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.STOREREF + " " + offset + " ; Almacena el valor del atributo " + id.getLexeme() + "\n");
         }
     }
     public String toString() {
