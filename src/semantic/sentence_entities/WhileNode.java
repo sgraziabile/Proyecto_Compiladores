@@ -1,10 +1,13 @@
 package semantic.sentence_entities;
 
+import code_generator.CodeGenerator;
 import exceptions.IncompatibleTypesException;
 import exceptions.StaticReferenceException;
 import semantic.declared_entities.PrimitiveType;
 import semantic.declared_entities.Type;
 import semantic.expression_entities.ExpressionNode;
+
+import static main.MainModule.writer;
 
 public class WhileNode extends SentenceNode {
     private ExpressionNode condition;
@@ -43,6 +46,16 @@ public class WhileNode extends SentenceNode {
             throw new IncompatibleTypesException(new PrimitiveType("boolean"), conditionType, line,"while");
         }
         body.checkSentence();
+    }
+    public void generateCode() throws Exception {
+        String whileLabel = CodeGenerator.generateWhileLabel();
+        String endLabel = CodeGenerator.generateEndWhileLabel();
+        writer.write(whileLabel + ": NOP \n");
+        condition.generateCode();
+        writer.write(CodeGenerator.BF + " " + endLabel + " ; Salto al final del while \n");
+        body.generateCode();
+        writer.write(CodeGenerator.JUMP + " " + whileLabel + " ; Salto al inicio del while \n");
+        writer.write(endLabel + ": NOP \n");
     }
     public String toString() {
         return "WhileNode";

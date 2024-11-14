@@ -153,19 +153,32 @@ lblMetmain@Init:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
 RMEM 1 ; Reserva espacio para la variable local a
-PUSH 0 ; Apila el valor
+PUSH 5 ; Apila el valor
 STORE 0 ; Almacena el valor de la variable local a
-RMEM 1 ; Reserva espacio para la variable local c
-PUSH 10 ; Apila el valor
-STORE -1 ; Almacena el valor de la variable local c
+lblWhile1: NOP 
 LOAD 0 ; Carga el valor de la variable local a
-NOT ; Negacion logica
+PUSH 0 ; Apila el valor
+GT
+BF lblWhileEnd1 ; Salto al final del while 
+LOAD 0 ; Carga el valor de la variable local a
+PUSH 3 ; Apila el valor
+EQ
+BF lblIfEnd1 ; Salto al final del if 
+JUMP lblWhileEnd1 ; Break 
+FMEM 0 ; Libera espacio de variables locales
+lblIfEnd1: NOP 
+LOAD 0 ; Carga el valor de la variable local a
+PUSH lblMetprintIln@System ; Apila el metodo
+CALL ; Llama al metodo
+LOAD 0 ; Carga el valor de la variable local a
+PUSH 1 ; Apila el valor
+SUB
 DUP ; Duplica el valor de la asignacion a
 STORE 0 ; Almacena el valor de la variable a
-LOAD 0 ; Carga el valor de la variable local a
-PUSH lblMetprintBln@System ; Apila el metodo
-CALL ; Llama al metodo
-FMEM 2 ; Libera espacio de variables locales
+FMEM 0 ; Libera espacio de variables locales
+JUMP lblWhile1 ; Salto al inicio del while 
+lblWhileEnd1: NOP 
+FMEM 1 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 0 ; Libera el espacio de los parametros de main
 
@@ -184,8 +197,6 @@ lblMetm1@A:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
 LOAD 3 ; Carga el CIR de la clase actual
-RMEM 1 ; Reserva espacio para el valor de retorno
-SWAP ; Bajo la referencia del CIR
 PUSH 1 ; Apila el valor
 SWAP ; Bajo la referencia del CIR
 DUP ; Duplica la referencia al CIR

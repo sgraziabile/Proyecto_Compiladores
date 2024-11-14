@@ -12,6 +12,7 @@ public class CodeGenerator {
     public static String RET = "RET";
     public static String LOAD = "LOAD";
     public static String DUP = "DUP";
+
     public static String ADD = "ADD";
     public static String SUB = "SUB";
     public static String MUL = "MUL";
@@ -27,19 +28,29 @@ public class CodeGenerator {
     public static String NOT = "NOT";
     public static String NEG = "NEG";
     public static String MOD = "MOD";
+
     public static String STORE = "STORE";
     public static String RMEM = "RMEM";
     public static String RMEM1 = "RMEM 1";
     public static String SWAP = "SWAP";
     public static String LOADREF = "LOADREF";
     public static String STOREREF = "STOREREF";
-    public static String READ = "READ";
 
+    public static String JUMP = "JUMP";
+    public static String BF = "BF";
+    public static String BT = "BT";
+    public static String NOP = "NOP";
+
+    public static String READ = "READ";
     public static String IPRINT = "IPRINT";
     public static String BPRINT = "BPRINT";
     public static String CPRINT = "CPRINT";
     public static String SPRINT = "SPRINT";
     public static String PRNLN = "PRNLN";
+
+    private static int ifLabelCounter = 1;
+    private static int whileLabelCounter = 1;
+    private static String currentLoopLabel;
 
     public void generateMain(String label) throws Exception {
         writer.write("PUSH " + label + "\n");
@@ -72,6 +83,23 @@ public class CodeGenerator {
         writer.write(label +":" +LOADFP + " ; Apila el valor del registro\n");
         writer.write(LOADSP + " ; Apila el valor en el registro sp\n");
         writer.write(STOREFP + " ; Almacena el tope de la pila en el registro\n");
+    }
+    public static String generateEndIfLabel() {
+        return "lblIfEnd" + ifLabelCounter++;
+    }
+    public static String generateElseLabel() {
+        return "lblElse" + ifLabelCounter;
+    }
+    public static String generateEndWhileLabel() {
+        String endLabel = "lblWhileEnd" + whileLabelCounter++;
+        currentLoopLabel = endLabel;
+        return endLabel;
+    }
+    public static String generateWhileLabel() {
+        return "lblWhile" + whileLabelCounter;
+    }
+    public static String getCurrentLoopLabel() {
+        return currentLoopLabel;
     }
 
 }

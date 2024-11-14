@@ -121,7 +121,6 @@ public class ChainedMethodCallNode extends Chained {
         }
     }
     private void generateVoidMethodCode() throws Exception {
-        writer.write(CodeGenerator.LOAD+ " 3 ; Carga el CIR de la clase actual\n");
         for(ExpressionNode e : args) {
             e.generateCode();
             writer.write(CodeGenerator.SWAP+" ; Bajo la referencia del CIR\n");

@@ -1,10 +1,13 @@
 package semantic.sentence_entities;
 
+import code_generator.CodeGenerator;
 import exceptions.IncompatibleTypesException;
 import exceptions.StaticReferenceException;
 import semantic.declared_entities.PrimitiveType;
 import semantic.declared_entities.Type;
 import semantic.expression_entities.CompoundExpNode;
+
+import static main.MainModule.writer;
 
 public class IfNode extends SentenceNode {
     CompoundExpNode condition;
@@ -44,6 +47,13 @@ public class IfNode extends SentenceNode {
     }
     public void setBreakable() {
         thenBody.setBreakable();
+    }
+    public void generateCode() throws Exception{
+        String endLabel = CodeGenerator.generateEndIfLabel();
+        condition.generateCode();
+        writer.write(CodeGenerator.BF + " " + endLabel + " ; Salto al final del if \n");
+        thenBody.generateCode();
+        writer.write(endLabel + ": NOP \n");
     }
     public String toString() {
         return "IfNode";
