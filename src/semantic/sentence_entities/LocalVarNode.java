@@ -79,7 +79,7 @@ public class LocalVarNode extends SentenceNode implements Symbol {
     }
     public void generateCode() throws Exception {
         writer.write(CodeGenerator.RMEM1 + " ; Reserva espacio para la variable local "+id.getLexeme()+ "\n");
-        expression.generateCode();  //completar la asignacion
+        expression.generateCode();
         writer.write(CodeGenerator.STORE + " " + offset + " ; Almacena el valor de la variable local "+id.getLexeme()+"\n");
     }
     private void checkRepeatedVar() throws Exception {

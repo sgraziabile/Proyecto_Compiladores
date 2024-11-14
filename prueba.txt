@@ -1,13 +1,12 @@
 ///[SinErrores]
 
- class Init{
+ class Init extends System{
     static int a1;
      static void main() {
-        //debugPrint(1234);
-        var a = 1;
-        var b = 2;
-        b = (a = 100);
-        debugPrint(b);
+        var a = false;
+        var c = 10;
+        a = !a;
+        printBln(a);
      }
  }
  class A {

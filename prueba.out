@@ -54,70 +54,83 @@ RET 1 ; Libera el espacio de los parametros de System
 lblMetread@System:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-FMEM 0 ; Libera espacio de variables locales
+READ ; Lee el proximo byte del stream 
+STORE 3 ; Guarda el valor de retorno 
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 0 ; Libera el espacio de los parametros de read
 
 lblMetprintB@System:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-FMEM 0 ; Libera espacio de variables locales
+LOAD 3    ; Apila el parametro
+BPRINT    ; Imprime el entero en el tope de la pila
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 1 ; Libera el espacio de los parametros de printB
 
 lblMetprintC@System:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-FMEM 0 ; Libera espacio de variables locales
+LOAD 3    ; Apila el parametro
+CPRINT    ; Imprime el caracter en el tope de la pila
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 1 ; Libera el espacio de los parametros de printC
 
 lblMetprintI@System:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-FMEM 0 ; Libera espacio de variables locales
+LOAD 3    ; Apila el parametro
+IPRINT    ; Imprime el entero en el tope de la pila
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 1 ; Libera el espacio de los parametros de printI
 
 lblMetprintS@System:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-FMEM 0 ; Libera espacio de variables locales
+LOAD 3    ; Apila el parametro
+SPRINT    ; Imprime el string en el tope de la pila
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 1 ; Libera el espacio de los parametros de printS
 
 lblMetprintln@System:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-FMEM 0 ; Libera espacio de variables locales
+PRNLN    ; Imprime un salto de linea
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 0 ; Libera el espacio de los parametros de println
 
 lblMetprintBln@System:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-FMEM 0 ; Libera espacio de variables locales
+LOAD 3    ; Apila el parametro
+BPRINT    ; Imprime el entero en el tope de la pila
+PRNLN    ; Imprime un salto de linea
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 1 ; Libera el espacio de los parametros de printBln
 
 lblMetprintCln@System:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-FMEM 0 ; Libera espacio de variables locales
+LOAD 3    ; Apila el parametro
+CPRINT    ; Imprime el caracter en el tope de la pila
+PRNLN    ; Imprime un salto de linea
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 1 ; Libera el espacio de los parametros de printCln
 
 lblMetprintIln@System:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-FMEM 0 ; Libera espacio de variables locales
+LOAD 3    ; Apila el parametro
+IPRINT    ; Imprime el entero en el tope de la pila
+PRNLN    ; Imprime un salto de linea
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 1 ; Libera el espacio de los parametros de printIln
 
 lblMetprintSln@System:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-FMEM 0 ; Libera espacio de variables locales
+LOAD 3    ; Apila el parametro
+SPRINT    ; Imprime el string en el tope de la pila
+PRNLN    ; Imprime un salto de linea
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 1 ; Libera el espacio de los parametros de printSln
 
@@ -140,18 +153,17 @@ lblMetmain@Init:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
 RMEM 1 ; Reserva espacio para la variable local a
-PUSH 1 ; Apila el valor
+PUSH 0 ; Apila el valor
 STORE 0 ; Almacena el valor de la variable local a
-RMEM 1 ; Reserva espacio para la variable local b
-PUSH 2 ; Apila el valor
-STORE -1 ; Almacena el valor de la variable local b
-PUSH 100 ; Apila el valor
+RMEM 1 ; Reserva espacio para la variable local c
+PUSH 10 ; Apila el valor
+STORE -1 ; Almacena el valor de la variable local c
+LOAD 0 ; Carga el valor de la variable local a
+NOT ; Negacion logica
 DUP ; Duplica el valor de la asignacion a
 STORE 0 ; Almacena el valor de la variable a
-DUP ; Duplica el valor de la asignacion b
-STORE -1 ; Almacena el valor de la variable b
-LOAD -1 ; Carga el valor de la variable local b
-PUSH lblMetdebugPrint@Object ; Apila el metodo
+LOAD 0 ; Carga el valor de la variable local a
+PUSH lblMetprintBln@System ; Apila el metodo
 CALL ; Llama al metodo
 FMEM 2 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 

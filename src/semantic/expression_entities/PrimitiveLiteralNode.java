@@ -25,7 +25,13 @@ public class PrimitiveLiteralNode extends LiteralNode {
         return type;
     }
     public void generateCode() throws Exception{
-        writer.write("PUSH "+value.getLexeme()+" ; Apila el valor\n");
+        if(value.getLexeme().equals("true")) {
+            writer.write("PUSH 1 ; Apila el valor\n");
+        } else if(value.getLexeme().equals("false")) {
+            writer.write("PUSH 0 ; Apila el valor\n");
+        } else {
+            writer.write("PUSH "+value.getLexeme()+" ; Apila el valor\n");
+        }
     }
     public String toString() {
         return value.getLexeme();

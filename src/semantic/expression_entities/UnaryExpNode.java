@@ -1,8 +1,11 @@
 package semantic.expression_entities;
 
+import code_generator.CodeGenerator;
 import entities.Token;
 import exceptions.InvalidOperatorException;
 import semantic.declared_entities.Type;
+
+import static main.MainModule.writer;
 
 public class UnaryExpNode extends CompoundExpNode{
     OperandNode operand;
@@ -42,6 +45,15 @@ public class UnaryExpNode extends CompoundExpNode{
             }
         }
         return type;
+    }
+    public void generateCode() throws Exception {
+        operand.generateCode();
+        if(operator.getLexeme().equals("!")) {
+            writer.write("NOT ; Negacion logica\n");
+        } else if(operator.getLexeme().equals("-")) {
+            writer.write(CodeGenerator.PUSH + " -1 ; Carga el valor 0\n");
+            writer.write(CodeGenerator.MUL + " ; Multiplica por -1\n");
+        }
     }
     public String toString() {
         return operator.getLexeme() + " " + operand.toString();

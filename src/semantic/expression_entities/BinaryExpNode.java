@@ -1,9 +1,12 @@
 package semantic.expression_entities;
 
+import code_generator.CodeGenerator;
 import entities.Token;
 import exceptions.InvalidOperatorException;
 import semantic.declared_entities.PrimitiveType;
 import semantic.declared_entities.Type;
+
+import static main.MainModule.writer;
 
 public class BinaryExpNode extends CompoundExpNode {
     protected CompoundExpNode leftExp;
@@ -43,7 +46,7 @@ public class BinaryExpNode extends CompoundExpNode {
         Type rightType = rightExp.typeCheck();
         Type expressionType = null;
         if(leftType != null && rightType != null) {
-            if(operator.getLexeme().equals("+") || operator.getLexeme().equals("-") || operator.getLexeme().equals("*") || operator.getLexeme().equals("/")) {
+            if(operator.getLexeme().equals("+") || operator.getLexeme().equals("-") || operator.getLexeme().equals("*") || operator.getLexeme().equals("/") || operator.getLexeme().equals("%")) {
                 if(!leftType.getName().equals("int") || !rightType.getName().equals("int")) {
                     throw new InvalidOperatorException(operator.getLexeme(), leftType.getName(), rightType.getName(), operator.getLineNumber());
                 } else {
@@ -70,6 +73,91 @@ public class BinaryExpNode extends CompoundExpNode {
             }
         }
         return expressionType;
+    }
+    public void generateCode() throws Exception {
+        String op = operator.getLexeme();
+        leftExp.generateCode();
+        rightExp.generateCode();
+        switch(op) {
+            case("+"):
+                generateSumCode();
+                break;
+            case("-"):
+                generateSubtractionCode();
+                break;
+            case("*"):
+                generateMultiplicationCode();
+                break;
+            case("/"):
+                generateDivisionCode();
+                break;
+            case("=="):
+                generateEqualCode();
+                break;
+            case("!="):
+                generateNECode();
+                break;
+            case("<"):
+                generateLessThanCode();
+                break;
+            case(">"):
+                generateGreaterThanCode();
+                break;
+            case("<="):
+                generateLessEqualCode();
+                break;
+            case(">="):
+                generateGreaterEqualCode();
+                break;
+            case("&&"):
+                generateAndCode();
+                break;
+            case("||"):
+                generateOrCode();
+                break;
+            case("%"):
+                generateModCode();
+                break;
+        }
+    }
+    private void generateSumCode() throws Exception {
+        writer.write(CodeGenerator.ADD + "\n");
+    }
+    private void generateSubtractionCode() throws Exception {
+        writer.write(CodeGenerator.SUB + "\n");
+    }
+    private void generateMultiplicationCode() throws Exception {
+        writer.write(CodeGenerator.MUL + "\n");
+    }
+    private void generateDivisionCode() throws Exception {
+        writer.write(CodeGenerator.DIV + "\n");
+    }
+    private void generateEqualCode() throws Exception {
+        writer.write(CodeGenerator.EQ + "\n");
+    }
+    private void generateNECode() throws Exception {
+        writer.write(CodeGenerator.NE + "\n");
+    }
+    private void generateLessThanCode() throws Exception {
+        writer.write(CodeGenerator.LT + "\n");
+    }
+    private void generateGreaterThanCode() throws Exception {
+        writer.write(CodeGenerator.GT + "\n");
+    }
+    private void generateLessEqualCode() throws Exception {
+        writer.write(CodeGenerator.LE + "\n");
+    }
+    private void generateGreaterEqualCode() throws Exception {
+        writer.write(CodeGenerator.GE + "\n");
+    }
+    private void generateAndCode() throws Exception {
+        writer.write(CodeGenerator.AND + "\n");
+    }
+    private void generateOrCode() throws Exception {
+        writer.write(CodeGenerator.OR + "\n");
+    }
+    private void generateModCode() throws Exception {
+        writer.write(CodeGenerator.MOD + "\n");
     }
     public String toString() {
         String leftExpString = leftExp == null ? "" : leftExp.toString();

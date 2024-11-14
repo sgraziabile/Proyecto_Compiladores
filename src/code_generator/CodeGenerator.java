@@ -11,16 +11,35 @@ public class CodeGenerator {
     public static String CALL = "CALL";
     public static String RET = "RET";
     public static String LOAD = "LOAD";
-    public static String IPRINT = "IPRINT";
     public static String DUP = "DUP";
     public static String ADD = "ADD";
     public static String SUB = "SUB";
+    public static String MUL = "MUL";
+    public static String DIV = "DIV";
+    public static String EQ = "EQ";
+    public static String NE = "NE";  // !=
+    public static String GT = "GT"; //>
+    public static String LT = "LT"; //<
+    public static String GE = "GE"; //>=
+    public static String LE = "LE"; //<=
+    public static String AND = "AND";
+    public static String OR = "OR";
+    public static String NOT = "NOT";
+    public static String NEG = "NEG";
+    public static String MOD = "MOD";
     public static String STORE = "STORE";
     public static String RMEM = "RMEM";
     public static String RMEM1 = "RMEM 1";
     public static String SWAP = "SWAP";
     public static String LOADREF = "LOADREF";
     public static String STOREREF = "STOREREF";
+    public static String READ = "READ";
+
+    public static String IPRINT = "IPRINT";
+    public static String BPRINT = "BPRINT";
+    public static String CPRINT = "CPRINT";
+    public static String SPRINT = "SPRINT";
+    public static String PRNLN = "PRNLN";
 
     public void generateMain(String label) throws Exception {
         writer.write("PUSH " + label + "\n");
