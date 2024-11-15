@@ -153,31 +153,47 @@ lblMetmain@Init:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
 RMEM 1 ; Reserva espacio para la variable local a
-PUSH 5 ; Apila el valor
+PUSH 2 ; Apila el valor
 STORE 0 ; Almacena el valor de la variable local a
-lblWhile1: NOP 
 LOAD 0 ; Carga el valor de la variable local a
-PUSH 0 ; Apila el valor
-GT
-BF lblWhileEnd1 ; Salto al final del while 
+
+PUSH 1 ; Apila el valor
+EQ ; Chequear el valor
+BT lblSwitchCase10 ; Salto al case 
+
 LOAD 0 ; Carga el valor de la variable local a
-PUSH 3 ; Apila el valor
-EQ
-BF lblIfEnd1 ; Salto al final del if 
-JUMP lblWhileEnd1 ; Break 
-FMEM 0 ; Libera espacio de variables locales
-lblIfEnd1: NOP 
-LOAD 0 ; Carga el valor de la variable local a
+
+PUSH 2 ; Apila el valor
+EQ ; Chequear el valor
+BT lblSwitchCase11 ; Salto al case 
+
+JUMP lblSwitchDefault1 ; Salto al default 
+
+lblSwitchCase10: NOP 
+PUSH 1 ; Apila el valor
 PUSH lblMetprintIln@System ; Apila el metodo
 CALL ; Llama al metodo
-LOAD 0 ; Carga el valor de la variable local a
-PUSH 1 ; Apila el valor
-SUB
-DUP ; Duplica el valor de la asignacion a
-STORE 0 ; Almacena el valor de la variable a
+JUMP lblSwitchEnd1 ; Break 
 FMEM 0 ; Libera espacio de variables locales
-JUMP lblWhile1 ; Salto al inicio del while 
-lblWhileEnd1: NOP 
+JUMP lblSwitchEnd1 ; Salto al final del switch 
+
+lblSwitchCase11: NOP 
+PUSH 2 ; Apila el valor
+PUSH lblMetprintIln@System ; Apila el metodo
+CALL ; Llama al metodo
+JUMP lblSwitchEnd1 ; Break 
+FMEM 0 ; Libera espacio de variables locales
+JUMP lblSwitchEnd1 ; Salto al final del switch 
+
+lblSwitchDefault1: NOP 
+PUSH 3 ; Apila el valor
+PUSH lblMetprintIln@System ; Apila el metodo
+CALL ; Llama al metodo
+JUMP lblSwitchEnd1 ; Break 
+FMEM 0 ; Libera espacio de variables locales
+JUMP lblSwitchEnd1 ; Salto al final del switch 
+
+lblSwitchEnd1: NOP 
 FMEM 1 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 0 ; Libera el espacio de los parametros de main

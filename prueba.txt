@@ -2,15 +2,20 @@
 
  class Init extends System{
      static void main() {
-        //var a = new A();
-        //a.m2(3);
-        var a = 5;
-        while(a > 0) {
-            if(a == 3) {
+        var a = 2;
+        switch(a) {
+            case 1: {
+                printIln(1);
                 break;
-            }
-            printIln(a);
-            a = a - 1;
+                }
+            case 2: {
+                printIln(2);
+                break;
+                }
+            default: {
+                printIln(3);
+                break;
+                }
         }
     }
  }

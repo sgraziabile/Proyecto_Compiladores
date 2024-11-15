@@ -50,7 +50,10 @@ public class CodeGenerator {
 
     private static int ifLabelCounter = 1;
     private static int whileLabelCounter = 1;
+    private static int switchLabelCounter = 1;
+    private static int caseLabelCounter;
     private static String currentLoopLabel;
+    private static String currentDefaultLabel;
 
     public void generateMain(String label) throws Exception {
         writer.write("PUSH " + label + "\n");
@@ -98,8 +101,27 @@ public class CodeGenerator {
     public static String generateWhileLabel() {
         return "lblWhile" + whileLabelCounter;
     }
+    public static String generateCaseLabel() {
+        String label = "lblSwitchCase" + switchLabelCounter + caseLabelCounter;
+        caseLabelCounter++;
+        return label;
+    }
+    public static String generateDefaultLabel() {
+        caseLabelCounter = 1;
+        String label = "lblSwitchDefault" + switchLabelCounter;
+        currentDefaultLabel = label;
+        return label;
+    }
+    public static String generateEndSwitchLabel() {
+        String label = "lblSwitchEnd" + switchLabelCounter;
+        currentLoopLabel = label;
+        return label;
+    }
     public static String getCurrentLoopLabel() {
         return currentLoopLabel;
+    }
+    public static String getCurrentDefaultLabel() {
+        return currentDefaultLabel;
     }
 
 }

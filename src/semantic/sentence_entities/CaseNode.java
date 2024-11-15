@@ -1,12 +1,16 @@
 package semantic.sentence_entities;
 
+import code_generator.CodeGenerator;
 import exceptions.IncompatibleTypesException;
 import semantic.declared_entities.Type;
 import semantic.expression_entities.PrimitiveLiteralNode;
 
+import static main.MainModule.writer;
+
 public class CaseNode extends SentenceNode {
     protected PrimitiveLiteralNode caseValue;
     protected SentenceNode caseBody;
+    private String label;
 
     public CaseNode(PrimitiveLiteralNode caseValue, SentenceNode caseBody) {
         this.caseValue = caseValue;
@@ -39,6 +43,23 @@ public class CaseNode extends SentenceNode {
             }
         }
         caseBody.checkSentence();
+    }
+    public void generateValueCode() throws Exception{
+        if(caseValue != null) {
+            label = CodeGenerator.generateCaseLabel();
+            caseValue.generateCode();
+            writer.write(CodeGenerator.EQ + " ; Chequear el valor\n");
+            writer.write(CodeGenerator.BT + " " + label + " ; Salto al case \n");
+            writer.write("\n");
+        } else {
+            label = CodeGenerator.getCurrentDefaultLabel();
+        }
+    }
+    public void generateBodyCode() throws Exception{
+        writer.write(label + ": NOP \n");
+        caseBody.generateCode();
+        writer.write(CodeGenerator.JUMP + " " + CodeGenerator.getCurrentLoopLabel() + " ; Salto al final del switch \n");
+        writer.write("\n");
     }
     public void setBreakable() {
         caseBody.setBreakable();

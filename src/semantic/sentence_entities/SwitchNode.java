@@ -1,5 +1,6 @@
 package semantic.sentence_entities;
 
+import code_generator.CodeGenerator;
 import exceptions.IncompatibleTypesException;
 import exceptions.InvalidSwitchTypeException;
 import exceptions.RepeatedCaseLabelException;
@@ -9,6 +10,8 @@ import semantic.declared_entities.Type;
 import semantic.expression_entities.ExpressionNode;
 
 import java.util.ArrayList;
+
+import static main.MainModule.writer;
 
 public class SwitchNode extends SentenceNode {
     protected ExpressionNode expression;
@@ -61,13 +64,36 @@ public class SwitchNode extends SentenceNode {
                 c.checkSentence(type);
             }
             if(defaultCases.size() == 1)
-                defaultCase.checkSentence();
+                defaultCase.checkSentence(type);
             else if(defaultCases.size() > 1)
                 throw new RepeatedDefaultCaseException(defaultCases.get(1).getLine());
         }
         else {
             throw new InvalidSwitchTypeException(type,line);
         }
+    }
+    public void generateCode() throws Exception {
+        String endLabel = CodeGenerator.generateEndSwitchLabel();
+        for(CaseNode c : cases) {
+            expression.generateCode();
+            writer.write("\n");
+            c.generateValueCode();
+        }
+        if(defaultCase != null) {
+            String defaultLabel = CodeGenerator.generateDefaultLabel();
+            writer.write(CodeGenerator.JUMP + " " + defaultLabel + " ; Salto al default \n");
+        } else {
+            writer.write(CodeGenerator.JUMP + " " + endLabel + " ; Salto al final del switch \n");
+        }
+        writer.write("\n");
+        for(CaseNode c : cases) {
+            c.generateBodyCode();
+        }
+        if(defaultCase != null) {
+            defaultCase.generateValueCode();
+            defaultCase.generateBodyCode();
+        }
+        writer.write(endLabel + ": NOP \n");
     }
     private void checkRepeatedLabel(String label, int index) throws Exception {
         for(int i = index; i < cases.size(); i++) {
