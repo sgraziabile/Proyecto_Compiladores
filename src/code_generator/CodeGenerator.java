@@ -12,6 +12,7 @@ public class CodeGenerator {
     public static String RET = "RET";
     public static String LOAD = "LOAD";
     public static String DUP = "DUP";
+    public static String DW = "DW";
 
     public static String ADD = "ADD";
     public static String SUB = "SUB";

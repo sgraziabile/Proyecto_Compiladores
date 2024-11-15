@@ -2,31 +2,26 @@
 
  class Init extends System{
      static void main() {
-        var a = 2;
-        switch(a) {
-            case 1: {
-                printIln(1);
-                break;
-                }
-            case 2: {
-                printIln(2);
-                break;
-                }
-            default: {
-                printIln(3);
-                break;
-                }
-        }
+        var a = new A();
+        a.m2();
+    }
+    static void m1() {
+        printIln(1234);
     }
  }
  class A {
-        public int a1;
-        public int a2;
-        void m1(int a, int b) {
-            m2(1);
-            var c = 10;
+        public static int a1;
+        //public int a2;
+        public A() {
+
         }
-        void m2(int a) {
+        void m2() {
+            var a = 3;
+            //a1 = 35;
+            a1 = a1 + a;
+            debugPrint(a1);
+        }
+        static void m3() {
             debugPrint(1234);
         }
  }

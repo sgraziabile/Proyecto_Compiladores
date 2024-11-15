@@ -24,6 +24,7 @@ RET 1	; Retorna eliminando el parámetro
 .DATA
 lblVTObject: NOP
 
+
 .CODE
 lblConstructor@Object:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
@@ -41,7 +42,9 @@ STOREFP ; Almacena el tope de la pila en el registro
 RET 1 ; Libera el espacio de los parametros de debugPrint
 
 
+.DATA
 lblVTSystem: NOP
+
 
 .CODE
 lblConstructor@System:LOADFP ; Apila el valor del registro
@@ -135,7 +138,9 @@ STOREFP ; Almacena el tope de la pila en el registro
 RET 1 ; Libera el espacio de los parametros de printSln
 
 
+.DATA
 lblVTString: NOP
+
 
 .CODE
 lblConstructor@String:LOADFP ; Apila el valor del registro
@@ -146,57 +151,44 @@ STOREFP ; Almacena el tope de la pila en el registro
 RET 1 ; Libera el espacio de los parametros de String
 
 
+.DATA
 lblVTInit: NOP
+
 
 .CODE
 lblMetmain@Init:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
 RMEM 1 ; Reserva espacio para la variable local a
-PUSH 2 ; Apila el valor
+RMEM 1 ; Reserva espacio para el CIR generado
+PUSH 2 ; Reserva espacio para el CIR
+PUSH simple_malloc ;  Carga direccion de rutina para alojar el CIR
+CALL ; Llama a la rutina de alojamiento
+DUP ; Duplica la referencia al CIR
+PUSH lblVTA ; Carga la direccion de la VT
+STOREREF 0 ; Guarda la direccion de la VT en el CIR
+DUP ; Duplica la referencia al CIR
+PUSH lblConstructor@A ; Carga la direccion del constructor
+CALL ; Llama al constructor
 STORE 0 ; Almacena el valor de la variable local a
 LOAD 0 ; Carga el valor de la variable local a
-
-PUSH 1 ; Apila el valor
-EQ ; Chequear el valor
-BT lblSwitchCase10 ; Salto al case 
-
-LOAD 0 ; Carga el valor de la variable local a
-
-PUSH 2 ; Apila el valor
-EQ ; Chequear el valor
-BT lblSwitchCase11 ; Salto al case 
-
-JUMP lblSwitchDefault1 ; Salto al default 
-
-lblSwitchCase10: NOP 
-PUSH 1 ; Apila el valor
-PUSH lblMetprintIln@System ; Apila el metodo
-CALL ; Llama al metodo
-JUMP lblSwitchEnd1 ; Break 
-FMEM 0 ; Libera espacio de variables locales
-JUMP lblSwitchEnd1 ; Salto al final del switch 
-
-lblSwitchCase11: NOP 
-PUSH 2 ; Apila el valor
-PUSH lblMetprintIln@System ; Apila el metodo
-CALL ; Llama al metodo
-JUMP lblSwitchEnd1 ; Break 
-FMEM 0 ; Libera espacio de variables locales
-JUMP lblSwitchEnd1 ; Salto al final del switch 
-
-lblSwitchDefault1: NOP 
-PUSH 3 ; Apila el valor
-PUSH lblMetprintIln@System ; Apila el metodo
-CALL ; Llama al metodo
-JUMP lblSwitchEnd1 ; Break 
-FMEM 0 ; Libera espacio de variables locales
-JUMP lblSwitchEnd1 ; Salto al final del switch 
-
-lblSwitchEnd1: NOP 
+DUP ; Duplica la referencia al CIR
+LOADREF 0 ; Cargo la referencia a la VT en el CIR
+LOADREF 0 ; Cargo la referencia al metodo en la VT
+CALL ; Llama al metodo m2
 FMEM 1 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 0 ; Libera el espacio de los parametros de main
+
+lblMetm1@Init:LOADFP ; Apila el valor del registro
+LOADSP ; Apila el valor en el registro sp
+STOREFP ; Almacena el tope de la pila en el registro
+PUSH 1234 ; Apila el valor
+PUSH lblMetprintIln@System ; Apila el metodo
+CALL ; Llama al metodo
+FMEM 0 ; Libera espacio de variables locales
+STOREFP ; Almacena el tope de la pila en el registro 
+RET 0 ; Libera el espacio de los parametros de m1
 
 lblConstructor@Init:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
@@ -206,27 +198,40 @@ STOREFP ; Almacena el tope de la pila en el registro
 RET 1 ; Libera el espacio de los parametros de Init
 
 
-lblVTA: NOP
-
+.DATA
+lblVTA: DW lblMetm2@A
 .CODE
-lblMetm1@A:LOADFP ; Apila el valor del registro
+lblConstructor@A:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-LOAD 3 ; Carga el CIR de la clase actual
-PUSH 1 ; Apila el valor
-SWAP ; Bajo la referencia del CIR
-DUP ; Duplica la referencia al CIR
-LOADREF 0 ; Cargo la referencia a la VT en el CIR
-LOADREF 1 ; Cargo la referencia a la VT
-CALL ; Llama al metodo m2
-RMEM 1 ; Reserva espacio para la variable local c
-PUSH 10 ; Apila el valor
-STORE 0 ; Almacena el valor de la variable local c
-FMEM 1 ; Libera espacio de variables locales
+FMEM 0 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
-RET 3 ; Libera el espacio de los parametros de m1
+RET 1 ; Libera el espacio de los parametros de A
 
 lblMetm2@A:LOADFP ; Apila el valor del registro
+LOADSP ; Apila el valor en el registro sp
+STOREFP ; Almacena el tope de la pila en el registro
+RMEM 1 ; Reserva espacio para la variable local a
+PUSH 3 ; Apila el valor
+STORE 0 ; Almacena el valor de la variable local a
+LOAD 3 ; Carga la referencia al CIR 
+LOADREF 1 ; Carga el valor del atributo a1
+LOAD 0 ; Carga el valor de la variable local a
+ADD
+DUP ; Duplica el valor de la asignacion a1
+LOAD 3 ; Carga la referencia al CIR 
+SWAP ; Bajo la referencia del CIR
+STOREREF 1 ; Almacena el valor del atributo a1
+POP ; Se desapila el valor de la asignacion 
+LOAD 3 ; Carga la referencia al CIR 
+LOADREF 1 ; Carga el valor del atributo a1
+PUSH lblMetdebugPrint@Object ; Apila el metodo
+CALL ; Llama al metodo
+FMEM 1 ; Libera espacio de variables locales
+STOREFP ; Almacena el tope de la pila en el registro 
+RET 1 ; Libera el espacio de los parametros de m2
+
+lblMetm3@A:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
 PUSH 1234 ; Apila el valor
@@ -234,13 +239,6 @@ PUSH lblMetdebugPrint@Object ; Apila el metodo
 CALL ; Llama al metodo
 FMEM 0 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
-RET 2 ; Libera el espacio de los parametros de m2
-
-lblConstructor@A:LOADFP ; Apila el valor del registro
-LOADSP ; Apila el valor en el registro sp
-STOREFP ; Almacena el tope de la pila en el registro
-FMEM 0 ; Libera espacio de variables locales
-STOREFP ; Almacena el tope de la pila en el registro 
-RET 1 ; Libera el espacio de los parametros de A
+RET 0 ; Libera el espacio de los parametros de m3
 
 

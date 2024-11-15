@@ -197,15 +197,17 @@ public class VarAccessNode extends PrimaryNode {
     }
     private void generateAttributeAssignmentCode(int offset, Token operator) throws Exception {
         if(operator.getLexeme().equals("=")) {
+            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
             writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
             writer.write(CodeGenerator.SWAP + " ; Bajo la referencia del CIR\n");
-            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
             writer.write(CodeGenerator.STOREREF + " " + offset + " ; Almacena el valor del atributo " + id.getLexeme() + "\n");
         } else if(operator.getLexeme().equals("+=")) {
             writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
             writer.write(CodeGenerator.LOADREF + " " + offset + " ; Carga el valor del atributo " + id.getLexeme() + "\n");
             writer.write(CodeGenerator.ADD + " ; Suma el valor del atributo " + id.getLexeme() + "\n");
             writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
+            writer.write(CodeGenerator.SWAP + " ; Bajo la referencia del CIR\n");
             writer.write(CodeGenerator.STOREREF + " " + offset + " ; Almacena el valor del atributo " + id.getLexeme() + "\n");
         } else if(operator.getLexeme().equals("-=")) {
             writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
@@ -213,6 +215,8 @@ public class VarAccessNode extends PrimaryNode {
             writer.write(CodeGenerator.SWAP + " ; Invierto los operandos " + id.getLexeme() + "\n");
             writer.write(CodeGenerator.SUB + " ; Resta el valor del atributo " + id.getLexeme() + "\n");
             writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
+            writer.write(CodeGenerator.SWAP + " ; Bajo la referencia del CIR\n");
             writer.write(CodeGenerator.STOREREF + " " + offset + " ; Almacena el valor del atributo " + id.getLexeme() + "\n");
         }
     }

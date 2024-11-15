@@ -136,8 +136,8 @@ public class SymbolTable {
         writer.write("\n");
         codeGenerator.setPrimitives();
         writer.write("\n");
-        writer.write(".DATA\n");
         for(Class c : classList) {
+            writer.write(".DATA\n");
             setCurrentClass(c);
             c.generateCode();
         }

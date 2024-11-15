@@ -1,5 +1,6 @@
 package semantic.declared_entities;
 
+import code_generator.CodeGenerator;
 import entities.Token;
 import exceptions.ClassNotDeclaredException;
 import exceptions.CyclicInheritanceException;
@@ -151,8 +152,7 @@ public class Class implements Symbol{
             m.setLabel();
             if(m.getType().getName().equals("constructor")) {
                 constructorLabel = m.getLabel();
-            }
-            if(m.getModifier().equals("dynamic")) {
+            } else if(m.getModifier().equals("dynamic")) {
                 VTable.add(m);
             }
         }
@@ -160,7 +160,18 @@ public class Class implements Symbol{
         setMethodOffsets();
     }
     public void generateCode() throws Exception {
-        writer.write(vtLabel + ": NOP\n");
+        if(VTable.isEmpty()) {
+            writer.write(vtLabel + ": NOP\n");
+            writer.write("\n");
+        } else {
+            writer.write(vtLabel + ": "+ CodeGenerator.DW + " ");
+            for(int i = 0; i < VTable.size(); i++) {
+                writer.write(VTable.get(i).getLabel());
+                if (i != VTable.size() - 1) {
+                    writer.write(",");
+                }
+            }
+        }
         writer.write("\n");
         writer.write(".CODE\n");
         for(Method m: methodList) {

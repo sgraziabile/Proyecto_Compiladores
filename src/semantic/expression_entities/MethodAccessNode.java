@@ -113,7 +113,7 @@ public class MethodAccessNode extends PrimaryNode {
         }
         writer.write(CodeGenerator.DUP+" ; Duplica la referencia al CIR\n");
         writer.write(CodeGenerator.LOADREF+ " 0 ; Cargo la referencia a la VT en el CIR\n");
-        writer.write(CodeGenerator.LOADREF+ " "+reference.getOffset()+" ; Cargo la referencia a la VT\n");
+        writer.write(CodeGenerator.LOADREF+ " "+reference.getOffset()+" ; Cargo la referencia al metodo en la VT\n");
         writer.write(CodeGenerator.CALL+" ; Llama al metodo "+reference.getName()+ "\n");
     }
     private void generateNonVoidMethodCode() throws Exception {
@@ -126,7 +126,7 @@ public class MethodAccessNode extends PrimaryNode {
         }
         writer.write(CodeGenerator.DUP+" ; Duplica la referencia al CIR\n");
         writer.write(CodeGenerator.LOADREF+ " 0 ; Cargo la referencia a la VT en el CIR\n");
-        writer.write(CodeGenerator.LOADREF+ " "+reference.getOffset()+" ; Cargo la referencia a la VT\n");
+        writer.write(CodeGenerator.LOADREF+ " "+reference.getOffset()+" ; Cargo la referencia al metodo en la VT\n");
         writer.write(CodeGenerator.CALL+" ; Llama al metodo "+reference.getName()+ "\n");
     }
 }

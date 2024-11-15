@@ -110,6 +110,7 @@ public class ChainedMethodCallNode extends Chained {
         for(ExpressionNode e : args) {
             e.generateCode();
         }
+        writer.write(CodeGenerator.POP+" ; Limpia la pila\n");
         writer.write(CodeGenerator.PUSH+" "+reference.getLabel()+" ; Apila el metodo\n");
         writer.write(CodeGenerator.CALL+" ; Llama al metodo\n");
     }
@@ -127,7 +128,7 @@ public class ChainedMethodCallNode extends Chained {
         }
         writer.write(CodeGenerator.DUP+" ; Duplica la referencia al CIR\n");
         writer.write(CodeGenerator.LOADREF+ " 0 ; Cargo la referencia a la VT en el CIR\n");
-        writer.write(CodeGenerator.LOADREF+ " "+reference.getOffset()+" ; Cargo la referencia a la VT\n");
+        writer.write(CodeGenerator.LOADREF+ " "+reference.getOffset()+" ; Cargo la referencia al metodo en la VT\n");
         writer.write(CodeGenerator.CALL+" ; Llama al metodo "+reference.getName()+ "\n");
     }
     private void generateNonVoidMethodCode() throws Exception {
@@ -140,7 +141,7 @@ public class ChainedMethodCallNode extends Chained {
         }
         writer.write(CodeGenerator.DUP+" ; Duplica la referencia al CIR\n");
         writer.write(CodeGenerator.LOADREF+ " 0 ; Cargo la referencia a la VT en el CIR\n");
-        writer.write(CodeGenerator.LOADREF+ " "+reference.getOffset()+" ; Cargo la referencia a la VT\n");
+        writer.write(CodeGenerator.LOADREF+ " "+reference.getOffset()+" ; Cargo la referencia al metodo en la VT\n");
         writer.write(CodeGenerator.CALL+" ; Llama al metodo "+reference.getName()+ "\n");
     }
     public String toString() {
