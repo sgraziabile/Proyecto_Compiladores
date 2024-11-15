@@ -45,6 +45,7 @@ public class Class implements Symbol{
     public void addAttribute(Attribute attribute) throws Exception {
         attributes.put(attribute.getId().getLexeme(), attribute);
         attributeList.add(attribute);
+        attribute.setMyClass(this);
     }
     private void addInheritedAttribute(Attribute attribute) {
         attributes.put(attribute.getId().getLexeme(), attribute);
@@ -160,6 +161,11 @@ public class Class implements Symbol{
         setMethodOffsets();
     }
     public void generateCode() throws Exception {
+        for(Attribute a: attributeList) {
+            if(a.getModifier().equals("static")) {
+                writer.write(a.getLabel() + ": " + CodeGenerator.DW + " 0\n");
+            }
+        }
         if(VTable.isEmpty()) {
             writer.write(vtLabel + ": NOP\n");
             writer.write("\n");
@@ -195,6 +201,7 @@ public class Class implements Symbol{
         for(Attribute a: attributeList) {
             offset = attributeList.size() - i;
             a.setOffset(offset);
+            a.setLabel(this);
             i += 1;
         }
     }

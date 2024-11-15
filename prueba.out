@@ -214,10 +214,7 @@ STOREFP ; Almacena el tope de la pila en el registro
 RMEM 1 ; Reserva espacio para la variable local a
 PUSH 3 ; Apila el valor
 STORE 0 ; Almacena el valor de la variable local a
-LOAD 3 ; Carga la referencia al CIR 
-LOADREF 1 ; Carga el valor del atributo a1
-LOAD 0 ; Carga el valor de la variable local a
-ADD
+PUSH 35 ; Apila el valor
 DUP ; Duplica el valor de la asignacion a1
 LOAD 3 ; Carga la referencia al CIR 
 SWAP ; Bajo la referencia del CIR

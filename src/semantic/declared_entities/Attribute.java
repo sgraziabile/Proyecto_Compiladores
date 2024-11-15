@@ -8,6 +8,8 @@ import static main.MainModule.symbolTable;
 public class Attribute extends ClassMember {
 
     private int offset;
+    private String label;
+    private Class myClass;
     public Attribute(Token name, Type type, String modifier, String visibility) {
         super(name,type,modifier,visibility);
     }
@@ -33,5 +35,17 @@ public class Attribute extends ClassMember {
     }
     public int getOffset() {
         return offset;
+    }
+    public void setLabel(Class myClass) {
+        label = "lblAttr"+id.getLexeme()+"@"+myClass.getName();
+    }
+    public String getLabel() {
+        return label;
+    }
+    public void setMyClass(Class myClass) {
+        this.myClass = myClass;
+    }
+    public Class getMyClass() {
+        return myClass;
     }
 }

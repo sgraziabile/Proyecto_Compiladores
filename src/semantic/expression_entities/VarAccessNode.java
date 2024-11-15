@@ -9,7 +9,6 @@ import exceptions.VariableNotInitializedException;
 import semantic.declared_entities.*;
 import semantic.sentence_entities.LocalVarNode;
 
-import java.sql.Ref;
 import java.util.ArrayList;
 
 import static main.MainModule.symbolTable;
@@ -135,12 +134,24 @@ public class VarAccessNode extends PrimaryNode {
         } else if (reference instanceof Attribute) {
             Attribute attribute = (Attribute) reference;
             int attrOffset = attribute.getOffset();
-            writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
-            writer.write(CodeGenerator.LOADREF + " "+attrOffset+" ; Carga el valor del atributo "+id.getLexeme()+"\n");
+            if(attribute.getModifier().equals("dynamic")) {
+                generateDynamicAttributeAccessCode(attrOffset);
+            } else {
+                String label = attribute.getLabel();
+                generateStaticAttributeAccessCode(label);
+            }
         }
         if(chained != null) {
             chained.generateCode();
         }
+    }
+    private void generateDynamicAttributeAccessCode(int offset) throws Exception {
+        writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
+        writer.write(CodeGenerator.LOADREF + " "+offset+" ; Carga el valor del atributo "+id.getLexeme()+"\n");
+    }
+    private void generateStaticAttributeAccessCode(String label) throws Exception {
+        writer.write(CodeGenerator.PUSH + " "+label+" ; Carga la direccion del atributo "+id.getLexeme()+"\n");
+        writer.write(CodeGenerator.LOADREF + " 0 ; Carga el valor del atributo "+id.getLexeme()+"\n");
     }
     public void generateCode(Token assignmentOp) throws Exception{
         if(chained == null) {
@@ -154,8 +165,7 @@ public class VarAccessNode extends PrimaryNode {
                 generateVarAssignmentCode(localVarOffset, assignmentOp);
             } else if (reference instanceof Attribute) {
                 Attribute attribute = (Attribute) reference;
-                int attrOffset = attribute.getOffset();
-                generateAttributeAssignmentCode(attrOffset, assignmentOp);
+                generateAttributeAssignmentCode(assignmentOp);
             }
         } else {
             generateCode();
@@ -195,7 +205,17 @@ public class VarAccessNode extends PrimaryNode {
             writer.write(CodeGenerator.STORE + " " + offset + " ; Almacena el valor de la variable " + id.getLexeme() + "\n");
         }
     }
-    private void generateAttributeAssignmentCode(int offset, Token operator) throws Exception {
+    private void generateAttributeAssignmentCode(Token operator) throws Exception {
+        Attribute attribute = (Attribute) reference;
+        if(attribute.getModifier().equals("dynamic")) {
+            int offset = attribute.getOffset();
+            generateDynamicAttributeAssignmentCode(offset, operator);
+        } else {
+            String label = attribute.getLabel();
+            generateStaticAttributeAssignmentCode(label,operator);
+        }
+    }
+    private void generateDynamicAttributeAssignmentCode(int offset, Token operator) throws Exception {
         if(operator.getLexeme().equals("=")) {
             writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
             writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
@@ -218,6 +238,25 @@ public class VarAccessNode extends PrimaryNode {
             writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
             writer.write(CodeGenerator.SWAP + " ; Bajo la referencia del CIR\n");
             writer.write(CodeGenerator.STOREREF + " " + offset + " ; Almacena el valor del atributo " + id.getLexeme() + "\n");
+        }
+    }
+    private void generateStaticAttributeAssignmentCode(String label, Token operator) throws Exception {
+        if(operator.getLexeme().equals("=")) {
+            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.PUSH + " " + label + " ; Carga la direccion del atributo " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.SWAP + " ; Invierte los operandos " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.STOREREF + " 0 ; Almacena el valor del atributo " + id.getLexeme() + "\n");
+        } else if(operator.getLexeme().equals("+=")) {
+            writer.write(CodeGenerator.LOAD + " " + label + " ; Carga el valor del atributo " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.ADD + " ; Suma el valor del atributo " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.STORE + " " + label + " ; Almacena el valor del atributo " + id.getLexeme() + "\n");
+        } else if(operator.getLexeme().equals("-=")) {
+            writer.write(CodeGenerator.LOAD + " " + label + " ; Carga el valor del atributo " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.SWAP + " ; Invierto los operandos " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.SUB + " ; Resta el valor del atributo " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion " + id.getLexeme() + "\n");
+            writer.write(CodeGenerator.STORE + " " + label + " ; Almacena el valor del atributo " + id.getLexeme() + "\n");
         }
     }
     public String toString() {

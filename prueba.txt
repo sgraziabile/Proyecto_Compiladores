@@ -10,15 +10,15 @@
     }
  }
  class A {
-        public static int a1;
+        public  int a1;
         //public int a2;
         public A() {
 
         }
         void m2() {
             var a = 3;
-            //a1 = 35;
-            a1 = a1 + a;
+            a1 = 35;
+            //a1 = a1 + a;
             debugPrint(a1);
         }
         static void m3() {
