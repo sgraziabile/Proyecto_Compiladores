@@ -105,6 +105,9 @@ public class ChainedMethodCallNode extends Chained {
         } else {
             generateDynamicMethodCode();
         }
+        if(chained != null) {
+            chained.generateCode();
+        }
     }
     private void generateStaticMethodCode() throws Exception{
         writer.write(CodeGenerator.POP+" ; Limpia la pila\n");

@@ -3,9 +3,10 @@
  class Init extends System{
      static void main() {
         var a = new A();
-        var b = a.m3();
-        printIln(b);
-
+        var b = a.m5().a1;
+        debugPrint(b);
+        //var b = a.a1;
+        //debugPrint(b);
     }
     static void m1() {
         debugPrint(10);
@@ -21,9 +22,7 @@
             //m3();
             debugPrint(a);
         }
-        int m3() {
-            var i = 0;
-            a1 = a1 * 10;
-            return a1;
+        A m5() {
+            return new A();
         }
  }

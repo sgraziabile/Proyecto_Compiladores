@@ -164,7 +164,6 @@ public class VarAccessNode extends PrimaryNode {
                 int localVarOffset = localVar.getOffset();
                 generateVarAssignmentCode(localVarOffset, assignmentOp);
             } else if (reference instanceof Attribute) {
-                Attribute attribute = (Attribute) reference;
                 generateAttributeAssignmentCode(assignmentOp);
             }
         } else {

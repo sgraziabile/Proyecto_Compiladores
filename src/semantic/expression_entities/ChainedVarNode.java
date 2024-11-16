@@ -1,5 +1,6 @@
 package semantic.expression_entities;
 
+import code_generator.CodeGenerator;
 import entities.Token;
 import exceptions.CantResolveSymbolException;
 import exceptions.PrimitiveTypeCallException;
@@ -7,10 +8,11 @@ import semantic.declared_entities.*;
 import semantic.declared_entities.Class;
 
 import static main.MainModule.symbolTable;
+import static main.MainModule.writer;
 
 public class ChainedVarNode extends Chained{
     protected Type type;
-    protected Symbol reference;
+    protected Attribute reference;
 
     public ChainedVarNode(Token name) {
         this.id = name;
@@ -68,5 +70,25 @@ public class ChainedVarNode extends Chained{
         } else {
             return chained.canBeCalled();
         }
+    }
+    public void generateCode(Token assignmentOp) throws Exception {
+
+    }
+    public void generateCode() throws Exception {
+        if(reference.getModifier().equals("static")) {
+            String label = reference.getLabel();
+            generateStaticAttributeAccessCode(label);
+        } else {
+            int offset = reference.getOffset();
+            generateDynamicAttributeAccessCode(offset);
+        }
+    }
+    private void generateDynamicAttributeAccessCode(int offset) throws Exception {
+        writer.write(CodeGenerator.DUP + " ; Duplica la referencia al CIR\n");
+        writer.write(CodeGenerator.LOADREF + " "+offset+" ; Carga el valor del atributo "+id.getLexeme()+"\n");
+    }
+    private void generateStaticAttributeAccessCode(String label) throws Exception {
+        writer.write(CodeGenerator.PUSH + " "+label+" ; Carga la direccion del atributo "+id.getLexeme()+"\n");
+        writer.write(CodeGenerator.LOADREF + " 0 ; Carga el valor del atributo "+id.getLexeme()+"\n");
     }
 }
