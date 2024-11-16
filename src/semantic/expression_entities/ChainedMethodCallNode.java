@@ -107,10 +107,13 @@ public class ChainedMethodCallNode extends Chained {
         }
     }
     private void generateStaticMethodCode() throws Exception{
+        writer.write(CodeGenerator.POP+" ; Limpia la pila\n");
+        if(!reference.getType().getName().equals("void")) {
+            writer.write(CodeGenerator.RMEM1+ " ; Reserva espacio para el valor de retorno\n");
+        }
         for(ExpressionNode e : args) {
             e.generateCode();
         }
-        writer.write(CodeGenerator.POP+" ; Limpia la pila\n");
         writer.write(CodeGenerator.PUSH+" "+reference.getLabel()+" ; Apila el metodo\n");
         writer.write(CodeGenerator.CALL+" ; Llama al metodo\n");
     }
@@ -132,7 +135,6 @@ public class ChainedMethodCallNode extends Chained {
         writer.write(CodeGenerator.CALL+" ; Llama al metodo "+reference.getName()+ "\n");
     }
     private void generateNonVoidMethodCode() throws Exception {
-        writer.write(CodeGenerator.LOAD+ " 3 ; Carga el CIR de la clase actual\n");
         writer.write(CodeGenerator.RMEM1+ " ; Reserva espacio para el valor de retorno\n");
         writer.write(CodeGenerator.SWAP+" ; Bajo la referencia del CIR\n");
         for(ExpressionNode e : args) {

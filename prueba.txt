@@ -3,25 +3,27 @@
  class Init extends System{
      static void main() {
         var a = new A();
-        a.m2();
+        var b = a.m3();
+        printIln(b);
+
     }
     static void m1() {
-        printIln(1234);
+        debugPrint(10);
     }
  }
  class A {
-        public  int a1;
-        //public int a2;
+        public int a1;
         public A() {
-
+            a1 = 1;
         }
         void m2() {
             var a = 3;
-            a1 = 35;
-            //a1 = a1 + a;
-            debugPrint(a1);
+            //m3();
+            debugPrint(a);
         }
-        static void m3() {
-            debugPrint(1234);
+        int m3() {
+            var i = 0;
+            a1 = a1 * 10;
+            return a1;
         }
  }

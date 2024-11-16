@@ -92,6 +92,9 @@ public class MethodAccessNode extends PrimaryNode {
         }
     }
     private void generateStaticMethodCode() throws Exception{
+        if(!reference.getType().getName().equals("void")) {
+            writer.write(CodeGenerator.RMEM1+ " ; Reserva espacio para el valor de retorno\n");
+        }
         for(ExpressionNode e : arguments) {
             e.generateCode();
         }
