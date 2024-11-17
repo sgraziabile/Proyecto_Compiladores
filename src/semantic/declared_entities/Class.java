@@ -214,9 +214,10 @@ public class Class implements Symbol{
             }
         }
         for(Method m: methodList) {
-            if(m.getModifier().equals("static") || m.getName().equals("constructor")) {
-                if(m.getMyClass() == this)
+            if(m.getModifier().equals("static") || m.getName().equals(getName())) {
+                if (m.getMyClass() == this) {
                     m.setParamsOffset();
+                }
             }
         }
     }

@@ -1,11 +1,13 @@
 package semantic.expression_entities;
 
+import code_generator.CodeGenerator;
 import exceptions.StaticReferenceException;
 import semantic.declared_entities.ReferenceType;
 import semantic.declared_entities.Symbol;
 import semantic.declared_entities.Type;
 
 import static main.MainModule.symbolTable;
+import static main.MainModule.writer;
 
 public class ThisAccessNode extends PrimaryNode {
     private Symbol reference;
@@ -34,6 +36,12 @@ public class ThisAccessNode extends PrimaryNode {
             return chained.canBeCalled();
         } else {
             return false;
+        }
+    }
+    public void generateCode() throws Exception {
+        writer.write(CodeGenerator.LOAD+ " 3 ; Cargo la referencia al this \n");
+        if(chained != null) {
+            chained.generateCode();
         }
     }
 

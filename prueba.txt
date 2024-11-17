@@ -2,11 +2,8 @@
 
  class Init extends System{
      static void main() {
-        var a = new A();
-        var b = a.m5().a1;
-        debugPrint(b);
-        //var b = a.a1;
-        //debugPrint(b);
+        var a = new A(10);
+        a.m4(1);
     }
     static void m1() {
         debugPrint(10);
@@ -14,15 +11,22 @@
  }
  class A {
         public int a1;
-        public A() {
-            a1 = 1;
+        public A(int a) {
+            a1 = a;
+            System.printIln(a1);
         }
         void m2() {
             var a = 3;
-            //m3();
-            debugPrint(a);
+            this.m5().m3();
+        }
+        void m3() {
+            debugPrint(a1);
+        }
+        int m4(int a) {
+            a1 = a;
+            System.printIln(a1);
         }
         A m5() {
-            return new A();
+            return new A(100);
         }
  }

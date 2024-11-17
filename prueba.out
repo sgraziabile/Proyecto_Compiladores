@@ -168,24 +168,21 @@ DUP ; Duplica la referencia al CIR
 PUSH lblVTA ; Carga la direccion de la VT
 STOREREF 0 ; Guarda la direccion de la VT en el CIR
 DUP ; Duplica la referencia al CIR
+PUSH 10 ; Apila el valor
+SWAP ; Bajo la referencia del CIR
 PUSH lblConstructor@A ; Carga la direccion del constructor
 CALL ; Llama al constructor
 STORE 0 ; Almacena el valor de la variable local a
-RMEM 1 ; Reserva espacio para la variable local b
 LOAD 0 ; Carga el valor de la variable local a
 RMEM 1 ; Reserva espacio para el valor de retorno
 SWAP ; Bajo la referencia del CIR
+PUSH 1 ; Apila el valor
+SWAP ; Bajo la referencia del CIR
 DUP ; Duplica la referencia al CIR
 LOADREF 0 ; Cargo la referencia a la VT en el CIR
-LOADREF 1 ; Cargo la referencia al metodo en la VT
-CALL ; Llama al metodo m5
-DUP ; Duplica la referencia al CIR
-LOADREF 1 ; Carga el valor del atributo a1
-STORE -1 ; Almacena el valor de la variable local b
-LOAD -1 ; Carga el valor de la variable local b
-PUSH lblMetdebugPrint@Object ; Apila el metodo
-CALL ; Llama al metodo
-FMEM 2 ; Libera espacio de variables locales
+LOADREF 2 ; Cargo la referencia al metodo en la VT
+CALL ; Llama al metodo m4
+FMEM 1 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 0 ; Libera el espacio de los parametros de main
 
@@ -208,20 +205,24 @@ RET 1 ; Libera el espacio de los parametros de Init
 
 
 .DATA
-lblVTA: DW lblMetm2@A,lblMetm5@A
+lblVTA: DW lblMetm2@A,lblMetm3@A,lblMetm4@A,lblMetm5@A
 .CODE
 lblConstructor@A:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
 STOREFP ; Almacena el tope de la pila en el registro
-PUSH 1 ; Apila el valor
+LOAD 4 ; Carga el valor del parametro a
 DUP ; Duplica el valor de la asignacion a1
 LOAD 3 ; Carga la referencia al CIR 
 SWAP ; Bajo la referencia del CIR
 STOREREF 1 ; Almacena el valor del atributo a1
 POP ; Se desapila el valor de la asignacion 
+LOAD 3 ; Carga la referencia al CIR 
+LOADREF 1 ; Carga el valor del atributo a1
+PUSH lblMetprintIln@System ; Apila el metodo
+CALL ; Llama al metodo
 FMEM 0 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
-RET 1 ; Libera el espacio de los parametros de A
+RET 2 ; Libera el espacio de los parametros de A
 
 lblMetm2@A:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
@@ -229,12 +230,48 @@ STOREFP ; Almacena el tope de la pila en el registro
 RMEM 1 ; Reserva espacio para la variable local a
 PUSH 3 ; Apila el valor
 STORE 0 ; Almacena el valor de la variable local a
-LOAD 0 ; Carga el valor de la variable local a
-PUSH lblMetdebugPrint@Object ; Apila el metodo
-CALL ; Llama al metodo
+LOAD 3 ; Cargo la referencia al this 
+RMEM 1 ; Reserva espacio para el valor de retorno
+SWAP ; Bajo la referencia del CIR
+DUP ; Duplica la referencia al CIR
+LOADREF 0 ; Cargo la referencia a la VT en el CIR
+LOADREF 3 ; Cargo la referencia al metodo en la VT
+CALL ; Llama al metodo m5
+DUP ; Duplica la referencia al CIR
+LOADREF 0 ; Cargo la referencia a la VT en el CIR
+LOADREF 1 ; Cargo la referencia al metodo en la VT
+CALL ; Llama al metodo m3
 FMEM 1 ; Libera espacio de variables locales
 STOREFP ; Almacena el tope de la pila en el registro 
 RET 1 ; Libera el espacio de los parametros de m2
+
+lblMetm3@A:LOADFP ; Apila el valor del registro
+LOADSP ; Apila el valor en el registro sp
+STOREFP ; Almacena el tope de la pila en el registro
+LOAD 3 ; Carga la referencia al CIR 
+LOADREF 1 ; Carga el valor del atributo a1
+PUSH lblMetdebugPrint@Object ; Apila el metodo
+CALL ; Llama al metodo
+FMEM 0 ; Libera espacio de variables locales
+STOREFP ; Almacena el tope de la pila en el registro 
+RET 1 ; Libera el espacio de los parametros de m3
+
+lblMetm4@A:LOADFP ; Apila el valor del registro
+LOADSP ; Apila el valor en el registro sp
+STOREFP ; Almacena el tope de la pila en el registro
+LOAD 4 ; Carga el valor del parametro a
+DUP ; Duplica el valor de la asignacion a1
+LOAD 3 ; Carga la referencia al CIR 
+SWAP ; Bajo la referencia del CIR
+STOREREF 1 ; Almacena el valor del atributo a1
+POP ; Se desapila el valor de la asignacion 
+LOAD 3 ; Carga la referencia al CIR 
+LOADREF 1 ; Carga el valor del atributo a1
+PUSH lblMetprintIln@System ; Apila el metodo
+CALL ; Llama al metodo
+FMEM 0 ; Libera espacio de variables locales
+STOREFP ; Almacena el tope de la pila en el registro 
+RET 2 ; Libera el espacio de los parametros de m4
 
 lblMetm5@A:LOADFP ; Apila el valor del registro
 LOADSP ; Apila el valor en el registro sp
@@ -247,6 +284,8 @@ DUP ; Duplica la referencia al CIR
 PUSH lblVTA ; Carga la direccion de la VT
 STOREREF 0 ; Guarda la direccion de la VT en el CIR
 DUP ; Duplica la referencia al CIR
+PUSH 100 ; Apila el valor
+SWAP ; Bajo la referencia del CIR
 PUSH lblConstructor@A ; Carga la direccion del constructor
 CALL ; Llama al constructor
 STORE 4 ; Copia el valor de retorno 
@@ -255,3 +294,5 @@ STOREFP ; Almacena el tope de la pila en el registro
 RET 1 ; Libera el espacio de los parametros de m5
 
 
+
+.DATA

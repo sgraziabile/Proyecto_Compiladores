@@ -1,5 +1,7 @@
 package code_generator;
 
+import java.util.Hashtable;
+
 import static main.MainModule.writer;
 
 public class CodeGenerator {
@@ -55,6 +57,8 @@ public class CodeGenerator {
     private static int caseLabelCounter;
     private static String currentLoopLabel;
     private static String currentDefaultLabel;
+
+    private static Hashtable<String, String> stringTable = new Hashtable<>();
 
     public void generateMain(String label) throws Exception {
         writer.write("PUSH " + label + "\n");
@@ -123,6 +127,22 @@ public class CodeGenerator {
     }
     public static String getCurrentDefaultLabel() {
         return currentDefaultLabel;
+    }
+
+    public static void addString(String str) {
+        String auxStr = str.replace(" ","_");
+        String label = "lbl"+auxStr;
+        stringTable.put(str, label);
+    }
+    public static String getStringLabel(String str) {
+        return stringTable.get(str);
+    }
+    public static void generateStringTable() throws Exception {
+        writer.write("\n");
+        writer.write(".DATA\n");
+        for(String str : stringTable.keySet()) {
+            writer.write(stringTable.get(str) + ": DW \"" + str + "\", 0\n");
+        }
     }
 
 }

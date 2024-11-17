@@ -72,6 +72,25 @@ public class ChainedVarNode extends Chained{
         }
     }
     public void generateCode(Token assignmentOp) throws Exception {
+        if(chained == null) {
+            generateAttributeAssignmentCode(assignmentOp);
+        } else {
+
+        }
+    }
+    private void generateAttributeAssignmentCode(Token assignmentOp) throws Exception {
+        if(reference.getModifier().equals("static")) {
+            String label = reference.getLabel();
+            generateStaticAttributeAssignmentCode(label, assignmentOp);
+        } else {
+            int offset = reference.getOffset();
+            generateDynamicAttributeAssignmentCode(offset, assignmentOp);
+        }
+    }
+    private void generateDynamicAttributeAssignmentCode(int offset, Token assignmentOp) throws Exception {
+
+    }
+    private void generateStaticAttributeAssignmentCode(String label, Token assignmentOp) throws Exception {
 
     }
     public void generateCode() throws Exception {

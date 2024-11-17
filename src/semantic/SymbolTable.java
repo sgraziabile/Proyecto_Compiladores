@@ -141,6 +141,7 @@ public class SymbolTable {
             setCurrentClass(c);
             c.generateCode();
         }
+        CodeGenerator.generateStringTable();
         writer.flush();
     }
     public boolean isConsolidated() {

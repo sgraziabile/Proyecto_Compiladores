@@ -167,7 +167,30 @@ public class VarAccessNode extends PrimaryNode {
                 generateAttributeAssignmentCode(assignmentOp);
             }
         } else {
-            generateCode();
+            generateChainedAssignmentCode(assignmentOp);
+        }
+    }
+    private void generateChainedAssignmentCode(Token assignmentOp) throws Exception {
+        if(reference instanceof Parameter) {
+            Parameter parameter = (Parameter) reference;
+            int paramOffset = parameter.getOffset();
+            writer.write(CodeGenerator.LOAD + " "+paramOffset+" ; Carga el valor del parametro "+id.getLexeme()+"\n");
+        } else if (reference instanceof LocalVarNode) {
+            LocalVarNode localVar = (LocalVarNode) reference;
+            int localVarOffset = localVar.getOffset();
+            writer.write(CodeGenerator.LOAD + " "+localVarOffset+" ; Carga el valor de la variable local "+id.getLexeme()+"\n");
+        } else if (reference instanceof Attribute) {
+            Attribute attribute = (Attribute) reference;
+            int attrOffset = attribute.getOffset();
+            if(attribute.getModifier().equals("dynamic")) {
+                generateDynamicAttributeAccessCode(attrOffset);
+            } else {
+                String label = attribute.getLabel();
+                generateStaticAttributeAccessCode(label);
+            }
+        }
+        if(chained != null) {
+            chained.generateCode(assignmentOp);
         }
     }
     private void generateParamAssignmentCode(int offset, Token operator) throws Exception{

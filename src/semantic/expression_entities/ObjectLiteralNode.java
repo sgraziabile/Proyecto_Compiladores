@@ -26,22 +26,30 @@ public class ObjectLiteralNode extends LiteralNode{
     public void generateCode() throws Exception{
         if(!value.getLexeme().equals("null")) {
             writer.write(CodeGenerator.RMEM1+ " ; Reserva espacio para el CIR generado\n");
-            writer.write(CodeGenerator.PUSH + " 1 ; Reserva espacio el CIR String\n");
+            writer.write(CodeGenerator.PUSH + " 2 ; Reserva espacio el CIR String\n");
             writer.write(CodeGenerator.PUSH + " simple_malloc ;  Carga direccion de rutina para alojar el CIR\n");
             writer.write(CodeGenerator.CALL + " ; Llama a la rutina de alojamiento\n");
             writer.write(CodeGenerator.DUP + " ; Duplica la referencia al CIR\n");
             writer.write(CodeGenerator.PUSH + " "+ vtLabel + " ; Carga la direccion de la VT\n");
             writer.write(CodeGenerator.STOREREF+ " 0 ; Guarda la direccion de la VT en el CIR\n");
+            writer.write(CodeGenerator.DUP + " ; Duplica la referencia al CIR\n");
+            writer.write(CodeGenerator.PUSH + " "+ constructorLabel + " ; Carga la direccion del constructor\n");
+            writer.write(CodeGenerator.CALL + " ; Llama al constructor\n");
             generateString();
+            accessString();
         }
     }
     private void generateString() throws Exception {
         String str = value.getLexeme();
-
-        writer.write(CodeGenerator.DUP + " ; Duplica el valor de la asignacion \n");
-        writer.write(CodeGenerator.LOAD + " 3 ; Carga la referencia al CIR \n");
-        writer.write(CodeGenerator.SWAP + " ; Bajo la referencia del CIR\n");
-        writer.write(CodeGenerator.STOREREF + " 1 ; Carga el valor del string "+str+"\n");
+        str = str.replace("\"", "");
+        CodeGenerator.addString(str);
+        String label = CodeGenerator.getStringLabel(str);
+        writer.write(CodeGenerator.DUP + " ; Duplica la referencia al CIR\n");
+        writer.write(CodeGenerator.PUSH + " "+ label + " ; Carga la direccion del string\n");
+        writer.write(CodeGenerator.STOREREF + " 1 ; Carga la etiqueta del string "+str+"\n");
+    }
+    private void accessString() throws Exception {
+        writer.write(CodeGenerator.LOADREF + " 1 ; Obtiene el valor del string\n");
     }
 
 }
